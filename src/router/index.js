@@ -12,14 +12,20 @@ var manage = resolve => require(['@/components/manage/manage.vue'], resolve)
 var role = resolve => require(['@/components/role/role.vue'], resolve)
 var roleLimit = resolve => require(['@/components/role/roleLimit.vue'], resolve)
 var power = resolve => require(['../components/role/power.vue'], resolve)
-
 // 平台基本信息
 var CommissionSet = resolve => require(['../components/common/CommissionSet.vue'], resolve)   
 var FreightFormworkList = resolve => require(['../components/common/FreightFormworkList.vue'], resolve)
-
 // 分类管理
 var FirstLevelList = resolve => require(['../components/classification/FirstLevelList.vue'], resolve)
 var SecondLevelList = resolve => require(['../components/classification/SecondLevelList.vue'], resolve)
+//消息列表
+var MessageList = resolve => require(['../components/message/MessageList.vue'], resolve)
+var AddMessage = resolve => require(['../components/message/AddMessage.vue'], resolve)
+var EditMessage = resolve => require(['../components/message/EditMessage.vue'], resolve)
+//平台管理
+var BannerList = resolve => require(['../components/banner/BannerList.vue'], resolve)
+var AddBanner = resolve => require(['../components/banner/AddBanner.vue'], resolve)
+var EditBanner = resolve => require(['../components/banner/EditBanner.vue'], resolve)
 
 
 // 懒加载方式，当路由被访问的时候才加载对应组件
@@ -52,6 +58,14 @@ export default new Router({
         // 分类管理
         { path: '/FirstLevelList', component: FirstLevelList, name: '一级分类' }, 
         { path: '/SecondLevelList/:id', component: SecondLevelList, name: '二级分类' }, 
+        //消息管理
+        { path: '/MessageList', component: MessageList, name: '消息列表' }, 
+        { path: '/AddMessage', component: AddMessage, name: '添加消息' }, 
+        { path: '/EditMessage/:id', component: EditMessage, name: '修改消息' }, 
+        //平台管理
+        { path: '/BannerList', component: BannerList, name: 'Banner列表' }, 
+        { path: '/AddBanner', component: AddBanner, name: '添加Banner' }, 
+        { path: '/EditBanner/:id', component: EditBanner, name: '修改Banner' }, 
     ]
     },
   ]
