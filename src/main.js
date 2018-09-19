@@ -13,8 +13,8 @@ import qs from 'qs'
 Vue.prototype.$http = axios;
 
 // axios.defaults.headers.post['Content-Type'] = 'application/json';
-// axios.defaults.baseURL = 'http://192.168.1.106/ZST';
-axios.defaults.baseURL = 'http://zst.nbxuanma.com/';
+axios.defaults.baseURL = 'http://192.168.1.182/JMJ/';
+// axios.defaults.baseURL = 'http://zst.nbxuanma.com/';
 
 
 Vue.use(ElementUI);

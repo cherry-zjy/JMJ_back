@@ -3,14 +3,13 @@
     <transition name="form-fade" mode="in-out">
       <div class="form_img">
         <div class="manage_tip">
-            <p>装师通总公司后台</p>
+            <p>极美家后台</p>
           </div>
       </div>
     </transition>
     <transition name="form-fade" mode="in-out">
       <section class="form_contianer">
         <div>
-          
           <el-form :model="loginForm" :rules="rules" ref="loginForm">
             <el-form-item prop="username">
               <el-input v-model="loginForm.username" placeholder="用户名"></el-input>
@@ -145,7 +144,7 @@ export default {
 }
 
 .form_img {
-  background-color: #409EFF;
+  background-color: #F55D54;
   height: 30%;
   position: absolute;
   left: 0;
