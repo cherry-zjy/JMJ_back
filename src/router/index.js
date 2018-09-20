@@ -18,6 +18,9 @@ var FreightFormworkList = resolve => require(['../components/common/FreightFormw
 var AddForm = resolve => require(['../components/common/AddForm.vue'], resolve)
 var EditForm = resolve => require(['../components/common/EditForm.vue'], resolve)
 var Overflow = resolve => require(['../components/common/Overflow.vue'], resolve)
+var OverflowDetail = resolve => require(['../components/common/OverflowDetail.vue'], resolve)
+var AddOverflowDetail = resolve => require(['../components/common/AddOverflowDetail.vue'], resolve)
+
 // 分类管理
 var FirstLevelList = resolve => require(['../components/classification/FirstLevelList.vue'], resolve)
 var SecondLevelList = resolve => require(['../components/classification/SecondLevelList.vue'], resolve)
@@ -64,7 +67,8 @@ export default new Router({
         { path: '/AddForm', component: AddForm, name: '添加运费模板' }, 
         { path: '/EditForm/:id', component: EditForm, name: '修改运费模板' },
         { path: '/Overflow', component: Overflow, name: '超值热卖列表' },
-         
+        { path: '/OverflowDetail/:id', component: OverflowDetail, name: '超值热卖详情' },
+        { path: '/AddOverflowDetail/:id', component: AddOverflowDetail, name: '添加超值热卖' },
         // 分类管理
         { path: '/FirstLevelList', component: FirstLevelList, name: '一级分类' }, 
         { path: '/SecondLevelList/:id', component: SecondLevelList, name: '二级分类' }, 

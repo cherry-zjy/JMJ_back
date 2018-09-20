@@ -2,20 +2,29 @@
   <div>
     <el-breadcrumb separator="|" class="crumb">
       <el-breadcrumb-item :to="{ path: '/' }">后台管理</el-breadcrumb-item>
-      <el-breadcrumb-item>超值热卖列表</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/Overflow' }">超值热卖列表</el-breadcrumb-item>
+      <el-breadcrumb-item>超值热卖详情</el-breadcrumb-item>
     </el-breadcrumb>
 
-    <!--检索条-->
-    <el-col class="toolbar" style="padding: 15px 0;">
-      <el-button size="mini" type="primary" @click="handleAdd()" style="float:right">新增</el-button>
-    </el-col>
+    <div style="margin:50px 0">
+      <p class="title">图片：</p>
+      <el-form :model="list" ref="getList" label-width="150px" class="demo-ruleForm" style="width:70%;">
+        <el-upload v-model="list.Image" class="avatar-uploader" :action="action" :show-file-list="false" :on-success="handleAvatarSuccess"
+          :before-upload="beforeAvatarUpload">
+          <img v-if="imageUrl" :src="imageUrl" class="avatar" style="width:300px;">
+          <img v-else src="../../../static/images/shangchuantupian.png" style="width:500px" />
+        </el-upload>
+      </el-form>
+    </div>
 
     <!-- table 内容 -->
-    <el-table :data="list" style="width: 100%" :border='true'>
+    <p class="title">包含商品：
+      <el-button size="mini" type="primary" @click="handleAdd()" style="float:right">添加商品</el-button>
+    </p>
+    <el-table :data="list.dataList" style="width: 100%" :border='true'>
       <el-table-column label="图片" prop="Image">
         <template slot-scope="scope">
-          <img :src="mainurl+scope.row.Image" width="100" v-if="scope.row.Image!==''"/>
-          <span v-if="scope.row.Image==''">无</span>
+          <img :src="mainurl+scope.row.Image" width="100" />
         </template>
       </el-table-column>
       <el-table-column label="操作">
@@ -34,14 +43,18 @@
   </div>
 </template>
 <script>
+  import qs from "qs";
   export default {
     data() {
       return {
-        list:[],
+        list: [],
+        editForm: [],
         pageIndex: 1,
         pageSize: 12,
         pageCount: 1,
-        mainurl:''
+        imageUrl: '',
+        mainurl: '',
+        action: '',
       };
     },
     mounted() {
@@ -49,14 +62,16 @@
       this.getInfo();
     },
     methods: {
-      Type(row, Type) {
-        var Type = row[Type.property];
-        if (Type == 0) {
-          return Type = "按件"
-        } else if (Type == 1) {
-          return Type = "按重量"
+      handleAvatarSuccess(res, file) {
+        this.imageUrl = URL.createObjectURL(file.raw);
+        this.list.Image = res.Result[0];
+      },
+      beforeAvatarUpload(file) {
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isLt2M) {
+          this.$message.error("上传头像图片大小不能超过 2MB!");
         }
-        return Type
+        return isLt2M;
       },
       getInfo() {
         const loading = this.$loading({
@@ -66,11 +81,12 @@
           background: "rgba(0, 0, 0, 0.7)"
         });
         this.$http
-          .get("api/Back_CurrentManage/Overflow", {
+          .get("api/Back_CurrentManage/OverflowDetailList", {
             params: {
+              id: window.location.href.split("id=")[1],
+              Token: getCookie("token"),
               pageIndex: this.pageIndex,
               pageSize: this.pageSize,
-              Token: getCookie("token"),
             }
           })
           .then(
@@ -78,7 +94,7 @@
               loading.close();
               var status = response.data.Status;
               if (status === 1) {
-                this.list = response.data.Result.datalist;
+                this.list = response.data.Result;
               } else if (status === 40001) {
                 this.$message({
                   showClose: true,
@@ -104,6 +120,7 @@
           .catch(
             function (error) {
               loading.close();
+              console.log(error)
               this.$notify.error({
                 title: "错误",
                 message: "错误：请检查网络"
@@ -111,18 +128,36 @@
             }.bind(this)
           );
       },
-      handleAdd(index, row) {
-        
+      submitForm(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            this.list.push({
+              Provinces: this.editForm.Provinces,
+              First: this.editForm.First,
+              FirstPrice: this.editForm.FirstPrice,
+              Per: this.editForm.Per,
+              PerPrice: this.editForm.PerPrice,
+            });
+            this.dialogFormVisible = false
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
       },
-      handleEdit(id){
-        this.$router.push("/OverflowDetail/id=" + id);
+      Del(index) {
+        this.list.splice(index, 1)
       },
       handleCurrentChange(val) {
         this.pageIndex = val;
         this.getInfo();
       },
+      handleAdd() {
+        this.$router.push("/AddOverflowDetail/id=" + window.location.href.split("id=")[1]);
+      }
+
     },
-    
+
   };
 
 </script>
@@ -144,13 +179,9 @@
   }
 
   .title {
-    font-size: 22px;
-    padding: 15px;
+    font-size: 18px;
+    padding: 0 0 10px 0;
     font-weight: bolder;
-  }
-
-  .el-input {
-    width: 50%;
   }
 
 </style>
