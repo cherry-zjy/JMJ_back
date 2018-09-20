@@ -2,7 +2,7 @@
   <div>
     <el-breadcrumb separator="|" class="crumb">
       <el-breadcrumb-item :to="{ path: '/' }">后台管理</el-breadcrumb-item>
-      <el-breadcrumb-item>消息列表</el-breadcrumb-item>
+      <el-breadcrumb-item>Banner列表</el-breadcrumb-item>
     </el-breadcrumb>
 
     <!--检索条-->
@@ -12,12 +12,16 @@
 
     <!-- table 内容 -->
     <el-table :data="list" style="width: 100%" :border='true'>
-      <el-table-column label="消息名称" prop="Title">
-      </el-table-column>
-      <el-table-column label="图片" prop="Image">
+      <el-table-column label="Banner图片" prop="Image">
         <template slot-scope="scope">
           <img :src="mainurl+scope.row.Image" width="100" />
         </template>
+      </el-table-column>
+      <el-table-column label="适用范围" prop="Position" :formatter="Post">
+      </el-table-column>
+      <el-table-column label="是否跳转" prop="IsJump" :formatter="IsJump">
+      </el-table-column>
+      <el-table-column label="跳转链接" prop="Url">
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
@@ -51,6 +55,38 @@
       this.getInfo();
     },
     methods: {
+      IsJump(row, IsJump){
+        var IsJump = row[IsJump.property];
+        if (IsJump == true) {
+          return IsJump = "是"
+        } else{
+          return IsJump = "否"
+        }
+        return IsJump
+      },
+      Post(row, Position) {
+        var Position = row[Position.property];
+        if (Position == 1) {
+          return Position = "首页"
+        } else if (Position == 2) {
+          return Position = "首页超值热卖Banner"
+        } else if (Position == 3) {
+          return Position = "每日家居Banner"
+        } else if (Position == 4) {
+          return Position = "美妆洗护Banner"
+        } else if (Position == 5) {
+          return Position = "母婴健康Banner"
+        } else if (Position == 6) {
+          return Position = "珠宝饰品Banner"
+        } else if (Position == 7) {
+          return Position = "休闲零食Banner"
+        } else if (Position == 8) {
+          return Position = "海外馆Banner"
+        } else if (Position == 9) {
+          return Position = "一口价（两件99）"
+        }
+        return Position
+      },
       getInfo() {
         const loading = this.$loading({
           lock: true,
@@ -59,7 +95,7 @@
           background: "rgba(0, 0, 0, 0.7)"
         });
         this.$http
-          .get("api/Back_MessageManage/MessageList", {
+          .get("api/Back_PlatManage/BannerList", {
             params: {
               pageIndex: this.pageIndex,
               pageSize: this.pageSize,
@@ -181,13 +217,13 @@
         this.getInfo();
       },
       handleAdd(index, row) {
-        this.$router.push("/AddMessage");
+        this.$router.push("/AddBanner");
       },
       handleEdit(id) {
-        this.$router.push("/EditMessage/id=" + id);
+        this.$router.push("/EditBanner/id=" + id);
       },
       handleDelete(id) {
-        this.$confirm('确认删除该消息?', '提示', {
+        this.$confirm('确认删除该Bnner?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -199,7 +235,7 @@
             background: "rgba(0, 0, 0, 0.7)"
           });
           this.$http
-            .get("api/Back_MessageManage/MessageDelete", {
+            .get("api/Back_PlatManage/BannerDelete", {
               params: {
                 ID: id,
                 Token: getCookie("token"),

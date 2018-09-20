@@ -2,44 +2,54 @@
   <div>
     <el-breadcrumb separator="|" class="crumb">
       <el-breadcrumb-item :to="{ path: '/' }">后台管理</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/MessageList' }">消息列表</el-breadcrumb-item>
-      <el-breadcrumb-item>新增消息</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/BannerList' }">Banner列表</el-breadcrumb-item>
+      <el-breadcrumb-item>新增Banner</el-breadcrumb-item>
     </el-breadcrumb>
 
     <el-main>
       <el-form :model="getList" ref="getList" label-width="150px" class="demo-ruleForm" :rules="rules" style="width:70%">
-        <el-form-item label="消息标题" prop="Title">
-          <el-input v-model="getList.Title"></el-input>
-        </el-form-item>
-        <el-form-item label="消息图片" prop="Image">
+        <el-form-item label="Banner图片" prop="Image">
           <el-upload v-model="getList.Image" class="avatar-uploader" :action="action" :show-file-list="false"
             :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
             <img v-if="imageUrl" :src="imageUrl" class="avatar" style="width:300px;">
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            <img v-else src="../../../static/images/shangchuantupian.png" style="width:500px" />
           </el-upload>
         </el-form-item>
-        <el-form-item label="消息内容" prop="defaultMsg">
-          <UEditor :defaultMsg='defaultMsg' :config='config' ref="ueditor"></UEditor>
+        <el-form-item label="是否跳转" prop="jump">
+          <el-radio-group v-model="getList.jump">
+            <el-radio label="true">是</el-radio>
+            <el-radio label="false">否</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="适用范围" prop="position">
+          <el-radio-group v-model="getList.position">
+            <el-radio label="1">首页</el-radio>
+            <el-radio label="2">首页超值热卖Banner</el-radio>
+            <el-radio label="3">每日家居Banner</el-radio>
+            <el-radio label="4">美妆洗护Banner</el-radio>
+            <div style="padding:20px">
+              <el-radio label="5">母婴健康Banner</el-radio>
+              <el-radio label="6">珠宝饰品Banner</el-radio>
+              <el-radio label="7">休闲零食Banner</el-radio>
+            </div>
+            <el-radio label="8">海外馆Banner</el-radio>
+            <el-radio label="9">一口价（两件99）</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="跳转地址" prop="Url">
+          <el-input v-model="getList.Url"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitForm('getList')">修改</el-button>
+          <el-button type="primary" @click="submitForm('getList')">新增</el-button>
         </el-form-item>
       </el-form>
     </el-main>
   </div>
 </template>
 <script>
-  import UEditor from "../UEditor";
   import qs from "qs";
   export default {
     data() {
-      var checkdefaultMsg = (rule, value, callback) => {
-        if (encodeURIComponent(this.$refs.ueditor.getUEContent()) == '') {
-          callback(new Error("请输入内容"));
-        } else {
-          callback();
-        }
-      };
       var checkLogo = (rule, value, callback) => {
         if (this.imageUrl == '') {
           callback(new Error("请上传图片"));
@@ -53,34 +63,34 @@
         imageUrl: '',
         mainurl: '',
         action: '',
-        pageIndex: 1,
-        pageSize: 12,
-        pageCount: 1,
-        config: {
-          initialFrameWidth: null,
-          initialFrameHeight: 500
-        },
-        defaultMsg: "这里是初始化内容",
         rules: {
+          Url: [{
+            required: true,
+            message: '请输入跳转地址',
+            trigger: 'blur'
+          }, ],
           Image: [{
             required: true,
             validator: checkLogo
           }],
-          defaultMsg: [{
+          jump: [{
             required: true,
-            validator: checkdefaultMsg
+            message: '请选择是否跳转',
+            trigger: 'change'
+          }],
+          position: [{
+            required: true,
+            message: '请选择适用范围',
+            trigger: 'change'
           }],
           Title: [{
             required: true,
-            message: '请输入消息标题',
+            message: '请输入跳转地址',
             trigger: 'blur'
           }, ],
         },
-        find:false
+        find: false
       };
-    },
-    components: {
-      UEditor
     },
     mounted() {
       this.mainurl = mainurl
@@ -107,62 +117,63 @@
               spinner: "el-icon-loading",
               background: "rgba(0, 0, 0, 0.7)"
             });
-            var content = this.$refs.ueditor.getUEContent();
             this.$http
-                .post("api/Back_MessageManage/MessageAdd",
-                  qs.stringify({
-                    image: this.getList.Image,
-                    title: this.getList.Title,
-                    content: encodeURIComponent(content),
-                    Token: getCookie("token"),
-                  })
-                )
-                .then(
-                  function (response) {
+              .get("api/Back_PlatManage/BannerAdd", {
+                params: {
+                  image: this.getList.Image,
+                  jump: this.getList.jump,
+                  position: this.getList.position,
+                  id: window.location.href.split("id=")[1],
+                  Token: getCookie("token"),
+                  Url:this.getList.Url,
+                }
+              })
+              .then(
+                function (response) {
+                  loading.close();
+                  var status = response.data.Status;
+                  if (status === 1) {
+                    this.$message({
+                      showClose: true,
+                      type: "success",
+                      message: response.data.Result
+                    });
+                    setTimeout(() => {
+                      this.$router.push({
+                        path: "/BannerList"
+                      });
+                    }, 1500);
+                  } else if (status === 40001) {
+                    this.$message({
+                      showClose: true,
+                      type: "warning",
+                      message: response.data.Result
+                    });
+                    setTimeout(() => {
+                      this.$router.push({
+                        path: "/login"
+                      });
+                    }, 1500);
+                  } else {
                     loading.close();
-                    var status = response.data.Status;
-                    if (status === 1) {
-                      this.$message({
-                        showClose: true,
-                        type: "success",
-                        message: response.data.Result
-                      });
-                      setTimeout(() => {
-                        this.$router.push({
-                          path: "/MessageList"
-                        });
-                      }, 1500);
-                    } else if (status === 40001) {
-                      this.$message({
-                        showClose: true,
-                        type: "warning",
-                        message: response.data.Result
-                      });
-                      setTimeout(() => {
-                        this.$router.push({
-                          path: "/login"
-                        });
-                      }, 1500);
-                    } else {
-                      loading.close();
-                      this.$message({
-                        showClose: true,
-                        type: "warning",
-                        message: response.data.Result
-                      });
-                    }
-                  }.bind(this)
-                )
-                // 请求error
-                .catch(
-                  function (error) {
-                    loading.close();
-                    // this.$notify.error({
-                    //   title: "错误",
-                    //   message: "错误：请检查网络"
-                    // });
-                  }.bind(this)
-                );
+                    this.$message({
+                      showClose: true,
+                      type: "warning",
+                      message: response.data.Result
+                    });
+                  }
+                }.bind(this)
+              )
+              // 请求error
+              .catch(
+                function (error) {
+                  loading.close();
+                  this.$notify.error({
+                    title: "错误",
+                    message: "错误：请检查网络"
+                  });
+                }.bind(this)
+              );
           } else {
             console.log('error submit!!');
             return false;
@@ -173,10 +184,6 @@
         this.editForm = this.list[index]
         this.imageUrl = this.mainurl + this.list[index].Logo
         this.dialogFormVisible = true
-      },
-      handleCurrentChange(val) {
-        this.pageIndex = val;
-        this.getInfo();
       },
       handleAdd(index, row) {
         this.$router.push("/AddMessage");
