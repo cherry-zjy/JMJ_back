@@ -49,7 +49,6 @@
       };
       return {
         getList: [],
-        dialogFormVisible: false,
         imageUrl: '',
         mainurl: '',
         action: '',
@@ -157,10 +156,10 @@
                 .catch(
                   function (error) {
                     loading.close();
-                    // this.$notify.error({
-                    //   title: "错误",
-                    //   message: "错误：请检查网络"
-                    // });
+                    this.$notify.error({
+                      title: "错误",
+                      message: "错误：请检查网络"
+                    });
                   }.bind(this)
                 );
           } else {
@@ -168,11 +167,6 @@
             return false;
           }
         });
-      },
-      editimg(index) {
-        this.editForm = this.list[index]
-        this.imageUrl = this.mainurl + this.list[index].Logo
-        this.dialogFormVisible = true
       },
       handleCurrentChange(val) {
         this.pageIndex = val;
