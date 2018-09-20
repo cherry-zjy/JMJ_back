@@ -26,6 +26,9 @@ var EditMessage = resolve => require(['../components/message/EditMessage.vue'], 
 var BannerList = resolve => require(['../components/banner/BannerList.vue'], resolve)
 var AddBanner = resolve => require(['../components/banner/AddBanner.vue'], resolve)
 var EditBanner = resolve => require(['../components/banner/EditBanner.vue'], resolve)
+//抵用券管理
+var PreferentialList = resolve => require(['../components/Preferentia/PreferentialList.vue'], resolve)
+var AddPreferential = resolve => require(['../components/Preferentia/AddPreferential.vue'], resolve)
 
 
 // 懒加载方式，当路由被访问的时候才加载对应组件
@@ -66,6 +69,9 @@ export default new Router({
         { path: '/BannerList', component: BannerList, name: 'Banner列表' }, 
         { path: '/AddBanner', component: AddBanner, name: '添加Banner' }, 
         { path: '/EditBanner/:id', component: EditBanner, name: '修改Banner' }, 
+        //抵用券管理
+        { path: '/PreferentialList', component: PreferentialList, name: '优惠券列表' }, 
+        { path: '/AddPreferential', component: AddPreferential, name: '添加优惠券' }, 
     ]
     },
   ]

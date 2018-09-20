@@ -76,7 +76,7 @@
             trigger: 'blur'
           }, ],
         },
-        find:false
+        find: false
       };
     },
     components: {
@@ -183,61 +183,61 @@
             });
             var content = this.$refs.ueditor.getUEContent();
             this.$http
-                .post("api/Back_MessageManage/MessageEdit",
-                  qs.stringify({
-                    image: this.getList.Image,
-                    title: this.getList.Title,
-                    content: encodeURIComponent(content),
-                    id: window.location.href.split("id=")[1],
-                    Token: getCookie("token"),
-                  })
-                )
-                .then(
-                  function (response) {
+              .post("api/Back_MessageManage/MessageEdit",
+                qs.stringify({
+                  image: this.getList.Image,
+                  title: this.getList.Title,
+                  content: encodeURIComponent(content),
+                  id: window.location.href.split("id=")[1],
+                  Token: getCookie("token"),
+                })
+              )
+              .then(
+                function (response) {
+                  loading.close();
+                  var status = response.data.Status;
+                  if (status === 1) {
+                    this.$message({
+                      showClose: true,
+                      type: "success",
+                      message: response.data.Result
+                    });
+                    setTimeout(() => {
+                      this.$router.push({
+                        path: "/MessageList"
+                      });
+                    }, 1500);
+                  } else if (status === 40001) {
+                    this.$message({
+                      showClose: true,
+                      type: "warning",
+                      message: response.data.Result
+                    });
+                    setTimeout(() => {
+                      this.$router.push({
+                        path: "/login"
+                      });
+                    }, 1500);
+                  } else {
                     loading.close();
-                    var status = response.data.Status;
-                    if (status === 1) {
-                      this.$message({
-                        showClose: true,
-                        type: "success",
-                        message: response.data.Result
-                      });
-                      setTimeout(() => {
-                        this.$router.push({
-                          path: "/MessageList"
-                        });
-                      }, 1500);
-                    } else if (status === 40001) {
-                      this.$message({
-                        showClose: true,
-                        type: "warning",
-                        message: response.data.Result
-                      });
-                      setTimeout(() => {
-                        this.$router.push({
-                          path: "/login"
-                        });
-                      }, 1500);
-                    } else {
-                      loading.close();
-                      this.$message({
-                        showClose: true,
-                        type: "warning",
-                        message: response.data.Result
-                      });
-                    }
-                  }.bind(this)
-                )
-                // 请求error
-                .catch(
-                  function (error) {
-                    loading.close();
-                    // this.$notify.error({
-                    //   title: "错误",
-                    //   message: "错误：请检查网络"
-                    // });
-                  }.bind(this)
-                );
+                    this.$message({
+                      showClose: true,
+                      type: "warning",
+                      message: response.data.Result
+                    });
+                  }
+                }.bind(this)
+              )
+              // 请求error
+              .catch(
+                function (error) {
+                  loading.close();
+                  this.$notify.error({
+                    title: "错误",
+                    message: "错误：请检查网络"
+                  });
+                }.bind(this)
+              );
           } else {
             console.log('error submit!!');
             return false;

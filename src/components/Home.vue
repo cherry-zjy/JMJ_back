@@ -6,7 +6,7 @@
         <!-- <div style="float: left;height: 60px;">
           <img src="../assets/logo.png" style="height:50px;width:50px;margin:5px 10px;" alt="">
         </div> -->
-        <div v-if="welcome" style="float: left;height: 60px;color:#fff">欢迎来到装师通后台管理系统</div>
+        <div v-if="welcome" style="float: left;height: 60px;color:#fff">欢迎来到极美家后台管理系统</div>
         <div style="float: right;color:#fff; font-size: 12px;margin-right:50px;">
           <el-dropdown>
             <i class="el-icon-setting" style="margin-right: 15px;color:#fff;"></i>
@@ -51,7 +51,7 @@
           <router-view></router-view>
         </el-main>
         <el-main v-else>
-          <h2>装师通后台管理</h2>
+          <h2>极美家后台管理</h2>
         </el-main>
       </el-container>
     </el-container>
