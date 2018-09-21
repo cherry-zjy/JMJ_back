@@ -33,6 +33,7 @@
     },
     mounted() {
       this.id = window.location.href.split("id=")[1]
+      this.getInfo()
     },
     methods: {
       getInfo() {
@@ -48,8 +49,8 @@
               sear: -1,
               classificationID:-1,
               Token: getCookie("token"),
-              pageIndex: this.pageIndex,
-              pageSize: this.pageSize,
+              pageIndex: 1,
+              pageSize: 999,
             }
           })
           .then(
