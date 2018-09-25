@@ -39,7 +39,12 @@ var AddPreferential = resolve => require(['../components/Preferentia/AddPreferen
 var OrdinaryProduct = resolve => require(['../components/Product/OrdinaryProduct.vue'], resolve)
 var AddOrdinaryProduct = resolve => require(['../components/Product/AddOrdinaryProduct.vue'], resolve)
 var EditOrdinaryProduct = resolve => require(['../components/Product/EditOrdinaryProduct.vue'], resolve)
+var OrdinaryComment = resolve => require(['../components/Product/OrdinaryComment.vue'], resolve)
 
+var Dailyorderlist = resolve => require(['../components/Product/Dailyorderlist.vue'], resolve)
+var AddDaily = resolve => require(['../components/Product/AddDaily.vue'], resolve)
+var EditDaily = resolve => require(['../components/Product/EditDaily.vue'], resolve)
+var DailyComment = resolve => require(['../components/Product/DailyComment.vue'], resolve)
 // 懒加载方式，当路由被访问的时候才加载对应组件
 Vue.use(Router)
 
@@ -87,9 +92,15 @@ export default new Router({
         { path: '/PreferentialList', component: PreferentialList, name: '优惠券列表' }, 
         { path: '/AddPreferential', component: AddPreferential, name: '添加优惠券' },
         //商品管理 
-        { path: '/OrdinaryProduct', component: OrdinaryProduct, name: '普通商品列表' }, 
+        { path: '/CommonOrderList', component: OrdinaryProduct, name: '普通商品列表' }, 
         { path: '/AddOrdinaryProduct', component: AddOrdinaryProduct, name: '添加普通商品' }, 
         { path: '/EditOrdinaryProduct/:id', component: EditOrdinaryProduct, name: '修改普通商品' }, 
+        { path: '/OrdinaryComment/:id', component: OrdinaryComment, name: '普通商品评价' }, 
+
+        { path: '/DailyList', component: Dailyorderlist, name: '每日团购' }, 
+        { path: '/AddDaily', component: AddDaily, name: '新增每日团购' }, 
+        { path: '/EditDaily/:id', component: EditDaily, name: '修改每日团购' }, 
+        { path: '/DailyComment/:id', component: DailyComment, name: '每日团购评价' }, 
         
       ]
     },
