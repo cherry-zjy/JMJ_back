@@ -2,8 +2,8 @@
   <div>
     <el-breadcrumb separator="|" class="crumb">
       <el-breadcrumb-item :to="{ path: '/' }">后台管理</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/OrdinaryProduct' }">普通商品列表</el-breadcrumb-item>
-      <el-breadcrumb-item>修改普通商品</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/DailyList' }">每日团购列表</el-breadcrumb-item>
+      <el-breadcrumb-item>修改每日团购</el-breadcrumb-item>
     </el-breadcrumb>
 
     <el-main>
@@ -14,14 +14,15 @@
             <el-form-item label="商品名称" prop="prodName">
               <el-input v-model="getList.prodName"></el-input>
             </el-form-item>
+            <el-form-item label="商品原价" prop="TeamBuyingPrice">
+              <el-input v-model="getList.TeamBuyingPrice" type="number"></el-input>
+            </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="商品形式">
               <el-input disabled="disabled" value="普通商品"></el-input>
             </el-form-item>
-            <!-- <el-form-item label="商品原价" prop="Number">
-              <el-input v-model="getList.Number"></el-input>
-            </el-form-item> -->
+            
           </el-col>
         </el-row>
         <el-row>
@@ -317,7 +318,7 @@
             message: '请输入商品名称',
             trigger: 'blur'
           }, ],
-          Number: [{
+          TeamBuyingPrice: [{
             required: true,
             message: '请输入商品原价',
             trigger: 'blur'
@@ -758,8 +759,7 @@
                   token: getCookie("token"),
                   ID:window.location.href.split("id=")[1],
                   Name: this.getList.prodName,
-                  // Number: this.getList.Number,
-                  TeamBuyingPrice: -1,
+                  TeamBuyingPrice: this.getList.TeamBuyingPrice,
                   Classification: this.getList.classificationID,
                   ClassificationSecond: this.getList.classificationSecondID,
                   specs: this.demospce,

@@ -92,7 +92,7 @@ export default new Router({
         { path: '/PreferentialList', component: PreferentialList, name: '优惠券列表' }, 
         { path: '/AddPreferential', component: AddPreferential, name: '添加优惠券' },
         //商品管理 
-        { path: '/CommonOrderList', component: OrdinaryProduct, name: '普通商品列表' }, 
+        { path: '/OrdinaryProduct', component: OrdinaryProduct, name: '普通商品列表' }, 
         { path: '/AddOrdinaryProduct', component: AddOrdinaryProduct, name: '添加普通商品' }, 
         { path: '/EditOrdinaryProduct/:id', component: EditOrdinaryProduct, name: '修改普通商品' }, 
         { path: '/OrdinaryComment/:id', component: OrdinaryComment, name: '普通商品评价' }, 
