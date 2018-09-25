@@ -3,7 +3,7 @@
     <el-breadcrumb separator="|" class="crumb">
       <el-breadcrumb-item :to="{ path: '/' }">后台管理</el-breadcrumb-item>
       <el-breadcrumb-item :to="{ path: '/OrdinaryProduct' }">普通商品列表</el-breadcrumb-item>
-      <el-breadcrumb-item>新增普通商品</el-breadcrumb-item>
+      <el-breadcrumb-item>修改普通商品</el-breadcrumb-item>
     </el-breadcrumb>
 
     <el-main>
@@ -11,17 +11,17 @@
         <p class="title">商品信息</p>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="商品名称" prop="Name">
-              <el-input v-model="getList.Name"></el-input>
-            </el-form-item>
-            <el-form-item label="商品形式">
-              <el-input disabled="disabled" value="普通商品"></el-input>
+            <el-form-item label="商品名称" prop="prodName">
+              <el-input v-model="getList.prodName"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="商品原价" prop="Number">
-              <el-input v-model="getList.Number"></el-input>
+            <el-form-item label="商品形式">
+              <el-input disabled="disabled" value="普通商品"></el-input>
             </el-form-item>
+            <!-- <el-form-item label="商品原价" prop="Number">
+              <el-input v-model="getList.Number"></el-input>
+            </el-form-item> -->
           </el-col>
         </el-row>
         <el-row>
@@ -31,7 +31,7 @@
                 <el-option v-for="item in classificationList" :key="item.ID" :label="item.Name" :value="item.ID">
                 </el-option>
               </el-select>
-              <el-select v-model="getList.ClassificationSecondID" placeholder="类型">
+              <el-select v-model="getList.classificationSecondID" placeholder="类型">
                 <el-option v-for="item in ClassificationSecondList" :key="item.ID" :label="item.name" :value="item.ID">
                 </el-option>
               </el-select>
@@ -49,27 +49,27 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="二级总名称" prop="SpecTypeSecondName">
-              <el-input v-model="getList.SpecTypeSecondName"></el-input>
+            <el-form-item label="二级总名称" prop="SpecTySecondName">
+              <el-input v-model="getList.SpecTySecondName"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <div v-for="(item,index) in spce" :key="index">
           <p class="tabletitle">
-            {{item.value}}
+            {{item.SpeName}}
             <el-button size="mini" type="warning" @click="handleAdd(index)" style="float:right">新增二级规格</el-button>
             <el-button size="mini" type="danger" plain icon="el-icon-delete" @click="DelOne(index)">删除</el-button>
           </p>
-          <el-table style="width: 100%" :border='true' :data="item.children">
-            <el-table-column label="二级规格名称" prop="SecondSpecName">
+          <el-table style="width: 100%" :border='true' :data="item.specSecond">
+            <el-table-column label="二级规格名称" prop="SpecName">
             </el-table-column>
             <el-table-column label="库存" prop="Stock">
             </el-table-column>
             <el-table-column label="价格" prop="Price">
             </el-table-column>
-            <el-table-column label="商品编号" prop="prodNumber">
+            <el-table-column label="商品编号" prop="ProdNumber">
             </el-table-column>
-            <el-table-column label="商品条形码" prop="BarCode">
+            <el-table-column label="商品条形码" prop="barCode">
             </el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
@@ -91,14 +91,14 @@
               <el-input v-model="getList.Salesvolume" disabled="disabled" v-if="!getList.Isyushou"></el-input>
               <el-input v-model="getList.Salesvolume" v-if="getList.Isyushou"></el-input>
             </el-form-item> -->
-            <el-form-item label="身份验证">
+            <!-- <el-form-item label="身份验证">
               <el-switch v-model="getList.IsOutSourcing"></el-switch>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="快递运费">
-              <el-switch v-model="getList.yunfei"></el-switch>
-              <div v-if="getList.yunfei" style="display:inline-block">
+              <el-switch v-model="yunfei"></el-switch>
+              <div v-if="yunfei" style="display:inline-block">
                 <el-input v-model="getList.ExpressWay" style="width:120px" type="number"></el-input>元
-                <el-select v-model="getList.FreightNameID" placeholder="运费模板">
+                <el-select v-model="getList.FreightFormworkID" placeholder="运费模板">
                   <el-option v-for="item in mubanList" :key="item.ID" :label="item.Name" :value="item.ID">
                   </el-option>
                 </el-select>
@@ -118,7 +118,7 @@
           <el-col :span="12">
             <el-form-item prop="bannerimg" label="轮播顶图">
               <el-upload class="upload-demo" :action="action" :on-preview="handlePreview" :on-remove="bannerhandleRemove"
-                :file-list="addbannerimg" limit="6" list-type="picture-card" :on-success="bannerhandleAvatarSuccess"
+                :file-list="bannerimg" :limit="6" list-type="picture-card" :on-success="bannerhandleAvatarSuccess"
                 :before-upload="beforeAvatarUpload">
                 <i class="el-icon-plus"></i>
                 <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2MB,最多可上传6张</div>
@@ -154,7 +154,7 @@
       <el-form :model="AddForm" :rules="addrules" ref="AddForm" label-width="150px" class="demo-editForm"
         label-position="left">
         <el-form-item label="一级规格名称" prop="value">
-          <el-input v-model="AddForm.value"></el-input>
+          <el-input v-model="AddForm.SpeName"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -166,8 +166,8 @@
     <el-dialog title="新增二级规格名称" :visible.sync="dialogFormVisible" width="50%">
       <el-form :model="editForm" :rules="listrules" ref="editForm" label-width="150px" class="demo-editForm"
         label-position="left">
-        <el-form-item label="二级规格名称" prop="SecondSpecName">
-          <el-input v-model="editForm.SecondSpecName"></el-input>
+        <el-form-item label="二级规格名称" prop="SpecName">
+          <el-input v-model="editForm.SpecName"></el-input>
         </el-form-item>
         <el-form-item label="库存" prop="Stock">
           <el-input v-model="editForm.Stock"></el-input>
@@ -175,11 +175,11 @@
         <el-form-item label="价格" prop="Price">
           <el-input v-model="editForm.Price" type="number"></el-input>
         </el-form-item>
-        <el-form-item label="商品编号" prop="prodNumber">
-          <el-input v-model="editForm.prodNumber"></el-input>
+        <el-form-item label="商品编号" prop="ProdNumber">
+          <el-input v-model="editForm.ProdNumber"></el-input>
         </el-form-item>
-        <el-form-item label="商品条形码" prop="BarCode">
-          <el-input v-model="editForm.BarCode"></el-input>
+        <el-form-item label="商品条形码" prop="barCode">
+          <el-input v-model="editForm.barCode"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -216,8 +216,7 @@
         }
       };
       var checkClassification = (rule, value, callback) => {
-        console.log(this.getList.ClassificationSecondID)
-        if (this.getList.ClassificationSecondID == '' || this.getList.ClassificationSecondID == undefined) {
+        if (this.getList.classificationSecondID == '' || this.getList.classificationSecondID == undefined) {
           callback(new Error("请选择商品分类"));
         } else {
           callback();
@@ -228,7 +227,7 @@
           initialFrameWidth: null,
           initialFrameHeight: 500
         },
-        defaultMsg: "这里是初始化内容",
+        defaultMsg: "请输入初始化内容",
         dialogFormVisible: false,
         dialogFormVisible1: false,
         dialogVisible: false,
@@ -247,8 +246,8 @@
         demo: [], //接口规格暂存参数
         demospce: [], //接口规格参数
         // spce: [{
-        //   value: '一级规格名称1',
-        //   children: [{
+        //   SpeName: '一级规格名称1',
+        //   specSecond: [{
         //     SecondSpecName: '二级规格名称1',
         //     Stock: '库存',
         //     Price: '价格',
@@ -263,14 +262,16 @@
         //   }],
         // }], //一级规格
         getList: {
-          IsOutSourcing: false
+          IsOutSourcing: false,
+          // Detail:'',
         },
+        yunfei: false,
         mainurl: '',
         editForm: [],
         addindex: '', //添加二级规格的index
         AddForm: {
-          value: '',
-          children: []
+          SpeName: '',
+          specSecond: []
         },
         addrules: {
           value: [{
@@ -290,17 +291,17 @@
             message: '请输入价格',
             trigger: 'blur'
           }],
-          BarCode: [{
+          barCode: [{
             required: true,
             message: '请输入商品条形码',
             trigger: 'blur'
           }],
-          prodNumber: [{
+          ProdNumber: [{
             required: true,
             message: '请输入商品编号',
             trigger: 'blur'
           }],
-          SecondSpecName: [{
+          SpecName: [{
             required: true,
             message: '请输入二级规格名称',
             trigger: 'blur'
@@ -311,7 +312,7 @@
             required: true,
             validator: checkdefaultMsg
           }],
-          Name: [{
+          prodName: [{
             required: true,
             message: '请输入商品名称',
             trigger: 'blur'
@@ -325,14 +326,14 @@
             required: true,
             validator: checkClassification
           }],
-          SpecTypeSecondName: [{
+          SpecTySecondName: [{
             required: true,
-            message: '请输入一级总名称',
+            message: '请输入二级总名称',
             trigger: 'blur'
           }, ],
           SpecTypeName: [{
             required: true,
-            message: '请输入二级总名称',
+            message: '请输入一级总名称',
             trigger: 'blur'
           }, ],
           Introduce: [{
@@ -374,8 +375,81 @@
       this.action = this.mainurl + "/api/UploadPhotos/UpdateForImage";
       this.getType();
       this.getmuban();
+      this.getInfo();
     },
+
     methods: {
+      getInfo() {
+        const loading = this.$loading({
+          lock: true,
+          text: "Loading",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.7)"
+        });
+        this.$http
+          .get("api/Back_ProductManage/ProductEditDetail", {
+            params: {
+              type: 1,
+              id: window.location.href.split("id=")[1],
+              Token: getCookie("token"),
+            }
+          })
+          .then(
+            function (response) {
+              loading.close();
+              var status = response.data.Status;
+              if (status === 1) {
+                this.getList = response.data.Result;
+                this.changeclassification()
+                this.imageUrl = mainurl + response.data.Result.ProdPoster;
+                // var imgarr = Array();
+                var imgarr = response.data.Result.Image.split(',')
+                console.log(imgarr)
+                for (let i = 0; i < imgarr.length; i++) {
+                  let arr = Array();
+                  arr = {
+                    url: this.mainurl + imgarr[i]
+                  }
+                  this.bannerimg.push(arr)
+                  this.addbannerimg.push(imgarr[i])
+                }
+                this.yunfei = response.data.Result.ExpressWay == 0 ? false : true
+                this.spce = response.data.Result.specification;
+                this.defaultMsg = decodeURIComponent(response.data.Result.Detail);
+                console.log(this.defaultMsg + '111')
+              } else if (status === 40001) {
+                this.$message({
+                  showClose: true,
+                  type: "warning",
+                  message: response.data.Result
+                });
+                setTimeout(() => {
+                  this.$router.push({
+                    path: "/login"
+                  });
+                }, 1500);
+              } else {
+                loading.close();
+                this.$message({
+                  showClose: true,
+                  type: "warning",
+                  message: response.data.Result
+                });
+              }
+            }.bind(this)
+          )
+          // 请求error
+          .catch(
+            function (error) {
+              console.log(error)
+              loading.close();
+              this.$notify.error({
+                title: "错误",
+                message: "错误：请检查网络"
+              });
+            }.bind(this)
+          );
+      },
       getType() {
         const loading = this.$loading({
           lock: true,
@@ -548,6 +622,8 @@
       },
       bannerhandleAvatarSuccess(res, file) {
         this.addbannerimg.push(res.Result[0])
+        console.log(this.addbannerimg)
+        console.log(this.bannerimg)
       },
       //海报大图
       handleAvatarSuccess(res, file) {
@@ -556,11 +632,11 @@
       },
       //批量上传图片
       bannerhandleRemove(file, fileList) {
-        console.log(file)
         //获取删除的图片地址，在addbannerimg中对应删除
-        let file1 = file.response.Result
+        console.log(file)
+        let file1 = file.url
         for (let i = 0; i < this.addbannerimg.length; i++) {
-          if (this.addbannerimg[i] == file1) {
+          if (this.mainurl + this.addbannerimg[i] == file1) {
             this.addbannerimg.splice(i, 1)
           }
         }
@@ -576,12 +652,12 @@
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            this.spce[this.addindex].children.push({
-              SecondSpecName: this.editForm.SecondSpecName,
+            this.spce[this.addindex].specSecond.push({
+              SpecName: this.editForm.SpecName,
               Stock: this.editForm.Stock,
               Price: this.editForm.Price,
-              BarCode: this.editForm.BarCode,
-              prodNumber: this.editForm.prodNumber,
+              barCode: this.editForm.barCode,
+              ProdNumber: this.editForm.ProdNumber,
             });
             this.dialogFormVisible = false
           } else {
@@ -598,8 +674,8 @@
             console.log(this.spce)
             this.dialogFormVisible1 = false
             this.AddForm = {
-              value: '',
-              children: []
+              SpeName: '',
+              specSecond: []
             }
           } else {
             console.log('error submit!!');
@@ -623,7 +699,9 @@
 
       },
       Del(index) {
-        this.spce[this.addindex].children.splice(index, 1)
+        console.log(this.spce)
+        // console.log(this.addindex)
+        this.spce[index].specSecond.splice(index, 1)
       },
       handleAdd(index) {
         this.editForm = [];
@@ -652,13 +730,13 @@
               var Price = '';
               var Stock = '';
               var BarCode = '';
-              this.demo.SpecName = this.spce[i].value
-              for (let y = 0; y < this.spce[i].children.length; y++) {
-                SecondSpecName += "" + this.spce[i].children[y].SecondSpecName + ",";
-                prodNumber += "" + this.spce[i].children[y].prodNumber + ",";
-                Price += "" + this.spce[i].children[y].Price + ",";
-                Stock += "" + this.spce[i].children[y].Stock + ",";
-                BarCode += "" + this.spce[i].children[y].BarCode + ",";
+              this.demo.SpecName = this.spce[i].SpeName
+              for (let y = 0; y < this.spce[i].specSecond.length; y++) {
+                SecondSpecName += "" + this.spce[i].specSecond[y].SpecName + ",";
+                prodNumber += "" + this.spce[i].specSecond[y].ProdNumber + ",";
+                Price += "" + this.spce[i].specSecond[y].Price + ",";
+                Stock += "" + this.spce[i].specSecond[y].Stock + ",";
+                BarCode += "" + this.spce[i].specSecond[y].barCode + ",";
               }
               this.demo.SecondSpecName = SecondSpecName.substring(0, SecondSpecName.length - 1)
               this.demo.prodNumber = prodNumber.substring(0, prodNumber.length - 1)
@@ -675,24 +753,31 @@
               background: "rgba(0, 0, 0, 0.7)"
             });
             this.$http
-              .post("api/Back_ProductManage/CommonProductAdd",
+              .post("api/Back_ProductManage/ProductEdit",
                 qs.stringify({
                   token: getCookie("token"),
-                  Name: this.getList.Name,
-                  Number: this.getList.Number,
-                  ClassificationSecondID: this.getList.ClassificationSecondID,
+                  ID:window.location.href.split("id=")[1],
+                  Name: this.getList.prodName,
+                  // Number: this.getList.Number,
+                  TeamBuyingPrice: -1,
+                  Classification: this.getList.classificationID,
+                  ClassificationSecond: this.getList.classificationSecondID,
                   specs: this.demospce,
                   SpecTypeName: this.getList.SpecTypeName,
-                  SpecTypeSecondName: this.getList.SpecTypeSecondName,
+                  SpecTypeSecondName: this.getList.SpecTySecondName,
                   Introduce: this.getList.Introduce,
                   IsOutSourcing: this.getList.IsOutSourcing,
                   Salesvolume: this.getList.Salesvolume,
                   Commission: this.getList.Commission,
-                  ExpressWay: this.getList.yunfei ? this.getList.ExpressWay : 0,
-                  FreightNameID: this.getList.yunfei ? this.getList.FreightNameID : -1,
+                  ExpressWay: this.yunfei ? this.getList.ExpressWay : 0,
+                  FreightNameID: this.yunfei ? this.getList.FreightFormworkID : -1,
                   Image: banner,
                   ProdPoster: this.getList.ProdPoster,
                   Detail: encodeURIComponent(content),
+                  OutDiscount: -1,
+                  Ntegrate: -1,
+                  NumOfMem: -1,
+                  SignTimes: -1
                 })
               )
               .then(

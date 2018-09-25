@@ -22,16 +22,16 @@
 
     <!-- table 内容 -->
     <el-table :data="list" style="width: 100%" :border='true'>
-      <el-table-column label="商品名称" prop="Name">
+      <el-table-column label="商品名称" prop="prodName">
       </el-table-column>
-      <el-table-column label="缩略图" prop="Name">
+      <el-table-column label="缩略图" prop="logo">
         <template slot-scope="scope">
-          <img :src="mainurl+scope.row.Image" width="100" />
+          <img :src="mainurl+scope.row.logo" width="100" />
         </template>
       </el-table-column>
-      <el-table-column label="商品价格" prop="Name">
+      <el-table-column label="商品价格" prop="price">
       </el-table-column>
-      <el-table-column label="商品佣金" prop="Name">
+      <el-table-column label="商品佣金" prop="commission">
       </el-table-column>
       <el-table-column label="商品评价" prop="Name">
         <template slot-scope="scope">
@@ -91,7 +91,7 @@
         mainurl: '',
         action: '',
         pageIndex: 1,
-        pageSize: 12,
+        pageSize: 8,
         pageCount: 1,
         sear: '',
         listrules: {

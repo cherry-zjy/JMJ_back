@@ -14,14 +14,14 @@
             <el-form-item label="商品名称" prop="Name">
               <el-input v-model="getList.Name"></el-input>
             </el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item label="商品形式">
               <el-input disabled="disabled" value="普通商品"></el-input>
             </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="商品原价" prop="Number">
+            <!-- <el-form-item label="商品原价" prop="Number">
               <el-input v-model="getList.Number"></el-input>
-            </el-form-item>
+            </el-form-item> -->
           </el-col>
         </el-row>
         <el-row>
@@ -145,7 +145,7 @@
           <UEditor :defaultMsg='defaultMsg' :config='config' ref="ueditor"></UEditor>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitFormwork('getList')">修改</el-button>
+          <el-button type="primary" @click="submitFormwork('getList')">新增</el-button>
         </el-form-item>
       </el-form>
     </el-main>
@@ -316,23 +316,23 @@
             message: '请输入商品名称',
             trigger: 'blur'
           }, ],
-          Number: [{
-            required: true,
-            message: '请输入商品原价',
-            trigger: 'blur'
-          }, ],
+          // Number: [{
+          //   required: true,
+          //   message: '请输入商品原价',
+          //   trigger: 'blur'
+          // }, ],
           ClassificationSecondID: [{
             required: true,
             validator: checkClassification
           }],
           SpecTypeSecondName: [{
             required: true,
-            message: '请输入一级总名称',
+            message: '请输入二级总名称',
             trigger: 'blur'
           }, ],
           SpecTypeName: [{
             required: true,
-            message: '请输入二级总名称',
+            message: '请输入一级总名称',
             trigger: 'blur'
           }, ],
           Introduce: [{
@@ -576,6 +576,7 @@
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
+            console.log(this.spce)
             this.spce[this.addindex].children.push({
               SecondSpecName: this.editForm.SecondSpecName,
               Stock: this.editForm.Stock,
@@ -623,7 +624,7 @@
 
       },
       Del(index) {
-        this.spce[this.addindex].children.splice(index, 1)
+        this.spce[index].children.splice(index, 1)
       },
       handleAdd(index) {
         this.editForm = [];
@@ -631,7 +632,10 @@
         this.dialogFormVisible = true
       },
       handleAddOne() {
-        this.AddForm = []
+        this.AddForm = {
+              value: '',
+              children: []
+            }
         this.dialogFormVisible1 = true
       },
       submitFormwork(formName) {
@@ -679,7 +683,7 @@
                 qs.stringify({
                   token: getCookie("token"),
                   Name: this.getList.Name,
-                  Number: this.getList.Number,
+                  // Number: this.getList.Number,
                   ClassificationSecondID: this.getList.ClassificationSecondID,
                   specs: this.demospce,
                   SpecTypeName: this.getList.SpecTypeName,

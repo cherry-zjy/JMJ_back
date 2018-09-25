@@ -89,7 +89,7 @@ export default new Router({
         //商品管理 
         { path: '/OrdinaryProduct', component: OrdinaryProduct, name: '普通商品列表' }, 
         { path: '/AddOrdinaryProduct', component: AddOrdinaryProduct, name: '添加普通商品' }, 
-        { path: '/EditOrdinaryProduct', component: EditOrdinaryProduct, name: '修改普通商品' }, 
+        { path: '/EditOrdinaryProduct/:id', component: EditOrdinaryProduct, name: '修改普通商品' }, 
         
       ]
     },
