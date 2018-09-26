@@ -59,7 +59,11 @@ var EditOnePrice = resolve => require(['../components/Product/EditOnePrice.vue']
 var OnePriceComment = resolve => require(['../components/Product/OnePriceComment.vue'], resolve)
 //资金明细
 var FinancementList = resolve => require(['../components/Financement/FinancementList.vue'], resolve)
-
+//订单管理
+var CommonOrderList = resolve => require(['../components/CommonOrder/CommonOrderList.vue'], resolve)
+var WeekOrderList = resolve => require(['../components/CommonOrder/WeekOrderList.vue'], resolve)
+var Dailyorderlist = resolve => require(['../components/CommonOrder/Dailyorderlist.vue'], resolve)
+var OnePriceorderlist = resolve => require(['../components/CommonOrder/OnePriceorderlist.vue'], resolve)
 
 // 懒加载方式，当路由被访问的时候才加载对应组件
 Vue.use(Router)
@@ -131,7 +135,11 @@ export default new Router({
         { path: '/AddOnePrice', component: AddOnePrice, name: '新增一口价' }, 
         { path: '/EditOnePrice/:id', component: EditOnePrice, name: '修改一口价' }, 
         { path: '/OnePriceComment/:id', component: OnePriceComment, name: '一口价评价' }, 
-        
+        //订单管理
+        { path: '/CommonOrderList', component: CommonOrderList, name: '普通商品订单' }, 
+        { path: '/WeekOrderList', component: WeekOrderList, name: '免单商品订单' }, 
+        { path: '/Dailyorderlist', component: Dailyorderlist, name: '团购商品订单' }, 
+        { path: '/OnePriceorderlist', component: OnePriceorderlist, name: '一口价商品订单' }, 
       ]
     },
   ]

@@ -1,0 +1,419 @@
+<template>
+  <div>
+    <el-breadcrumb separator="|" class="crumb">
+      <el-breadcrumb-item :to="{ path: '/' }">后台管理</el-breadcrumb-item>
+      <el-breadcrumb-item>普通商品列表</el-breadcrumb-item>
+    </el-breadcrumb>
+
+    <!--检索条-->
+    <el-col class="toolbar" style="padding-top: 15px;margin-bottom:20px">
+      <el-input v-model="orderNo" placeholder="订单号" prefix-icon="el-icon-search" style="width:200px"></el-input>
+      <el-input v-model="name" placeholder="用户名" prefix-icon="el-icon-search" style="width:200px"></el-input>
+      <el-select v-model="type" placeholder="订单状态">
+        <el-option v-for="item in typeList" :key="item.ID" :label="item.Name" :value="item.ID">
+        </el-option>
+      </el-select>
+      <el-button type="primary" @click="pageIndex = 1;getInfo()">查询</el-button>
+    </el-col>
+
+    <!-- table 内容 -->
+    <el-table :data="list" style="width: 100%" :border='true'>
+      <el-table-column label="订单编号" prop="OrderNo">
+      </el-table-column>
+      <el-table-column label="订单完成时间" prop="FinishTime">
+      </el-table-column>
+      <el-table-column label="商品名称" prop="prdName">
+      </el-table-column>
+      <el-table-column label="用户名" prop="userName">
+      </el-table-column>
+      <el-table-column label="收货号码" prop="Phone">
+      </el-table-column>
+      <el-table-column label="收货地址" prop="Adress">
+      </el-table-column>
+      <el-table-column label="付款金额" prop="Price">
+      </el-table-column>
+      <el-table-column label="订单状态" prop="type" :formatter="Type">
+      </el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button size="mini" type="primary" @click="handleEdit(scope.$index)">查看</el-button>
+          <el-button size="mini" type="warning" @click="fahuo(scope.row.ID)">发货</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <!-- 分页 -->
+    <div class="block">
+      <el-pagination @current-change="handleCurrentChange" layout="prev, pager, next,jumper" :page-count="pageCount">
+      </el-pagination>
+    </div>
+
+    <!--模态框-->
+    <el-dialog title="详情" :visible.sync="FormVisible">
+      <el-form :model="editForm" label-width="120px" ref="editForm">
+        <el-row>
+          <el-col :span="12">
+            <p class="title">订单信息</p>
+            <el-form-item label="订单号">
+              {{editForm.orderNo}}
+            </el-form-item>
+            <el-form-item label="用户名">
+              {{editForm.consigneeName}}
+            </el-form-item>
+            <el-form-item label="购买信息">
+              {{editForm.BuyMessage}}
+            </el-form-item>
+            <el-form-item label="商品金额">
+              {{editForm.prodPrice}}
+            </el-form-item>
+            <el-form-item label="抵用券">
+              {{editForm.zheKou}}
+            </el-form-item>
+            <el-form-item label="红包">
+              {{editForm.hongBao}}
+            </el-form-item>
+            <el-form-item label="实付金额">
+              {{editForm.onlinePrice}}
+            </el-form-item>
+            <el-form-item label="支付方式">
+              {{editForm.Paytype}}
+            </el-form-item>
+            <el-form-item label="支付时间">
+              {{editForm.payTime}}
+            </el-form-item>
+            <el-form-item label="身份验证">
+              {{editForm.Identity}}
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <p class="title">收货信息</p>
+            <el-form-item label="订单状态">
+              {{editForm.orderType | orderType}}
+            </el-form-item>
+            <el-form-item label="收货人姓名">
+              {{editForm.OrderNumber}}
+            </el-form-item>
+            <el-form-item label="收货人电话">
+              {{editForm.phone}}
+            </el-form-item>
+            <el-form-item label="收货人地址">
+              {{editForm.Adress}}
+            </el-form-item>
+            <el-form-item label="物流单号">
+              {{editForm.LogisticsNumber}}
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click.native="FormVisible = false">关闭</el-button>
+      </div>
+    </el-dialog>
+  </div>
+</template>
+<script>
+  export default {
+    data() {
+      var checkLogo = (rule, value, callback) => {
+        if (this.imageUrl == '') {
+          callback(new Error("请上传图片"));
+        } else {
+          callback();
+        }
+      };
+      return {
+        list: [],
+        mainurl: '',
+        type: -1,
+        editForm: {
+          OrderNumber: ''
+        },
+        FormVisible: false,
+        pageIndex: 1,
+        pageSize: 8,
+        pageCount: 1,
+        orderNo: '',
+        name: '',
+        typeList: [{
+            ID: -1,
+            Name: '全部'
+          },
+          {
+            ID: 1,
+            Name: '待付款'
+          },
+          {
+            ID: 2,
+            Name: '待支付'
+          },
+          {
+            ID: 3,
+            Name: '待支付'
+          },
+          {
+            ID: 4,
+            Name: '待评价'
+          },
+        ]
+      };
+    },
+    filters: {
+      orderType: function (value) {
+        if (value == 0) {
+          value = "未支付"
+        } else if (value == 1) {
+          value = "待发货"
+        } else if (value == 2) {
+          value = "待收货"
+        } else if (value == 3) {
+          value = "待评价"
+        } else if (value == 4) {
+          value = "已评价"
+        } else if (value == 9) {
+          value = "已取消"
+        }
+        return value
+        return value
+      }
+    },
+    mounted() {
+      this.mainurl = mainurl
+      this.getInfo();
+    },
+    methods: {
+      Type(row, type) {
+        var type = row[type.property];
+        if (type == 0) {
+          type = "未支付"
+        } else if (type == 1) {
+          type = "待发货"
+        } else if (type == 2) {
+          type = "待收货"
+        } else if (type == 3) {
+          type = "待评价"
+        } else if (type == 4) {
+          type = "已评价"
+        } else if (type == 9) {
+          type = "已取消"
+        }
+        return type
+      },
+      getInfo() {
+        const loading = this.$loading({
+          lock: true,
+          text: "Loading",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.7)"
+        });
+        this.$http
+          .get("api/Back_OrderManage/CommonOrderList", {
+            params: {
+              orderNo: this.orderNo == '' ? '' - 1 : this.orderNo,
+              name: this.name == '' ? '' - 1 : this.name,
+              type: this.type,
+              pageIndex: this.pageIndex,
+              pageSize: this.pageSize,
+              Token: getCookie("token"),
+            }
+          })
+          .then(
+            function (response) {
+              loading.close();
+              var status = response.data.Status;
+              if (status === 1) {
+                this.list = response.data.Result.datalist;
+                this.pageCount = response.data.Result.page;
+              } else if (status === 40001) {
+                this.$message({
+                  showClose: true,
+                  type: "warning",
+                  message: response.data.Result
+                });
+                setTimeout(() => {
+                  this.$router.push({
+                    path: "/login"
+                  });
+                }, 1500);
+              } else {
+                loading.close();
+                this.$message({
+                  showClose: true,
+                  type: "warning",
+                  message: response.data.Result
+                });
+              }
+            }.bind(this)
+          )
+          // 请求error
+          .catch(
+            function (error) {
+              loading.close();
+              this.$notify.error({
+                title: "错误",
+                message: "错误：请检查网络"
+              });
+            }.bind(this)
+          );
+      },
+      handleCurrentChange(val) {
+        this.pageIndex = val;
+        this.getInfo();
+      },
+      handleEdit(index) {
+        const loading = this.$loading({
+          lock: true,
+          text: "Loading",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.7)"
+        });
+        this.$http
+          .get("api/Back_OrderManage/ProductDetail", {
+            params: {
+              id: this.list[index].ID,
+              Token: getCookie("token"),
+            }
+          })
+          .then(
+            function (response) {
+              loading.close();
+              var status = response.data.Status;
+              if (status === 1) {
+                this.FormVisible = true;
+                this.editForm = response.data.Result
+              } else if (status === 40001) {
+                this.$message({
+                  showClose: true,
+                  type: "warning",
+                  message: response.data.Result
+                });
+                setTimeout(() => {
+                  this.$router.push({
+                    path: "/login"
+                  });
+                }, 1500);
+              } else {
+                loading.close();
+                this.$message({
+                  showClose: true,
+                  type: "warning",
+                  message: response.data.Result
+                });
+              }
+            }.bind(this)
+          )
+          // 请求error
+          .catch(
+            function (error) {
+              loading.close();
+              this.$notify.error({
+                title: "错误",
+                message: "错误：请检查网络"
+              });
+            }.bind(this)
+          );
+
+      },
+      fahuo(id){
+        this.$confirm('确认发货?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          const loading = this.$loading({
+            lock: true,
+            text: "Loading",
+            spinner: "el-icon-loading",
+            background: "rgba(0, 0, 0, 0.7)"
+          });
+          this.$http
+            .get("api/Back_OrderManage/Consignment", {
+              params: {
+                ID: id,
+                Token: getCookie("token"),
+              }
+            })
+            .then(
+              function (response) {
+                loading.close();
+                var status = response.data.Status;
+                if (status === 1) {
+                  this.$message({
+                    showClose: true,
+                    type: "success",
+                    message: response.data.Result
+                  });
+                  this.getInfo()
+                } else if (status === 40001) {
+                  this.$message({
+                    showClose: true,
+                    type: "warning",
+                    message: response.data.Result
+                  });
+                  setTimeout(() => {
+                    this.$router.push({
+                      path: "/login"
+                    });
+                  }, 1500);
+                } else {
+                  loading.close();
+                  this.$message({
+                    showClose: true,
+                    type: "warning",
+                    message: response.data.Result
+                  });
+                }
+              }.bind(this)
+            )
+            // 请求error
+            .catch(
+              function (error) {
+                loading.close();
+                this.$notify.error({
+                  title: "错误",
+                  message: "错误：请检查网络"
+                });
+              }.bind(this)
+            );
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+      }
+    },
+
+  };
+
+</script>
+<style scoped>
+  /* 面包屑 */
+
+  .crumb {
+    height: 36px;
+    line-height: 36px;
+  }
+
+  .block {
+    text-align: center;
+    padding: 20px 0;
+  }
+
+  .el-row {
+    padding: 20px 0px;
+  }
+
+  .title {
+    font-size: 22px;
+    padding: 15px;
+    font-weight: bolder;
+  }
+
+  .el-input {
+    width: 50%;
+  }
+
+  .el-dialog {
+    width: 80%;
+  }
+
+</style>

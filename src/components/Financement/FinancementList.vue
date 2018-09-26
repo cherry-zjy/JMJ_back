@@ -2,22 +2,26 @@
   <div>
     <el-breadcrumb separator="|" class="crumb">
       <el-breadcrumb-item :to="{ path: '/' }">后台管理</el-breadcrumb-item>
-      <el-breadcrumb-item>银行列表</el-breadcrumb-item>
+      <el-breadcrumb-item>资金明细</el-breadcrumb-item>
     </el-breadcrumb>
 
     <!-- table 内容 -->
     <el-table :data="list" style="width: 100%" :border='true'>
-      <el-table-column label="银行名称" prop="Name">
+      <el-table-column label="订单编号" prop="OrderNo">
       </el-table-column>
-      <el-table-column label="图标" prop="Image">
-        <template slot-scope="scope">
-          <img :src="mainurl+scope.row.Image" width="100" v-if="scope.row.Image!==''" />
-          <span v-if="scope.row.Image==''">无</span>
-        </template>
+      <el-table-column label="商品名称" prop="prodName">
+      </el-table-column>
+      <el-table-column label="购买用户" prop="userName">
+      </el-table-column>
+      <el-table-column label="付款金额" prop="Pay">
+      </el-table-column>
+      <el-table-column label="总佣金" prop="">
+      </el-table-column>
+      <el-table-column label="利润" prop="">
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" type="primary" plain @click="handleEdit(scope.row.ID)">详情</el-button>
+          <el-button size="mini" type="primary" plain @click="handleEdit(scope.row.ID)">查看</el-button>
           <!-- <el-button size="mini" type="danger" plain icon="el-icon-delete" @click="handleDelete(scope.row.ID)">删除</el-button> -->
         </template>
       </el-table-column>
@@ -54,7 +58,7 @@
           background: "rgba(0, 0, 0, 0.7)"
         });
         this.$http
-          .get("api/Back_CurrentManage/BankList", {
+          .get("api/Back_FinancementManage/FinancementList", {
             params: {
               pageIndex: this.pageIndex,
               pageSize: this.pageSize,
@@ -66,7 +70,7 @@
               loading.close();
               var status = response.data.Status;
               if (status === 1) {
-                this.list = response.data.Result.datalist;
+                this.list = response.data.Result.dataList;
               } else if (status === 40001) {
                 this.$message({
                   showClose: true,
