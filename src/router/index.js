@@ -12,7 +12,7 @@ var manage = resolve => require(['@/components/manage/manage.vue'], resolve)
 var role = resolve => require(['@/components/role/role.vue'], resolve)
 var roleLimit = resolve => require(['@/components/role/roleLimit.vue'], resolve)
 var power = resolve => require(['../components/role/power.vue'], resolve)
-// 平台基本信息
+// 通用
 var CommissionSet = resolve => require(['../components/common/CommissionSet.vue'], resolve)   
 var FreightFormworkList = resolve => require(['../components/common/FreightFormworkList.vue'], resolve)
 var AddForm = resolve => require(['../components/common/AddForm.vue'], resolve)
@@ -20,6 +20,8 @@ var EditForm = resolve => require(['../components/common/EditForm.vue'], resolve
 var Overflow = resolve => require(['../components/common/Overflow.vue'], resolve)
 var OverflowDetail = resolve => require(['../components/common/OverflowDetail.vue'], resolve)
 var AddOverflowDetail = resolve => require(['../components/common/AddOverflowDetail.vue'], resolve)
+var BankList = resolve => require(['../components/common/BankList.vue'], resolve)
+var BankDetaill = resolve => require(['../components/common/BankDetaill.vue'], resolve)
 
 // 分类管理
 var FirstLevelList = resolve => require(['../components/classification/FirstLevelList.vue'], resolve)
@@ -55,6 +57,10 @@ var OnePrice = resolve => require(['../components/Product/OnePrice.vue'], resolv
 var AddOnePrice = resolve => require(['../components/Product/AddOnePrice.vue'], resolve)
 var EditOnePrice = resolve => require(['../components/Product/EditOnePrice.vue'], resolve)
 var OnePriceComment = resolve => require(['../components/Product/OnePriceComment.vue'], resolve)
+//资金明细
+var FinancementList = resolve => require(['../components/Financement/FinancementList.vue'], resolve)
+
+
 // 懒加载方式，当路由被访问的时候才加载对应组件
 Vue.use(Router)
 
@@ -79,7 +85,7 @@ export default new Router({
         { path: '/role', component: role, name: '权限管理' },
         { path: '/power', component: power, name: '角色管理' },
         { path: '/role/rolelimit/:id', component: roleLimit, name: '权限设置' },
-        // 平台基本信息
+        // 通用
         { path: '/CommissionSet', component: CommissionSet, name: '佣金设置' }, 
         { path: '/FreightFormworkList', component: FreightFormworkList, name: '运费模板' }, 
         { path: '/AddForm', component: AddForm, name: '添加运费模板' }, 
@@ -87,6 +93,10 @@ export default new Router({
         { path: '/Overflow', component: Overflow, name: '超值热卖列表' },
         { path: '/OverflowDetail/:id', component: OverflowDetail, name: '超值热卖详情' },
         { path: '/AddOverflowDetail/:id', component: AddOverflowDetail, name: '添加超值热卖' },
+        { path: '/BankList', component: BankList, name: '银行列表' },
+        { path: '/BankDetaill/:id', component: BankDetaill, name: '银行详情' },
+        //资金明细
+        { path: '/FinancementList', component: FinancementList, name: '资金明细' },
         // 分类管理
         { path: '/FirstLevelList', component: FirstLevelList, name: '一级分类' }, 
         { path: '/SecondLevelList/:id', component: SecondLevelList, name: '二级分类' }, 
