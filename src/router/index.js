@@ -45,6 +45,16 @@ var Dailyorderlist = resolve => require(['../components/Product/Dailyorderlist.v
 var AddDaily = resolve => require(['../components/Product/AddDaily.vue'], resolve)
 var EditDaily = resolve => require(['../components/Product/EditDaily.vue'], resolve)
 var DailyComment = resolve => require(['../components/Product/DailyComment.vue'], resolve)
+
+var WeekList = resolve => require(['../components/Product/WeekList.vue'], resolve)
+var AddWeek = resolve => require(['../components/Product/AddWeek.vue'], resolve)
+var EditWeek = resolve => require(['../components/Product/EditWeek.vue'], resolve)
+var WeekComment = resolve => require(['../components/Product/WeekComment.vue'], resolve)
+
+var OnePrice = resolve => require(['../components/Product/OnePrice.vue'], resolve)
+var AddOnePrice = resolve => require(['../components/Product/AddOnePrice.vue'], resolve)
+var EditOnePrice = resolve => require(['../components/Product/EditOnePrice.vue'], resolve)
+var OnePriceComment = resolve => require(['../components/Product/OnePriceComment.vue'], resolve)
 // 懒加载方式，当路由被访问的时候才加载对应组件
 Vue.use(Router)
 
@@ -101,6 +111,16 @@ export default new Router({
         { path: '/AddDaily', component: AddDaily, name: '新增每日团购' }, 
         { path: '/EditDaily/:id', component: EditDaily, name: '修改每日团购' }, 
         { path: '/DailyComment/:id', component: DailyComment, name: '每日团购评价' }, 
+
+        { path: '/WeekList', component: WeekList, name: '每周免单' }, 
+        { path: '/AddWeek', component: AddWeek, name: '新增每周免单' }, 
+        { path: '/EditWeek/:id', component: EditWeek, name: '修改每周免单' }, 
+        { path: '/WeekComment/:id', component: WeekComment, name: '每周免单评价' }, 
+
+        { path: '/OnePrice', component: OnePrice, name: '一口价列表' }, 
+        { path: '/AddOnePrice', component: AddOnePrice, name: '新增一口价' }, 
+        { path: '/EditOnePrice/:id', component: EditOnePrice, name: '修改一口价' }, 
+        { path: '/OnePriceComment/:id', component: OnePriceComment, name: '一口价评价' }, 
         
       ]
     },

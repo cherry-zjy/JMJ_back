@@ -2,8 +2,8 @@
   <div>
     <el-breadcrumb separator="|" class="crumb">
       <el-breadcrumb-item :to="{ path: '/' }">后台管理</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/DailyList' }">每日团购列表</el-breadcrumb-item>
-      <el-breadcrumb-item>修改每日团购</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/WeekList' }">每周免单列表</el-breadcrumb-item>
+      <el-breadcrumb-item>修改每周免单</el-breadcrumb-item>
     </el-breadcrumb>
 
     <el-main>
@@ -13,9 +13,6 @@
           <el-col :span="12">
             <el-form-item label="商品名称" prop="prodName">
               <el-input v-model="getList.prodName"></el-input>
-            </el-form-item>
-            <el-form-item label="商品原价" prop="yuanjia">
-              <el-input v-model="getList.yuanjia" type="number"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -85,16 +82,6 @@
             <el-form-item label="商品简介" prop="Introduce">
               <el-input type="textarea" v-model="getList.Introduce"></el-input>
             </el-form-item>
-            <!-- <el-form-item label="预售商品">
-              <el-switch v-model="getList.Isyushou"></el-switch>
-            </el-form-item> -->
-            <!-- <el-form-item label="折扣力度" prop="Salesvolume">
-              <el-input v-model="getList.Salesvolume" disabled="disabled" v-if="!getList.Isyushou"></el-input>
-              <el-input v-model="getList.Salesvolume" v-if="getList.Isyushou"></el-input>
-            </el-form-item> -->
-            <!-- <el-form-item label="身份验证">
-              <el-switch v-model="getList.IsOutSourcing"></el-switch>
-            </el-form-item> -->
             <el-form-item label="快递运费">
               <el-switch v-model="yunfei"></el-switch>
               <div v-if="yunfei" style="display:inline-block">
@@ -105,6 +92,12 @@
                 </el-select>
               </div>
             </el-form-item>
+            <el-form-item label="免单所需签到次数" prop="SignTimes">
+              <el-input v-model="getList.SignTimes" type="number"></el-input>
+            </el-form-item>
+            <el-form-item label="开团成功人数" prop="NumOfMem">
+              <el-input v-model="getList.NumOfMem" type="number"></el-input>
+            </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="商品销量" prop="Salesvolume">
@@ -112,6 +105,9 @@
             </el-form-item>
             <el-form-item label="商品佣金" prop="Commission">
               <el-input v-model="getList.Commission" type="number"></el-input>
+            </el-form-item>
+            <el-form-item label="免单所需积分" prop="Ntegrate">
+              <el-input v-model="getList.Ntegrate" type="number"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -318,11 +314,11 @@
             message: '请输入商品名称',
             trigger: 'blur'
           }, ],
-          yuanjia: [{
-            required: true,
-            message: '请输入商品原价',
-            trigger: 'blur'
-          }, ],
+          // TeamBuyingPrice: [{
+          //   required: true,
+          //   message: '请输入商品原价',
+          //   trigger: 'blur'
+          // }, ],
           ClassificationSecondID: [{
             required: true,
             validator: checkClassification
@@ -365,6 +361,22 @@
             required: true,
             validator: checkLogo
           }],
+          SignTimes: [{
+            required: true,
+            message: '请输入免单所需签到次数',
+            trigger: 'blur'
+          }, ],
+          NumOfMem: [{
+            required: true,
+            message: '请输入开团成功人数',
+            trigger: 'blur'
+          }, ],
+          Ntegrate: [{
+            required: true,
+            message: '请输入免单所需积分',
+            trigger: 'blur'
+          }, ],
+          
         },
       };
     },
@@ -759,7 +771,7 @@
                   token: getCookie("token"),
                   ID:window.location.href.split("id=")[1],
                   Name: this.getList.prodName,
-                  TeamBuyingPrice: this.getList.yuanjia,
+                  TeamBuyingPrice: -1,
                   Classification: this.getList.classificationID,
                   ClassificationSecond: this.getList.classificationSecondID,
                   specs: this.demospce,
@@ -775,9 +787,9 @@
                   ProdPoster: this.getList.ProdPoster,
                   Detail: encodeURIComponent(content),
                   OutDiscount: -1,
-                  Ntegrate: -1,
-                  NumOfMem: -1,
-                  SignTimes: -1
+                  Ntegrate: this.getList.Ntegrate,
+                  NumOfMem: this.getList.NumOfMem,
+                  SignTimes: this.getList.SignTimes,
                 })
               )
               .then(
@@ -792,7 +804,7 @@
                     });
                     setTimeout(() => {
                       this.$router.push({
-                        path: "/DailyList"
+                        path: "/OrdinaryProduct"
                       });
                     }, 1500);
                   } else if (status === 40001) {

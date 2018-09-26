@@ -2,23 +2,26 @@
   <div>
     <el-breadcrumb separator="|" class="crumb">
       <el-breadcrumb-item :to="{ path: '/' }">后台管理</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/OrdinaryProduct' }">普通商品列表</el-breadcrumb-item>
-      <el-breadcrumb-item>普通商品评价</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/Dailyorderlist' }">每日团购列表</el-breadcrumb-item>
+      <el-breadcrumb-item>每日团购评价</el-breadcrumb-item>
     </el-breadcrumb>
 
     <!-- table 内容 -->
     <el-table :data="list" style="width: 100%" :border='true'>
-      <el-table-column label="用户名称" prop="prodName">
+      <el-table-column label="用户名称" prop="userName">
       </el-table-column>
-      <el-table-column label="缩略图" prop="logo">
+      <el-table-column label="购买商品名称+规格" prop="prodName">
+      </el-table-column>
+      <el-table-column label="商品评价" prop="Comment">
+      </el-table-column>
+      <el-table-column label="评价等级" prop="Star">
+      </el-table-column>
+      <el-table-column label="评价图片">
         <template slot-scope="scope">
-          <img :src="mainurl+scope.row.logo" width="100" />
+          <img :src="mainurl+item" width="100" v-for="(item,index) in scope.row.Image.split(',')" :key="index" @click="handlePreview(item)" />
         </template>
       </el-table-column>
-      <el-table-column label="购买商品名称+规格" prop="price">
-      </el-table-column>
-      <el-table-column label="评价等级" prop="commission">
-      </el-table-column>
+
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" type="primary" @click="handleDel(scope.row.ID)">删除</el-button>
@@ -30,23 +33,7 @@
       <el-pagination @current-change="handleCurrentChange" layout="prev, pager, next,jumper" :page-count="pageCount">
       </el-pagination>
     </div>
-    <!-- 模态框 -->
-    <el-dialog title="修改图片" :visible.sync="dialogFormVisible" width="50%">
-      <el-form :model="editForm" :rules="listrules" ref="editForm" label-width="150px" class="demo-editForm"
-        label-position="left">
-        <el-form-item label="图片：">
-          <el-upload v-model="editForm.Logo" class="avatar-uploader" :action="action" :show-file-list="false"
-            :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-            <img v-if="imageUrl" :src="imageUrl" class="avatar" width="200">
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submitForm('editForm')">确 定</el-button>
-      </div>
-    </el-dialog>
+
   </div>
 </template>
 <script>
@@ -61,7 +48,6 @@
     },
     mounted() {
       this.mainurl = mainurl
-      this.action = this.mainurl + "/api/UploadPhotos/UpdateForImage";
       this.getInfo();
     },
     methods: {

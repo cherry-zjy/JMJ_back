@@ -2,7 +2,7 @@
   <div>
     <el-breadcrumb separator="|" class="crumb">
       <el-breadcrumb-item :to="{ path: '/' }">后台管理</el-breadcrumb-item>
-      <el-breadcrumb-item>每日团购列表</el-breadcrumb-item>
+      <el-breadcrumb-item>每周免单列表</el-breadcrumb-item>
     </el-breadcrumb>
 
     <!--检索条-->
@@ -84,8 +84,9 @@
           spinner: "el-icon-loading",
           background: "rgba(0, 0, 0, 0.7)"
         });
+        console.log(this.startTime)
         this.$http
-          .get("api/Back_ProductManage/DailyList", {
+          .get("api/Back_ProductManage/WeekList", {
             params: {
               startTime: this.startTime == '' ? '' - 1 : this.startTime.substring(0,10),
               endTime: this.endTime == '' ? '' - 1 : this.endTime.substring(0,10),
@@ -139,13 +140,13 @@
         this.getInfo();
       },
       handleEdit(id) {
-        this.$router.push("/EditDaily/id=" + id);
+        this.$router.push("/EditWeek/id=" + id);
       },
       handleAdd() {
-        this.$router.push("/AddDaily");
+        this.$router.push("/AddWeek");
       },
       comment(id) {
-        this.$router.push("/DailyComment/id=" + id);
+        this.$router.push("/WeekComment/id=" + id);
       }
     },
 

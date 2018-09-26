@@ -2,45 +2,29 @@
   <div>
     <el-breadcrumb separator="|" class="crumb">
       <el-breadcrumb-item :to="{ path: '/' }">后台管理</el-breadcrumb-item>
-      <el-breadcrumb-item>每日团购列表</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/WeekList' }">每周免单列表</el-breadcrumb-item>
+      <el-breadcrumb-item>每周免单评价</el-breadcrumb-item>
     </el-breadcrumb>
-
-    <!--检索条-->
-    <el-col class="toolbar" style="padding-top: 15px;">
-      <el-input v-model="sear" placeholder="关键字" prefix-icon="el-icon-search" style="width:200px"></el-input>
-      <el-date-picker v-model="startTime" value-format="yyyy-MM-dd" type="date" placeholder="开始日期" style="width:200px">
-      </el-date-picker>--
-      <el-date-picker v-model="endTime" value-format="yyyy-MM-dd" type="date" placeholder="结束日期" style="width:200px">
-      </el-date-picker>
-      <el-button type="primary" @click="pageIndex = 1;getInfo()">查询</el-button>
-      <el-form :inline="true" style="float:right">
-        <el-form-item>
-          <el-button type="primary" @click="handleAdd()">新增</el-button>
-        </el-form-item>
-      </el-form>
-    </el-col>
 
     <!-- table 内容 -->
     <el-table :data="list" style="width: 100%" :border='true'>
-      <el-table-column label="商品名称" prop="prodName">
+      <el-table-column label="用户名称" prop="userName">
       </el-table-column>
-      <el-table-column label="缩略图" prop="logo">
+      <el-table-column label="购买商品名称+规格" prop="prodName">
+      </el-table-column>
+      <el-table-column label="商品评价" prop="Comment">
+      </el-table-column>
+      <el-table-column label="评价等级" prop="Star">
+      </el-table-column>
+      <el-table-column label="评价图片">
         <template slot-scope="scope">
-          <img :src="mainurl+scope.row.Image" width="100" />
+          <img :src="mainurl+item" width="100" v-for="(item,index) in scope.row.Image.split(',')" :key="index" @click="handlePreview(item)" />
         </template>
       </el-table-column>
-      <el-table-column label="商品价格" prop="Price">
-      </el-table-column>
-      <el-table-column label="商品佣金" prop="commission">
-      </el-table-column>
-      <el-table-column label="商品评价" prop="Name">
-        <template slot-scope="scope">
-          <el-button size="mini" type="primary" @click="comment(scope.row.ID)">查看</el-button>
-        </template>
-      </el-table-column>
+
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" type="primary" @click="handleEdit(scope.row.ID)">修改</el-button>
+          <el-button size="mini" type="primary" @click="handleDel(scope.row.ID)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -49,27 +33,17 @@
       <el-pagination @current-change="handleCurrentChange" layout="prev, pager, next,jumper" :page-count="pageCount">
       </el-pagination>
     </div>
+
   </div>
 </template>
 <script>
   export default {
     data() {
-      var checkLogo = (rule, value, callback) => {
-        if (this.imageUrl == '') {
-          callback(new Error("请上传图片"));
-        } else {
-          callback();
-        }
-      };
       return {
         list: [],
-        mainurl: '',
         pageIndex: 1,
         pageSize: 8,
         pageCount: 1,
-        sear: '',
-        startTime:'',
-        endTime:'',
       };
     },
     mounted() {
@@ -85,11 +59,9 @@
           background: "rgba(0, 0, 0, 0.7)"
         });
         this.$http
-          .get("api/Back_ProductManage/DailyList", {
+          .get("api/Back_ProductManage/ProductComment", {
             params: {
-              startTime: this.startTime == '' ? '' - 1 : this.startTime.substring(0,10),
-              endTime: this.endTime == '' ? '' - 1 : this.endTime.substring(0,10),
-              sear: this.sear == '' ? '' - 1 : this.sear,
+              id: window.location.href.split("id=")[1],
               pageIndex: this.pageIndex,
               pageSize: this.pageSize,
               Token: getCookie("token"),
@@ -138,15 +110,74 @@
         this.pageIndex = val;
         this.getInfo();
       },
-      handleEdit(id) {
-        this.$router.push("/EditDaily/id=" + id);
+      handleDel(id){
+        his.$confirm('确认删除该评价?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          const loading = this.$loading({
+            lock: true,
+            text: "Loading",
+            spinner: "el-icon-loading",
+            background: "rgba(0, 0, 0, 0.7)"
+          });
+          this.$http
+            .get("api/Back_ProductManage/prodCommentDelete", {
+              params: {
+                ID: id,
+                Token: getCookie("token"),
+              }
+            })
+            .then(
+              function (response) {
+                loading.close();
+                var status = response.data.Status;
+                if (status === 1) {
+                  this.$message({
+                    showClose: true,
+                    type: "success",
+                    message: response.data.Result
+                  });
+                  this.getInfo()
+                } else if (status === 40001) {
+                  this.$message({
+                    showClose: true,
+                    type: "warning",
+                    message: response.data.Result
+                  });
+                  setTimeout(() => {
+                    this.$router.push({
+                      path: "/login"
+                    });
+                  }, 1500);
+                } else {
+                  loading.close();
+                  this.$message({
+                    showClose: true,
+                    type: "warning",
+                    message: response.data.Result
+                  });
+                }
+              }.bind(this)
+            )
+            // 请求error
+            .catch(
+              function (error) {
+                loading.close();
+                this.$notify.error({
+                  title: "错误",
+                  message: "错误：请检查网络"
+                });
+              }.bind(this)
+            );
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
       },
-      handleAdd() {
-        this.$router.push("/AddDaily");
-      },
-      comment(id) {
-        this.$router.push("/DailyComment/id=" + id);
-      }
     },
 
   };
