@@ -21,7 +21,7 @@
     <p class="title">包含商品：
       <el-button size="mini" type="primary" @click="handleAdd()" style="float:right">添加商品</el-button>
     </p>
-    <el-table :data="list.dataList" style="width: 100%" :border='true'>
+    <el-table :data="list" style="width: 100%" :border='true'>
       <el-table-column label="图片" prop="Image">
         <template slot-scope="scope">
           <img :src="mainurl+scope.row.Image" width="100" />
@@ -59,21 +59,12 @@
     },
     mounted() {
       this.mainurl = mainurl
+      this.action = this.mainurl + "/api/UploadPhotos/UpdateForImage";
       this.getInfo();
     },
     methods: {
       handleAvatarSuccess(res, file) {
         this.imageUrl = URL.createObjectURL(file.raw);
-        this.list.Image = res.Result[0];
-      },
-      beforeAvatarUpload(file) {
-        const isLt2M = file.size / 1024 / 1024 < 2;
-        if (!isLt2M) {
-          this.$message.error("上传头像图片大小不能超过 2MB!");
-        }
-        return isLt2M;
-      },
-      getInfo() {
         const loading = this.$loading({
           lock: true,
           text: "Loading",
@@ -81,12 +72,11 @@
           background: "rgba(0, 0, 0, 0.7)"
         });
         this.$http
-          .get("api/Back_CurrentManage/OverflowDetailList", {
+          .get("api/Back_CurrentManage/OverflowEdit", {
             params: {
-              id: window.location.href.split("id=")[1],
+              Image: res.Result[0],
               Token: getCookie("token"),
-              pageIndex: this.pageIndex,
-              pageSize: this.pageSize,
+              id: window.location.href.split("id=")[1],
             }
           })
           .then(
@@ -94,7 +84,11 @@
               loading.close();
               var status = response.data.Status;
               if (status === 1) {
-                this.list = response.data.Result;
+                this.$message({
+                  showClose: true,
+                  type: "success",
+                  message: response.data.Result
+                });
               } else if (status === 40001) {
                 this.$message({
                   showClose: true,
@@ -128,25 +122,72 @@
             }.bind(this)
           );
       },
-      submitForm(formName) {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            this.list.push({
-              Provinces: this.editForm.Provinces,
-              First: this.editForm.First,
-              FirstPrice: this.editForm.FirstPrice,
-              Per: this.editForm.Per,
-              PerPrice: this.editForm.PerPrice,
-            });
-            this.dialogFormVisible = false
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
+      beforeAvatarUpload(file) {
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isLt2M) {
+          this.$message.error("上传头像图片大小不能超过 2MB!");
+        }
+        return isLt2M;
       },
-      Del(index) {
-        this.list.splice(index, 1)
+      getInfo() {
+        const loading = this.$loading({
+          lock: true,
+          text: "Loading",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.7)"
+        });
+        this.$http
+          .get("api/Back_CurrentManage/OverflowDetailList", {
+            params: {
+              id: window.location.href.split("id=")[1],
+              Token: getCookie("token"),
+              pageIndex: this.pageIndex,
+              pageSize: this.pageSize,
+            }
+          })
+          .then(
+            function (response) {
+              loading.close();
+              var status = response.data.Status;
+              if (status === 1) {
+                if (response.data.Result.Image == '') {
+                  this.imageUrl = ''
+                } else {
+                  this.imageUrl = mainurl + response.data.Result.Image;
+                }
+                this.list = response.data.Result.dataList;
+              } else if (status === 40001) {
+                this.$message({
+                  showClose: true,
+                  type: "warning",
+                  message: response.data.Result
+                });
+                setTimeout(() => {
+                  this.$router.push({
+                    path: "/login"
+                  });
+                }, 1500);
+              } else {
+                loading.close();
+                this.$message({
+                  showClose: true,
+                  type: "warning",
+                  message: response.data.Result
+                });
+              }
+            }.bind(this)
+          )
+          // 请求error
+          .catch(
+            function (error) {
+              loading.close();
+              console.log(error)
+              this.$notify.error({
+                title: "错误",
+                message: "错误：请检查网络"
+              });
+            }.bind(this)
+          );
       },
       handleCurrentChange(val) {
         this.pageIndex = val;
@@ -154,6 +195,77 @@
       },
       handleAdd() {
         this.$router.push("/AddOverflowDetail/id=" + window.location.href.split("id=")[1]);
+      },
+      handleEdit() {
+        this.$router.push("/EditOrdinaryProduct/id=" + window.location.href.split("id=")[1]);
+      },
+      handleDelete(id) {
+        this.$confirm('确认删除该商品?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          const loading = this.$loading({
+            lock: true,
+            text: "Loading",
+            spinner: "el-icon-loading",
+            background: "rgba(0, 0, 0, 0.7)"
+          });
+          this.$http
+            .get("api/Back_CurrentManage/OverflowProductDelete", {
+              params: {
+                ID: id,
+                Token: getCookie("token"),
+              }
+            })
+            .then(
+              function (response) {
+                loading.close();
+                var status = response.data.Status;
+                if (status === 1) {
+                  this.$message({
+                    showClose: true,
+                    type: "success",
+                    message: response.data.Result
+                  });
+                  this.getInfo()
+                } else if (status === 40001) {
+                  this.$message({
+                    showClose: true,
+                    type: "warning",
+                    message: response.data.Result
+                  });
+                  setTimeout(() => {
+                    this.$router.push({
+                      path: "/login"
+                    });
+                  }, 1500);
+                } else {
+                  loading.close();
+                  this.$message({
+                    showClose: true,
+                    type: "warning",
+                    message: response.data.Result
+                  });
+                }
+              }.bind(this)
+            )
+            // 请求error
+            .catch(
+              function (error) {
+                loading.close();
+                this.$notify.error({
+                  title: "错误",
+                  message: "错误：请检查网络"
+                });
+              }.bind(this)
+            );
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
       }
 
     },

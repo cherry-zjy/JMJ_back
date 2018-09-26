@@ -14,7 +14,7 @@
     <el-table :data="list" style="width: 100%" :border='true'>
       <el-table-column label="图片" prop="Image">
         <template slot-scope="scope">
-          <img :src="mainurl+scope.row.Image" width="100" v-if="scope.row.Image!==''"/>
+          <img :src="mainurl+scope.row.Image" width="100" v-if="scope.row.Image!==''" />
           <span v-if="scope.row.Image==''">无</span>
         </template>
       </el-table-column>
@@ -37,11 +37,11 @@
   export default {
     data() {
       return {
-        list:[],
+        list: [],
         pageIndex: 1,
         pageSize: 12,
         pageCount: 1,
-        mainurl:''
+        mainurl: ''
       };
     },
     mounted() {
@@ -111,18 +111,139 @@
             }.bind(this)
           );
       },
-      handleAdd(index, row) {
-        
+      handleAdd() {
+        const loading = this.$loading({
+          lock: true,
+          text: "Loading",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.7)"
+        });
+        this.$http
+          .get("api/Back_CurrentManage/OverflowAdd", {
+            params: {
+              Token: getCookie("token"),
+            }
+          })
+          .then(
+            function (response) {
+              loading.close();
+              var status = response.data.Status;
+              if (status === 1) {
+                this.$message({
+                  showClose: true,
+                  type: "success",
+                  message: response.data.Result
+                });
+                this.getInfo()
+              } else if (status === 40001) {
+                this.$message({
+                  showClose: true,
+                  type: "warning",
+                  message: response.data.Result
+                });
+                setTimeout(() => {
+                  this.$router.push({
+                    path: "/login"
+                  });
+                }, 1500);
+              } else {
+                loading.close();
+                this.$message({
+                  showClose: true,
+                  type: "warning",
+                  message: response.data.Result
+                });
+              }
+            }.bind(this)
+          )
+          // 请求error
+          .catch(
+            function (error) {
+              loading.close();
+              this.$notify.error({
+                title: "错误",
+                message: "错误：请检查网络"
+              });
+            }.bind(this)
+          );
       },
-      handleEdit(id){
+      handleEdit(id) {
         this.$router.push("/OverflowDetail/id=" + id);
       },
       handleCurrentChange(val) {
         this.pageIndex = val;
         this.getInfo();
       },
+      handleDelete(id) {
+        this.$confirm('确认删除该商品?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          const loading = this.$loading({
+            lock: true,
+            text: "Loading",
+            spinner: "el-icon-loading",
+            background: "rgba(0, 0, 0, 0.7)"
+          });
+          this.$http
+            .get("api/Back_CurrentManage/OverflowDelete", {
+              params: {
+                ID: id,
+                Token: getCookie("token"),
+              }
+            })
+            .then(
+              function (response) {
+                loading.close();
+                var status = response.data.Status;
+                if (status === 1) {
+                  this.$message({
+                    showClose: true,
+                    type: "success",
+                    message: response.data.Result
+                  });
+                  this.getInfo()
+                } else if (status === 40001) {
+                  this.$message({
+                    showClose: true,
+                    type: "warning",
+                    message: response.data.Result
+                  });
+                  setTimeout(() => {
+                    this.$router.push({
+                      path: "/login"
+                    });
+                  }, 1500);
+                } else {
+                  loading.close();
+                  this.$message({
+                    showClose: true,
+                    type: "warning",
+                    message: response.data.Result
+                  });
+                }
+              }.bind(this)
+            )
+            // 请求error
+            .catch(
+              function (error) {
+                loading.close();
+                this.$notify.error({
+                  title: "错误",
+                  message: "错误：请检查网络"
+                });
+              }.bind(this)
+            );
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+      }
     },
-    
+
   };
 
 </script>

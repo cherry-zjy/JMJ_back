@@ -7,7 +7,14 @@
       <el-breadcrumb-item>添加商品</el-breadcrumb-item>
     </el-breadcrumb>
     
-    <el-transfer v-model="value1" :data="data"></el-transfer>
+    <el-main>
+      <div class="btn">
+        <el-transfer filterable style="text-align: left; display: inline-block" v-model="value1" :data="data" :titles="['未添加的商品', '已添加的商品']"></el-transfer>
+      </div>
+      <div class="btn">
+        <el-button type="primary" @click="submitForm()">确 定</el-button>
+      </div>
+    </el-main>
 
   </div>
 </template>
@@ -15,25 +22,17 @@
   import qs from "qs";
   export default {
     data() {
-      const generateData = _ => {
-        const data = [];
-        for (let i = 1; i <= 15; i++) {
-          data.push({
-            key: i,
-            label: `备选项 ${ i }`,
-          });
-        }
-        return data;
-      };
       return {
-        data: generateData(),
-        value1: [1, 4],
+        data: [],
+        value1: [],
+        list: [],
         id:''
       };
     },
     mounted() {
       this.id = window.location.href.split("id=")[1]
       this.getInfo()
+      this.mainurl = mainurl
     },
     methods: {
       getInfo() {
@@ -46,11 +45,11 @@
         this.$http
           .get("api/Back_ProductManage/OrdinaryProduct", {
             params: {
+              classificationID: -1,
               sear: -1,
-              classificationID:-1,
-              Token: getCookie("token"),
               pageIndex: 1,
               pageSize: 999,
+              Token: getCookie("token"),
             }
           })
           .then(
@@ -58,9 +57,15 @@
               loading.close();
               var status = response.data.Status;
               if (status === 1) {
-                this.list = response.data.Result;
-                console.log(this.list)
-                // this.imageUrl = response.data.Result.dataList;
+                this.data = [];
+                this.list = response.data.Result.datalist
+                for (let i = 1; i <= this.list.length; i++) {
+                  this.data.push({
+                    key: this.list[i].ID,
+                    label: this.list[i].prodName,
+                    Image: mainurl + this.list[i].logo,
+                  });
+                }
               } else if (status === 40001) {
                 this.$message({
                   showClose: true,
@@ -85,32 +90,88 @@
           // 请求error
           .catch(
             function (error) {
-              loading.close();
               console.log(error)
+              loading.close();
+              // this.$notify.error({
+              //   title: "错误",
+              //   message: "错误：请检查网络"
+              // });
+            }.bind(this)
+          );
+      },
+      submitForm() {
+        if (this.value == '') {
+          this.$message({
+            showClose: true,
+            type: "warning",
+            message: '请选择商品'
+          });
+          return;
+        }
+        console.log(this.value1)
+        const loading = this.$loading({
+          lock: true,
+          text: "Loading",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.7)"
+        });
+        this.$http
+          .post("api/Back_CurrentManage/OverflowProductAdd",
+            qs.stringify({
+              token: getCookie("token"),
+              prodIDs: this.value1,
+              BannerID:this.id,
+              Type: 2,
+            })
+          )
+          .then(
+            function (response) {
+              loading.close();
+              var status = response.data.Status;
+              if (status === 1) {
+                this.$message({
+                  showClose: true,
+                  type: "success",
+                  message: response.data.Result
+                });
+                setTimeout(() => {
+                  this.$router.push({
+                    path: "/OverflowDetail/id=" + window.location.href.split("id=")[1]
+                  });
+                }, 1500);
+              } else if (status === 40001) {
+                this.$message({
+                  showClose: true,
+                  type: "warning",
+                  message: response.data.Result
+                });
+                setTimeout(() => {
+                  tt.$router.push({
+                    path: "/login"
+                  });
+                }, 1500);
+              } else {
+                loading.close();
+                this.$message({
+                  showClose: true,
+                  type: "warning",
+                  message: response.data.Result
+                });
+              }
+            }.bind(this)
+          )
+          // 请求error
+          .catch(
+            function (error) {
+              console.log(error)
+              loading.close();
               this.$notify.error({
                 title: "错误",
                 message: "错误：请检查网络"
               });
             }.bind(this)
           );
-      },
-      submitForm(formName) {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            this.list.push({
-              Provinces: this.editForm.Provinces,
-              First: this.editForm.First,
-              FirstPrice: this.editForm.FirstPrice,
-              Per: this.editForm.Per,
-              PerPrice: this.editForm.PerPrice,
-            });
-            this.dialogFormVisible = false
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
-      },
+      }
     },
 
   };
@@ -137,6 +198,10 @@
     font-size: 18px;
     padding: 0 0 10px 0;
     font-weight: bolder;
+  }
+  .btn {
+    margin-top: 50px;
+    text-align: center
   }
 
 </style>
