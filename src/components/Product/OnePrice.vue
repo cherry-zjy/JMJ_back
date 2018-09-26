@@ -2,16 +2,12 @@
   <div>
     <el-breadcrumb separator="|" class="crumb">
       <el-breadcrumb-item :to="{ path: '/' }">后台管理</el-breadcrumb-item>
-      <el-breadcrumb-item>每周免单列表</el-breadcrumb-item>
+      <el-breadcrumb-item>一口价列表</el-breadcrumb-item>
     </el-breadcrumb>
 
     <!--检索条-->
     <el-col class="toolbar" style="padding-top: 15px;">
       <el-input v-model="sear" placeholder="关键字" prefix-icon="el-icon-search" style="width:200px"></el-input>
-      <el-date-picker v-model="startTime" value-format="yyyy-MM-dd" type="date" placeholder="开始日期" style="width:200px">
-      </el-date-picker>--
-      <el-date-picker v-model="endTime" value-format="yyyy-MM-dd" type="date" placeholder="结束日期" style="width:200px">
-      </el-date-picker>
       <el-button type="primary" @click="pageIndex = 1;getInfo()">查询</el-button>
       <el-form :inline="true" style="float:right">
         <el-form-item>
@@ -29,7 +25,7 @@
           <img :src="mainurl+scope.row.Image" width="100" />
         </template>
       </el-table-column>
-      <el-table-column label="商品价格" prop="Price">
+      <el-table-column label="商品价格" prop="price">
       </el-table-column>
       <el-table-column label="商品佣金" prop="commission">
       </el-table-column>
@@ -68,8 +64,6 @@
         pageSize: 8,
         pageCount: 1,
         sear: '',
-        startTime:'',
-        endTime:'',
       };
     },
     mounted() {
@@ -86,10 +80,8 @@
         });
         console.log(this.startTime)
         this.$http
-          .get("api/Back_ProductManage/WeekList", {
+          .get("api/Back_ProductManage/OnePrice", {
             params: {
-              startTime: this.startTime == '' ? '' - 1 : this.startTime.substring(0,10),
-              endTime: this.endTime == '' ? '' - 1 : this.endTime.substring(0,10),
               sear: this.sear == '' ? '' - 1 : this.sear,
               pageIndex: this.pageIndex,
               pageSize: this.pageSize,
@@ -140,13 +132,13 @@
         this.getInfo();
       },
       handleEdit(id) {
-        this.$router.push("/EditWeek/id=" + id);
+        this.$router.push("/EditOnePrice/id=" + id);
       },
       handleAdd() {
-        this.$router.push("/AddWeek");
+        this.$router.push("/AddOnePrice");
       },
       comment(id) {
-        this.$router.push("/WeekComment/id=" + id);
+        this.$router.push("/OnePriceComment/id=" + id);
       }
     },
 

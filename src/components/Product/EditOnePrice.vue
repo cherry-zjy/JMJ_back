@@ -2,8 +2,8 @@
   <div>
     <el-breadcrumb separator="|" class="crumb">
       <el-breadcrumb-item :to="{ path: '/' }">后台管理</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/WeekList' }">每周免单列表</el-breadcrumb-item>
-      <el-breadcrumb-item>修改每周免单</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/OnePrice' }">一口价列表</el-breadcrumb-item>
+      <el-breadcrumb-item>修改一口价</el-breadcrumb-item>
     </el-breadcrumb>
 
     <el-main>
@@ -17,9 +17,8 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="商品形式">
-              <el-input disabled="disabled" value="普通商品"></el-input>
+              <el-input disabled="disabled" value="一口价"></el-input>
             </el-form-item>
-            
           </el-col>
         </el-row>
         <el-row>
@@ -92,12 +91,12 @@
                 </el-select>
               </div>
             </el-form-item>
-            <el-form-item label="免单所需签到次数" prop="SignTimes">
+            <!-- <el-form-item label="免单所需签到次数" prop="SignTimes">
               <el-input v-model="getList.SignTimes" type="number"></el-input>
             </el-form-item>
             <el-form-item label="开团成功人数" prop="NumOfMem">
               <el-input v-model="getList.NumOfMem" type="number"></el-input>
-            </el-form-item>
+            </el-form-item> -->
           </el-col>
           <el-col :span="12">
             <el-form-item label="商品销量" prop="Salesvolume">
@@ -106,9 +105,9 @@
             <el-form-item label="商品佣金" prop="Commission">
               <el-input v-model="getList.Commission" type="number"></el-input>
             </el-form-item>
-            <el-form-item label="免单所需积分" prop="Ntegrate">
+            <!-- <el-form-item label="免单所需积分" prop="Ntegrate">
               <el-input v-model="getList.Ntegrate" type="number"></el-input>
-            </el-form-item>
+            </el-form-item> -->
           </el-col>
         </el-row>
         <el-row>
@@ -361,21 +360,21 @@
             required: true,
             validator: checkLogo
           }],
-          SignTimes: [{
-            required: true,
-            message: '请输入免单所需签到次数',
-            trigger: 'blur'
-          }, ],
-          NumOfMem: [{
-            required: true,
-            message: '请输入开团成功人数',
-            trigger: 'blur'
-          }, ],
-          Ntegrate: [{
-            required: true,
-            message: '请输入免单所需积分',
-            trigger: 'blur'
-          }, ],
+          // SignTimes: [{
+          //   required: true,
+          //   message: '请输入免单所需签到次数',
+          //   trigger: 'blur'
+          // }, ],
+          // NumOfMem: [{
+          //   required: true,
+          //   message: '请输入开团成功人数',
+          //   trigger: 'blur'
+          // }, ],
+          // Ntegrate: [{
+          //   required: true,
+          //   message: '请输入免单所需积分',
+          //   trigger: 'blur'
+          // }, ],
           
         },
       };
@@ -787,9 +786,9 @@
                   ProdPoster: this.getList.ProdPoster,
                   Detail: encodeURIComponent(content),
                   OutDiscount: -1,
-                  Ntegrate: this.getList.Ntegrate,
-                  NumOfMem: this.getList.NumOfMem,
-                  SignTimes: this.getList.SignTimes,
+                  Ntegrate: -1,
+                  NumOfMem: -1,
+                  SignTimes: -1,
                 })
               )
               .then(

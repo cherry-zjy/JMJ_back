@@ -84,16 +84,12 @@
             <el-form-item label="商品简介" prop="Introduce">
               <el-input type="textarea" v-model="getList.Introduce"></el-input>
             </el-form-item>
-            <!-- <el-form-item label="预售商品">
-              <el-switch v-model="getList.Isyushou"></el-switch>
-            </el-form-item> -->
-            <!-- <el-form-item label="折扣力度" prop="Salesvolume">
-              <el-input v-model="getList.Salesvolume" disabled="disabled" v-if="!getList.Isyushou"></el-input>
-              <el-input v-model="getList.Salesvolume" v-if="getList.Isyushou"></el-input>
-            </el-form-item> -->
-            <!-- <el-form-item label="身份验证">
+            <el-form-item label="预售商品">
+              <el-switch v-model="getList.IsSellOut"></el-switch>
+            </el-form-item>
+            <el-form-item label="身份验证">
               <el-switch v-model="getList.IsOutSourcing"></el-switch>
-            </el-form-item> -->
+            </el-form-item>
             <el-form-item label="快递运费">
               <el-switch v-model="yunfei"></el-switch>
               <div v-if="yunfei" style="display:inline-block">
@@ -108,6 +104,9 @@
           <el-col :span="12">
             <el-form-item label="商品销量" prop="Salesvolume">
               <el-input v-model="getList.Salesvolume" type="number"></el-input>
+            </el-form-item>
+            <el-form-item label="折扣力度" prop="OutDiscount" v-if="getList.IsSellOut">
+              <el-input v-model="getList.OutDiscount"></el-input>
             </el-form-item>
             <el-form-item label="商品佣金" prop="Commission">
               <el-input v-model="getList.Commission" type="number"></el-input>
@@ -306,6 +305,7 @@
             message: '请输入二级规格名称',
             trigger: 'blur'
           }],
+          
         },
         rules: {
           defaultMsg: [{
@@ -356,6 +356,11 @@
             message: '请输入商品简介',
             trigger: 'blur'
           }, ],
+          OutDiscount: [{
+            required: true,
+            message: '请输入折扣力度',
+            trigger: 'blur'
+          }],
           bannerimg: [{
             required: true,
             validator: checkbannerimg
@@ -391,6 +396,7 @@
             params: {
               type: 1,
               id: window.location.href.split("id=")[1],
+              // id: "9b657980-3cba-e811-89dc-00e0702bdc11",
               Token: getCookie("token"),
             }
           })
@@ -415,6 +421,9 @@
                 }
                 this.yunfei = response.data.Result.ExpressWay == 0 ? false : true
                 this.spce = response.data.Result.specification;
+                if (response.data.Result.IsSellOut) {
+                  
+                }
                 this.defaultMsg = decodeURIComponent(response.data.Result.Detail);
                 console.log(this.defaultMsg + '111')
               } else if (status === 40001) {
@@ -774,7 +783,7 @@
                   Image: banner,
                   ProdPoster: this.getList.ProdPoster,
                   Detail: encodeURIComponent(content),
-                  OutDiscount: -1,
+                  OutDiscount: this.getList.OutDiscount,
                   Ntegrate: -1,
                   NumOfMem: -1,
                   SignTimes: -1

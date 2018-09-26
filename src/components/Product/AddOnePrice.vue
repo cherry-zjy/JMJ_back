@@ -2,8 +2,8 @@
   <div>
     <el-breadcrumb separator="|" class="crumb">
       <el-breadcrumb-item :to="{ path: '/' }">后台管理</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/WeekList' }">每周免单列表</el-breadcrumb-item>
-      <el-breadcrumb-item>新增每周免单</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/OnePrice' }">一口价列表</el-breadcrumb-item>
+      <el-breadcrumb-item>新增一口价</el-breadcrumb-item>
     </el-breadcrumb>
 
     <el-main>
@@ -139,7 +139,7 @@
             qs.stringify({
               token: getCookie("token"),
               prodIDs: this.value1,
-              Type: 3,
+              Type: 4,
               StartTime: startTime,
               EndTime: endTime
             })

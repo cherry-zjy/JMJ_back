@@ -2,8 +2,8 @@
   <div>
     <el-breadcrumb separator="|" class="crumb">
       <el-breadcrumb-item :to="{ path: '/' }">后台管理</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/WeekList' }">每周免单列表</el-breadcrumb-item>
-      <el-breadcrumb-item>每周免单评价</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/OnePrice' }">一口价列表</el-breadcrumb-item>
+      <el-breadcrumb-item>一口价评价</el-breadcrumb-item>
     </el-breadcrumb>
 
     <!-- table 内容 -->

@@ -17,7 +17,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="商品形式">
-              <el-input disabled="disabled" value="普通商品"></el-input>
+              <el-input disabled="disabled" value="每周免单"></el-input>
             </el-form-item>
             
           </el-col>
