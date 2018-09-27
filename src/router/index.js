@@ -72,6 +72,7 @@ var OnePriceorderDetail = resolve => require(['../components/CommonOrder/OnePric
 
 //用户管理
 var OrdinaryUserList = resolve => require(['../components/User/OrdinaryUserList.vue'], resolve)
+var CobberList = resolve => require(['../components/User/CobberList.vue'], resolve)
 var OrdinaryUserMsg = resolve => require(['../components/User/OrdinaryUserMsg.vue'], resolve)
 
 
@@ -157,6 +158,7 @@ export default new Router({
         { path: '/OnePriceorderDetail/:id', component: OnePriceorderDetail, name: '一口价商品订单详情' }, 
         //用户管理
         { path: '/OrdinaryUserList', component: OrdinaryUserList, name: '普通用户' }, 
+        { path: '/CobberList', component: CobberList, name: '合伙人列表' }, 
         { path: '/OrdinaryUserMsg/:id', component: OrdinaryUserMsg, name: '普通用户下线信息' }, 
       ]
     },

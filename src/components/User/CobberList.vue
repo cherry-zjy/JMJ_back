@@ -2,31 +2,43 @@
   <div>
     <el-breadcrumb separator="|" class="crumb">
       <el-breadcrumb-item :to="{ path: '/' }">后台管理</el-breadcrumb-item>
-      <el-breadcrumb-item>资金明细</el-breadcrumb-item>
+      <el-breadcrumb-item>普通用户列表</el-breadcrumb-item>
     </el-breadcrumb>
+
+    <!--检索条-->
+    <el-col class="toolbar" style="padding-top: 15px;padding-bottom:20px">
+      <el-input v-model="sear" placeholder="用户手机号" prefix-icon="el-icon-search" style="width:200px"></el-input>
+      <el-button type="primary" @click="pageIndex = 1;getInfo()">查询</el-button>
+    </el-col>
 
     <!-- table 内容 -->
     <el-table :data="list" style="width: 100%" :border='true'>
-      <el-table-column label="订单编号" prop="OrderNo">
+      <el-table-column label="用户头像" prop="logo">
+        <template slot-scope="scope">
+          <img :src="mainurl+scope.row.Image" width="100" />
+        </template>
       </el-table-column>
-      <el-table-column label="商品名称" prop="prodName">
+      <el-table-column label="昵称" prop="NickName">
       </el-table-column>
-      <el-table-column label="购买用户" prop="userName">
+      <el-table-column label="用户身份" prop="ConsumerLevel">
       </el-table-column>
-      <el-table-column label="付款金额" prop="Pay">
+      <el-table-column label="手机号" prop="Phone">
       </el-table-column>
-      <el-table-column label="总佣金" prop="TotalCommission">
+      <el-table-column label="注册时间" prop="creaTime" :formatter="CreateTime">
       </el-table-column>
-      <el-table-column label="利润" prop="lirun">
+      <!-- <el-table-column label="考核信息" prop="Name">
       </el-table-column>
+      <el-table-column label="已警告通知天数" prop="Name">
+      </el-table-column> -->
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" type="primary" plain @click="handleEdit(scope.row.ID)">查看</el-button>
-          <!-- <el-button size="mini" type="danger" plain icon="el-icon-delete" @click="handleDelete(scope.row.ID)">删除</el-button> -->
+          <el-button size="mini" type="primary" @click="handleMsg(scope.row.ID)">下线信息</el-button>
+          <el-button size="mini" type="warning" @click="handleLook(scope.row.ID)">查看</el-button>
+          <el-button size="mini" type="info" @click="handleNotice(scope.row.ID)">冻结</el-button>
+          <el-button size="mini" type="success" @click="handleEdit(scope.row.ID)">通知</el-button>
         </template>
       </el-table-column>
     </el-table>
-
     <!-- 分页 -->
     <div class="block">
       <el-pagination @current-change="handleCurrentChange" layout="prev, pager, next,jumper" :page-count="pageCount">
@@ -37,12 +49,22 @@
 <script>
   export default {
     data() {
+      var checkLogo = (rule, value, callback) => {
+        if (this.imageUrl == '') {
+          callback(new Error("请上传图片"));
+        } else {
+          callback();
+        }
+      };
       return {
         list: [],
+        mainurl: '',
         pageIndex: 1,
-        pageSize: 12,
+        pageSize: 8,
         pageCount: 1,
-        mainurl: ''
+        sear: '',
+        startTime:'',
+        endTime:'',
       };
     },
     mounted() {
@@ -50,6 +72,10 @@
       this.getInfo();
     },
     methods: {
+      CreateTime(row, time) {
+        var date = row[time.property];
+        return date.replace("T", " ").split(".")[0];
+      },
       getInfo() {
         const loading = this.$loading({
           lock: true,
@@ -58,8 +84,9 @@
           background: "rgba(0, 0, 0, 0.7)"
         });
         this.$http
-          .get("api/Back_FinancementManage/FinancementList", {
+          .get("api/Back_UserManage/OrdinaryUserList", {
             params: {
+              phone: this.sear == '' ? '' - 1 : this.sear,
               pageIndex: this.pageIndex,
               pageSize: this.pageSize,
               Token: getCookie("token"),
@@ -70,7 +97,8 @@
               loading.close();
               var status = response.data.Status;
               if (status === 1) {
-                this.list = response.data.Result.dataList;
+                this.list = response.data.Result.datalist;
+                this.pageCount = response.data.Result.page;
               } else if (status === 40001) {
                 this.$message({
                   showClose: true,
@@ -103,13 +131,13 @@
             }.bind(this)
           );
       },
-      handleEdit(id) {
-        this.$router.push("/CommonOrderDetail/id=" + id);
-      },
       handleCurrentChange(val) {
         this.pageIndex = val;
         this.getInfo();
       },
+      handleMsg(id){
+        this.$router.push("/OrdinaryUserMsg/id=" + id);
+      }
     },
 
   };
