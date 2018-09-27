@@ -36,7 +36,7 @@
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" type="primary" @click="handleEdit(scope.$index)">查看</el-button>
+          <el-button size="mini" type="primary" @click="handleEdit(scope.row.ID)">查看</el-button>
           <el-button size="mini" type="warning" @click="fahuo(scope.row.ID)">发货</el-button>
         </template>
       </el-table-column>
@@ -189,6 +189,10 @@
       this.getInfo();
     },
     methods: {
+      CreateTime(row, time) {
+        var date = row[time.property];
+        return date.replace("T", " ").split(".")[0];
+      },
       Type(row, type) {
         var type = row[type.property];
         if (type == 0) {
@@ -267,59 +271,8 @@
         this.pageIndex = val;
         this.getInfo();
       },
-      handleEdit(index) {
-        const loading = this.$loading({
-          lock: true,
-          text: "Loading",
-          spinner: "el-icon-loading",
-          background: "rgba(0, 0, 0, 0.7)"
-        });
-        this.$http
-          .get("api/Back_OrderManage/ProductDetail", {
-            params: {
-              id: this.list[index].ID,
-              Token: getCookie("token"),
-            }
-          })
-          .then(
-            function (response) {
-              loading.close();
-              var status = response.data.Status;
-              if (status === 1) {
-                this.FormVisible = true;
-                this.editForm = response.data.Result
-              } else if (status === 40001) {
-                this.$message({
-                  showClose: true,
-                  type: "warning",
-                  message: response.data.Result
-                });
-                setTimeout(() => {
-                  this.$router.push({
-                    path: "/login"
-                  });
-                }, 1500);
-              } else {
-                loading.close();
-                this.$message({
-                  showClose: true,
-                  type: "warning",
-                  message: response.data.Result
-                });
-              }
-            }.bind(this)
-          )
-          // 请求error
-          .catch(
-            function (error) {
-              loading.close();
-              this.$notify.error({
-                title: "错误",
-                message: "错误：请检查网络"
-              });
-            }.bind(this)
-          );
-
+      handleEdit(id) {
+        this.$router.push("/CommonOrderDetail/id=" + id);
       },
       fahuo(id){
         this.$confirm('确认发货?', '提示', {

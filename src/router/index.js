@@ -59,11 +59,17 @@ var EditOnePrice = resolve => require(['../components/Product/EditOnePrice.vue']
 var OnePriceComment = resolve => require(['../components/Product/OnePriceComment.vue'], resolve)
 //资金明细
 var FinancementList = resolve => require(['../components/Financement/FinancementList.vue'], resolve)
+var FinancementCash = resolve => require(['../components/Financement/FinancementCash.vue'], resolve)
 //订单管理
 var CommonOrderList = resolve => require(['../components/CommonOrder/CommonOrderList.vue'], resolve)
 var WeekOrderList = resolve => require(['../components/CommonOrder/WeekOrderList.vue'], resolve)
 var Dailyorderlist = resolve => require(['../components/CommonOrder/Dailyorderlist.vue'], resolve)
 var OnePriceorderlist = resolve => require(['../components/CommonOrder/OnePriceorderlist.vue'], resolve)
+var CommonOrderDetail = resolve => require(['../components/CommonOrder/CommonOrderDetail.vue'], resolve)
+var WeekOrderDetail = resolve => require(['../components/CommonOrder/WeekOrderDetail.vue'], resolve)
+var DailyorderDetail = resolve => require(['../components/CommonOrder/DailyorderDetail.vue'], resolve)
+var OnePriceorderDetail = resolve => require(['../components/CommonOrder/OnePriceorderDetail.vue'], resolve)
+
 //用户管理
 var OrdinaryUserList = resolve => require(['../components/User/OrdinaryUserList.vue'], resolve)
 var OrdinaryUserMsg = resolve => require(['../components/User/OrdinaryUserMsg.vue'], resolve)
@@ -105,6 +111,7 @@ export default new Router({
         { path: '/BankDetaill/:id', component: BankDetaill, name: '银行详情' },
         //资金明细
         { path: '/FinancementList', component: FinancementList, name: '资金明细' },
+        { path: '/FinancementCash', component: FinancementCash, name: '资金提现' },
         // 分类管理
         { path: '/FirstLevelList', component: FirstLevelList, name: '一级分类' }, 
         { path: '/SecondLevelList/:id', component: SecondLevelList, name: '二级分类' }, 
@@ -144,6 +151,10 @@ export default new Router({
         { path: '/WeekOrderList', component: WeekOrderList, name: '免单商品订单' }, 
         { path: '/Dailyorderlist', component: Dailyorderlist, name: '团购商品订单' }, 
         { path: '/OnePriceorderlist', component: OnePriceorderlist, name: '一口价商品订单' }, 
+        { path: '/CommonOrderDetail/:id', component: CommonOrderDetail, name: '普通商品订单详情' }, 
+        { path: '/WeekOrderDetail/:id', component: WeekOrderDetail, name: '免单商品订单详情' }, 
+        { path: '/DailyorderDetail/:id', component: DailyorderDetail, name: '团购商品订单详情' }, 
+        { path: '/OnePriceorderDetail/:id', component: OnePriceorderDetail, name: '一口价商品订单详情' }, 
         //用户管理
         { path: '/OrdinaryUserList', component: OrdinaryUserList, name: '普通用户' }, 
         { path: '/OrdinaryUserMsg/:id', component: OrdinaryUserMsg, name: '普通用户下线信息' }, 
