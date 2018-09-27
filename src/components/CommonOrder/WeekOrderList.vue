@@ -49,27 +49,21 @@
 
     <!--模态框-->
     <el-dialog title="详情" :visible.sync="FormVisible">
-      <el-form :model="editForm" label-width="120px" ref="editForm">
+      <el-form :model="editForm" label-width="150px" ref="editForm">
         <el-row>
           <el-col :span="12">
             <p class="title">订单信息</p>
             <el-form-item label="订单号">
               {{editForm.orderNo}}
             </el-form-item>
-            <el-form-item label="用户ID">
-              {{editForm.userID}}
+            <el-form-item label="用户名">
+              {{editForm.userName}}
             </el-form-item>
             <el-form-item label="购买信息">
               {{editForm.BuyMessage}}
             </el-form-item>
             <el-form-item label="商品金额">
               {{editForm.prodPrice}}
-            </el-form-item>
-            <el-form-item label="抵用券">
-              {{editForm.zheKou}}
-            </el-form-item>
-            <el-form-item label="红包">
-              {{editForm.hongBao}}
             </el-form-item>
             <el-form-item label="实付金额">
               {{editForm.onlinePrice}}
@@ -82,6 +76,15 @@
             </el-form-item>
             <el-form-item label="身份验证">
               {{editForm.Identity}}
+            </el-form-item>
+            <el-form-item label="免单所需参团人数">
+              {{editForm.NumOfMem}}
+            </el-form-item>
+            <el-form-item label="返款所需签到人数">
+              {{editForm.SignTimes}}
+            </el-form-item>
+            <el-form-item label="返款所需消耗积分">
+              {{editForm.Ntegrate}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -410,10 +413,9 @@
   .el-row {
     padding: 20px 0px;
   }
-
   .title {
     font-size: 22px;
-    padding: 15px;
+    padding-bottom: 15px;
     font-weight: bolder;
   }
 
@@ -424,5 +426,8 @@
   .el-dialog {
     width: 80%;
   }
+  .el-form-item {
+    margin-bottom: 0;
+}
 
 </style>

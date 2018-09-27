@@ -57,16 +57,13 @@
               {{editForm.orderNo}}
             </el-form-item>
             <el-form-item label="用户名">
-              {{editForm.consigneeName}}
+              {{editForm.userName}}
             </el-form-item>
             <el-form-item label="购买信息">
               {{editForm.BuyMessage}}
             </el-form-item>
             <el-form-item label="商品金额">
               {{editForm.prodPrice}}
-            </el-form-item>
-            <el-form-item label="抵用券">
-              {{editForm.zheKou}}
             </el-form-item>
             <el-form-item label="红包">
               {{editForm.hongBao}}
@@ -90,7 +87,7 @@
               {{editForm.orderType | orderType}}
             </el-form-item>
             <el-form-item label="收货人姓名">
-              {{editForm.OrderNumber}}
+              {{editForm.consigneeName}}
             </el-form-item>
             <el-form-item label="收货人电话">
               {{editForm.phone}}
@@ -413,7 +410,7 @@
 
   .title {
     font-size: 22px;
-    padding: 15px;
+    padding-bottom: 15px;
     font-weight: bolder;
   }
 
@@ -424,5 +421,8 @@
   .el-dialog {
     width: 80%;
   }
+  .el-form-item {
+    margin-bottom: 0;
+}
 
 </style>
