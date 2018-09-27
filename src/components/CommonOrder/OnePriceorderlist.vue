@@ -75,7 +75,7 @@
               {{editForm.onlinePrice}}
             </el-form-item>
             <el-form-item label="支付方式">
-              {{editForm.Paytype}}
+              {{editForm.Paytype | Paytype}}
             </el-form-item>
             <el-form-item label="支付时间">
               {{editForm.payTime}}
@@ -172,6 +172,15 @@
           value = "已取消"
         }
         return value
+      },
+      Paytype: function (value) {
+        if (value == 0) {
+          value = "支付宝"
+        } else if (value == 1) {
+          value = "微信"
+        } else if (value == 2) {
+          value = "余额"
+        }
         return value
       }
     },

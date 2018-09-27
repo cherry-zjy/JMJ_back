@@ -56,8 +56,8 @@
             <el-form-item label="订单号">
               {{editForm.orderNo}}
             </el-form-item>
-            <el-form-item label="用户名">
-              {{editForm.consigneeName}}
+            <el-form-item label="用户ID">
+              {{editForm.userID}}
             </el-form-item>
             <el-form-item label="购买信息">
               {{editForm.BuyMessage}}
@@ -75,7 +75,7 @@
               {{editForm.onlinePrice}}
             </el-form-item>
             <el-form-item label="支付方式">
-              {{editForm.Paytype}}
+              {{editForm.Paytype | Paytype}}
             </el-form-item>
             <el-form-item label="支付时间">
               {{editForm.payTime}}
@@ -90,7 +90,7 @@
               {{editForm.orderType | orderType}}
             </el-form-item>
             <el-form-item label="收货人姓名">
-              {{editForm.OrderNumber}}
+              {{editForm.consigneeName}}
             </el-form-item>
             <el-form-item label="收货人电话">
               {{editForm.phone}}
@@ -172,6 +172,15 @@
           value = "已取消"
         }
         return value
+      },
+      Paytype: function (value) {
+        if (value == 0) {
+          value = "支付宝"
+        } else if (value == 1) {
+          value = "微信"
+        } else if (value == 2) {
+          value = "余额"
+        }
         return value
       }
     },

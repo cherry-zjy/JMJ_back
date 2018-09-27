@@ -64,6 +64,10 @@ var CommonOrderList = resolve => require(['../components/CommonOrder/CommonOrder
 var WeekOrderList = resolve => require(['../components/CommonOrder/WeekOrderList.vue'], resolve)
 var Dailyorderlist = resolve => require(['../components/CommonOrder/Dailyorderlist.vue'], resolve)
 var OnePriceorderlist = resolve => require(['../components/CommonOrder/OnePriceorderlist.vue'], resolve)
+//用户管理
+var OrdinaryUserList = resolve => require(['../components/User/OrdinaryUserList.vue'], resolve)
+var OrdinaryUserMsg = resolve => require(['../components/User/OrdinaryUserMsg.vue'], resolve)
+
 
 // 懒加载方式，当路由被访问的时候才加载对应组件
 Vue.use(Router)
@@ -140,6 +144,9 @@ export default new Router({
         { path: '/WeekOrderList', component: WeekOrderList, name: '免单商品订单' }, 
         { path: '/Dailyorderlist', component: Dailyorderlist, name: '团购商品订单' }, 
         { path: '/OnePriceorderlist', component: OnePriceorderlist, name: '一口价商品订单' }, 
+        //用户管理
+        { path: '/OrdinaryUserList', component: OrdinaryUserList, name: '普通用户' }, 
+        { path: '/OrdinaryUserMsg/:id', component: OrdinaryUserMsg, name: '普通用户下线信息' }, 
       ]
     },
   ]
