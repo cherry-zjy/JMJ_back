@@ -2,42 +2,47 @@
   <div>
     <el-breadcrumb separator="|" class="crumb">
       <el-breadcrumb-item :to="{ path: '/' }">后台管理</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/OrdinaryUserList' }">普通用户列表</el-breadcrumb-item>
-      <el-breadcrumb-item>普通用户下线信息</el-breadcrumb-item>
+      <el-breadcrumb-item>官方合伙人列表</el-breadcrumb-item>
     </el-breadcrumb>
 
     <!--检索条-->
-    <el-col class="toolbar" style="padding-top: 15px;">
-      <el-form :inline="true" style="float:right">
-        <el-form-item>
+    <el-col class="toolbar" style="padding-top: 15px;padding-bottom:20px">
+      <el-input v-model="sear" placeholder="用户手机号" prefix-icon="el-icon-search" style="width:200px"></el-input>
+      <el-button type="primary" @click="pageIndex = 1;getInfo()">查询</el-button>
+      <div style="float:right;">
           <el-button type="primary" @click="handleAdd()">新增</el-button>
-        </el-form-item>
-      </el-form>
+        </div>
     </el-col>
 
     <!-- table 内容 -->
     <el-table :data="list" style="width: 100%" :border='true'>
-      <el-table-column label="关系" prop="relationShipOneName">
+      <el-table-column label="用户头像" prop="image">
+        <template slot-scope="scope">
+          <img :src="mainurl+scope.row.image" width="100" />
+        </template>
       </el-table-column>
-      <el-table-column label="用户名" prop="name">
+      <el-table-column label="昵称" prop="nickName">
       </el-table-column>
-      <el-table-column label="身份" prop="identity">
+      <el-table-column label="地区" prop="Adress">
       </el-table-column>
-      <el-table-column label="佣金" prop="Commission">
+      <el-table-column label="手机号" prop="phone">
+      </el-table-column>
+      <el-table-column label="余额" prop="Price">
+      </el-table-column>
+      <el-table-column label="注册时间" prop="CreateTime" :formatter="CreateTime">
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" type="primary" @click="handleDel(scope.row.ID)">删除</el-button>
+          <el-button size="mini" type="warning" @click="handleLook(scope.row.ID)">查看</el-button>
+          <el-button size="mini" type="danger" @click="handleDel(scope.row.ID)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-
     <!-- 分页 -->
     <div class="block">
       <el-pagination @current-change="handleCurrentChange" layout="prev, pager, next,jumper" :page-count="pageCount">
       </el-pagination>
     </div>
-
     <!-- 模态框 -->
     <el-dialog title="新增" :visible.sync="dialogFormVisible" width="50%">
       <el-form :model="editlist" :rules="rules" ref="editlist" label-width="150px" class="demo-ruleForm">
@@ -53,16 +58,17 @@
   </div>
 </template>
 <script>
-  import qs from "qs";
   export default {
     data() {
       return {
         list: [],
-        editlist: [],
-        dialogFormVisible: false,
+        mainurl: '',
         pageIndex: 1,
-        pageSize: 12,
+        pageSize: 8,
         pageCount: 1,
+        sear: '',
+        dialogFormVisible:false,
+        editlist:[],
         rules: {
           phone: [{
             required: true,
@@ -73,9 +79,14 @@
       };
     },
     mounted() {
+      this.mainurl = mainurl
       this.getInfo();
     },
     methods: {
+      CreateTime(row, time) {
+        var date = row[time.property];
+        return date.replace("T", " ").split(".")[0];
+      },
       getInfo() {
         const loading = this.$loading({
           lock: true,
@@ -84,19 +95,22 @@
           background: "rgba(0, 0, 0, 0.7)"
         });
         this.$http
-          .post("api/Back_UserManage/LineMessage?token=" + getCookie("token") + "&id=" + window.location.href.split(
-              "id=")[1],
-            // qs.stringify({
-            //   token: getCookie("token"),
-            //   id:window.location.href.split("id=")[1],
-            // })
-          )
+          .get("api/Back_UserManage/CobberList", {
+            params: {
+              phone: this.sear == '' ? '' - 1 : this.sear,
+              pageIndex: this.pageIndex,
+              pageSize: this.pageSize,
+              Token: getCookie("token"),
+              type:2
+            }
+          })
           .then(
             function (response) {
               loading.close();
               var status = response.data.Status;
               if (status === 1) {
                 this.list = response.data.Result.datalist;
+                this.pageCount = response.data.Result.page;
               } else if (status === 40001) {
                 this.$message({
                   showClose: true,
@@ -104,7 +118,7 @@
                   message: response.data.Result
                 });
                 setTimeout(() => {
-                  tt.$router.push({
+                  this.$router.push({
                     path: "/login"
                   });
                 }, 1500);
@@ -121,7 +135,6 @@
           // 请求error
           .catch(
             function (error) {
-              console.log(error)
               loading.close();
               this.$notify.error({
                 title: "错误",
@@ -129,6 +142,13 @@
               });
             }.bind(this)
           );
+      },
+      handleCurrentChange(val) {
+        this.pageIndex = val;
+        this.getInfo();
+      },
+      handleLook(id){
+        this.$router.push("/GovLook/id=" + id);
       },
       handleAdd() {
         this.editlist = []
@@ -144,7 +164,7 @@
               background: "rgba(0, 0, 0, 0.7)"
             });
             this.$http
-              .post("api/Back_UserManage/LineAdd?token=" + getCookie("token") + "&id=" + window.location.href.split(
+              .post("api/Back_UserManage/GovAdd?token=" + getCookie("token") + "&id=" + window.location.href.split(
                   "id=")[1] + "&phone=" + this.editlist.phone,
                 // qs.stringify({
                 //   token: getCookie("token"),
@@ -201,81 +221,7 @@
           }
         });
       },
-      handleCurrentChange(val) {
-        this.pageIndex = val;
-        this.getInfo();
-      },
-      handleDel(id) {
-        this.$confirm('确认删除?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          const loading = this.$loading({
-            lock: true,
-            text: "Loading",
-            spinner: "el-icon-loading",
-            background: "rgba(0, 0, 0, 0.7)"
-          });
-          this.$http
-            .post("api/Back_UserManage/LineDelete?token=" + getCookie("token") + "&id=" + id,
-              // qs.stringify({
-              //   token: getCookie("token"),
-              //   id:window.location.href.split("id=")[1],
-              // })
-            )
-            .then(
-              function (response) {
-                loading.close();
-                var status = response.data.Status;
-                if (status === 1) {
-                  this.$message({
-                    showClose: true,
-                    type: "success",
-                    message: response.data.Result
-                  });
-                  this.getInfo()
-                } else if (status === 40001) {
-                  this.$message({
-                    showClose: true,
-                    type: "warning",
-                    message: response.data.Result
-                  });
-                  setTimeout(() => {
-                    this.$router.push({
-                      path: "/login"
-                    });
-                  }, 1500);
-                } else {
-                  loading.close();
-                  this.$message({
-                    showClose: true,
-                    type: "warning",
-                    message: response.data.Result
-                  });
-                }
-              }.bind(this)
-            )
-            // 请求error
-            .catch(
-              function (error) {
-                console.log(error)
-                loading.close();
-                this.$notify.error({
-                  title: "错误",
-                  message: "错误：请检查网络"
-                });
-              }.bind(this)
-            );
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });
-        });
-      }
     },
-
 
   };
 

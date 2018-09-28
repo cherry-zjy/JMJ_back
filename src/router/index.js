@@ -74,7 +74,10 @@ var OnePriceorderDetail = resolve => require(['../components/CommonOrder/OnePric
 var OrdinaryUserList = resolve => require(['../components/User/OrdinaryUserList.vue'], resolve)
 var CobberList = resolve => require(['../components/User/CobberList.vue'], resolve)
 var OrdinaryUserMsg = resolve => require(['../components/User/OrdinaryUserMsg.vue'], resolve)
-
+var OrdinaryUserLook = resolve => require(['../components/User/OrdinaryUserLook.vue'], resolve)
+var CobberLook = resolve => require(['../components/User/CobberLook.vue'], resolve)
+var GovList = resolve => require(['../components/User/GovList.vue'], resolve)
+var GovLook = resolve => require(['../components/User/GovLook.vue'], resolve)
 
 // 懒加载方式，当路由被访问的时候才加载对应组件
 Vue.use(Router)
@@ -158,8 +161,13 @@ export default new Router({
         { path: '/OnePriceorderDetail/:id', component: OnePriceorderDetail, name: '一口价商品订单详情' }, 
         //用户管理
         { path: '/OrdinaryUserList', component: OrdinaryUserList, name: '普通用户' }, 
-        { path: '/CobberList', component: CobberList, name: '合伙人列表' }, 
+        { path: '/CobberList', component: CobberList, name: '城市合伙人列表' }, 
         { path: '/OrdinaryUserMsg/:id', component: OrdinaryUserMsg, name: '普通用户下线信息' }, 
+        { path: '/OrdinaryUserLook/:id', component: OrdinaryUserLook, name: '普通用户详情' }, 
+        { path: '/CobberLook/:id', component: CobberLook, name: '城市合伙人详情' }, 
+        { path: '/GovLook/:id', component: GovLook, name: '官方合伙人详情' }, 
+        { path: '/GovList', component: GovList, name: '官方合伙人列表' }, 
+        
       ]
     },
   ]

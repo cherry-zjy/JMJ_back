@@ -63,8 +63,8 @@
         pageSize: 8,
         pageCount: 1,
         sear: '',
-        startTime:'',
-        endTime:'',
+        startTime: '',
+        endTime: '',
       };
     },
     mounted() {
@@ -135,9 +135,151 @@
         this.pageIndex = val;
         this.getInfo();
       },
-      handleMsg(id){
+      handleMsg(id) {
         this.$router.push("/OrdinaryUserMsg/id=" + id);
+      },
+      handleLook(id) {
+        this.$router.push("/OrdinaryUserLook/id=" + id);
+      },
+      handleNotice(id) {
+        this.$confirm('确认冻结?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          const loading = this.$loading({
+            lock: true,
+            text: "Loading",
+            spinner: "el-icon-loading",
+            background: "rgba(0, 0, 0, 0.7)"
+          });
+          this.$http
+            .post("api/Back_UserManage/Blocking?token=" + getCookie("token") + "&id=" + id,
+              // qs.stringify({
+              //   token: getCookie("token"),
+              //   id:window.location.href.split("id=")[1],
+              // })
+            )
+            .then(
+              function (response) {
+                loading.close();
+                var status = response.data.Status;
+                if (status === 1) {
+                  this.$message({
+                    showClose: true,
+                    type: "success",
+                    message: response.data.Result
+                  });
+                  this.getInfo()
+                } else if (status === 40001) {
+                  this.$message({
+                    showClose: true,
+                    type: "warning",
+                    message: response.data.Result
+                  });
+                  setTimeout(() => {
+                    this.$router.push({
+                      path: "/login"
+                    });
+                  }, 1500);
+                } else {
+                  loading.close();
+                  this.$message({
+                    showClose: true,
+                    type: "warning",
+                    message: response.data.Result
+                  });
+                }
+              }.bind(this)
+            )
+            // 请求error
+            .catch(
+              function (error) {
+                console.log(error)
+                loading.close();
+                this.$notify.error({
+                  title: "错误",
+                  message: "错误：请检查网络"
+                });
+              }.bind(this)
+            );
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消冻结'
+          });
+        });
+      },
+      handleEdit(id) {
+        this.$confirm('确认通知?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          const loading = this.$loading({
+            lock: true,
+            text: "Loading",
+            spinner: "el-icon-loading",
+            background: "rgba(0, 0, 0, 0.7)"
+          });
+          this.$http
+            .post("api/Back_UserManage/userMessage?token=" + getCookie("token") + "&id=" + id,
+              // qs.stringify({
+              //   token: getCookie("token"),
+              //   id:window.location.href.split("id=")[1],
+              // })
+            )
+            .then(
+              function (response) {
+                loading.close();
+                var status = response.data.Status;
+                if (status === 1) {
+                  this.$message({
+                    showClose: true,
+                    type: "success",
+                    message: response.data.Result
+                  });
+                  this.getInfo()
+                } else if (status === 40001) {
+                  this.$message({
+                    showClose: true,
+                    type: "warning",
+                    message: response.data.Result
+                  });
+                  setTimeout(() => {
+                    this.$router.push({
+                      path: "/login"
+                    });
+                  }, 1500);
+                } else {
+                  loading.close();
+                  this.$message({
+                    showClose: true,
+                    type: "warning",
+                    message: response.data.Result
+                  });
+                }
+              }.bind(this)
+            )
+            // 请求error
+            .catch(
+              function (error) {
+                console.log(error)
+                loading.close();
+                this.$notify.error({
+                  title: "错误",
+                  message: "错误：请检查网络"
+                });
+              }.bind(this)
+            );
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消通知'
+          });
+        });
       }
+      
     },
 
   };
