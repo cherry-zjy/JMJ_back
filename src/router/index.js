@@ -43,7 +43,7 @@ var AddOrdinaryProduct = resolve => require(['../components/Product/AddOrdinaryP
 var EditOrdinaryProduct = resolve => require(['../components/Product/EditOrdinaryProduct.vue'], resolve)
 var OrdinaryComment = resolve => require(['../components/Product/OrdinaryComment.vue'], resolve)
 
-var Dailyorderlist = resolve => require(['../components/Product/Dailyorderlist.vue'], resolve)
+var DailyList = resolve => require(['../components/Product/DailyList.vue'], resolve)
 var AddDaily = resolve => require(['../components/Product/AddDaily.vue'], resolve)
 var EditDaily = resolve => require(['../components/Product/EditDaily.vue'], resolve)
 var DailyComment = resolve => require(['../components/Product/DailyComment.vue'], resolve)
@@ -69,6 +69,7 @@ var CommonOrderDetail = resolve => require(['../components/CommonOrder/CommonOrd
 var WeekOrderDetail = resolve => require(['../components/CommonOrder/WeekOrderDetail.vue'], resolve)
 var DailyorderDetail = resolve => require(['../components/CommonOrder/DailyorderDetail.vue'], resolve)
 var OnePriceorderDetail = resolve => require(['../components/CommonOrder/OnePriceorderDetail.vue'], resolve)
+var RedemptionOrder = resolve => require(['../components/CommonOrder/RedemptionOrder.vue'], resolve)
 
 //用户管理
 var OrdinaryUserList = resolve => require(['../components/User/OrdinaryUserList.vue'], resolve)
@@ -136,7 +137,7 @@ export default new Router({
         { path: '/EditOrdinaryProduct/:id', component: EditOrdinaryProduct, name: '修改普通商品' }, 
         { path: '/OrdinaryComment/:id', component: OrdinaryComment, name: '普通商品评价' }, 
 
-        { path: '/DailyList', component: Dailyorderlist, name: '每日团购' }, 
+        { path: '/DailyList', component: DailyList, name: '每日团购' }, 
         { path: '/AddDaily', component: AddDaily, name: '新增每日团购' }, 
         { path: '/EditDaily/:id', component: EditDaily, name: '修改每日团购' }, 
         { path: '/DailyComment/:id', component: DailyComment, name: '每日团购评价' }, 
@@ -159,6 +160,7 @@ export default new Router({
         { path: '/WeekOrderDetail/:id', component: WeekOrderDetail, name: '免单商品订单详情' }, 
         { path: '/DailyorderDetail/:id', component: DailyorderDetail, name: '团购商品订单详情' }, 
         { path: '/OnePriceorderDetail/:id', component: OnePriceorderDetail, name: '一口价商品订单详情' }, 
+        { path: '/RedemptionOrder', component: RedemptionOrder, name: '积分兑换订单详情' }, 
         //用户管理
         { path: '/OrdinaryUserList', component: OrdinaryUserList, name: '普通用户' }, 
         { path: '/CobberList', component: CobberList, name: '城市合伙人列表' }, 

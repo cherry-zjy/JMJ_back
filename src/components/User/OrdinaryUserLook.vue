@@ -54,6 +54,9 @@
             <el-form-item label="推广码">
               {{editForm.InviteCode}}
             </el-form-item>
+            <el-form-item label="我的推广人">
+              {{editForm.tuiguangren}}
+            </el-form-item>
             <el-form-item label="上一次购买时间">
               {{editForm.paytime}}
             </el-form-item>

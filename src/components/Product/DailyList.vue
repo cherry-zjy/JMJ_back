@@ -33,6 +33,12 @@
       </el-table-column>
       <el-table-column label="商品佣金" prop="commission">
       </el-table-column>
+      <el-table-column label="有效时间" prop="commission">
+        <template slot-scope="scope">
+          <span>{{scope.row.StartTime | Time}}</span>--
+          <span>{{scope.row.EndTime | Time}}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="商品评价" prop="Name">
         <template slot-scope="scope">
           <el-button size="mini" type="primary" @click="comment(scope.row.ID)">查看</el-button>
@@ -76,6 +82,11 @@
       this.mainurl = mainurl
       this.getInfo();
     },
+    filters:{
+      Time: function (value) {
+        return value.replace("T", " ").split(".")[0];
+      },
+    },
     methods: {
       getInfo() {
         const loading = this.$loading({
@@ -84,6 +95,7 @@
           spinner: "el-icon-loading",
           background: "rgba(0, 0, 0, 0.7)"
         });
+        console.log(this.startTime)
         this.$http
           .get("api/Back_ProductManage/DailyList", {
             params: {
