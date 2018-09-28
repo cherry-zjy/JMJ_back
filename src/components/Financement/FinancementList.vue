@@ -4,6 +4,10 @@
       <el-breadcrumb-item :to="{ path: '/' }">后台管理</el-breadcrumb-item>
       <el-breadcrumb-item>资金明细</el-breadcrumb-item>
     </el-breadcrumb>
+    <div class="box">
+    <p>总营业额：{{ZongPay}}</p>
+    <p>总收益：{{Zongli}}</p>
+    </div>
 
     <!-- table 内容 -->
     <el-table :data="list" style="width: 100%" :border='true'>
@@ -42,7 +46,9 @@
         pageIndex: 1,
         pageSize: 12,
         pageCount: 1,
-        mainurl: ''
+        mainurl: '',
+        Zongli:'',
+        ZongPay:''
       };
     },
     mounted() {
@@ -70,6 +76,8 @@
               loading.close();
               var status = response.data.Status;
               if (status === 1) {
+                this.ZongPay = response.data.Result.ZongPay
+                this.Zongli = response.data.Result.Zongli
                 this.list = response.data.Result.dataList;
               } else if (status === 40001) {
                 this.$message({
@@ -140,6 +148,10 @@
 
   .el-input {
     width: 50%;
+  }
+  .box{
+    padding: 20px 0;
+    font-weight: 600;
   }
 
 </style>

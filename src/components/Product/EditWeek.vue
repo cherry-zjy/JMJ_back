@@ -150,7 +150,7 @@
     <el-dialog title="新增一级分类名称" :visible.sync="dialogFormVisible1" width="50%">
       <el-form :model="AddForm" :rules="addrules" ref="AddForm" label-width="150px" class="demo-editForm"
         label-position="left">
-        <el-form-item label="一级规格名称" prop="value">
+        <el-form-item label="一级规格名称" prop="SpeName">
           <el-input v-model="AddForm.SpeName"></el-input>
         </el-form-item>
       </el-form>
@@ -271,7 +271,7 @@
           specSecond: []
         },
         addrules: {
-          value: [{
+          SpeName: [{
             required: true,
             message: '请输入一级规格名称',
             trigger: 'blur'
@@ -683,6 +683,10 @@
       submitOneForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
+            this.AddForm = {
+              SpeName: this.AddForm.SpeName,
+              specSecond: []
+            }
             this.spce.push(this.AddForm)
             console.log(this.spce)
             this.dialogFormVisible1 = false

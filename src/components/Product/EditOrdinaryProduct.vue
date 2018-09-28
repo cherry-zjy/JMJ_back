@@ -152,7 +152,7 @@
     <el-dialog title="新增一级分类名称" :visible.sync="dialogFormVisible1" width="50%">
       <el-form :model="AddForm" :rules="addrules" ref="AddForm" label-width="150px" class="demo-editForm"
         label-position="left">
-        <el-form-item label="一级规格名称" prop="value">
+        <el-form-item label="一级规格名称" prop="SpeName">
           <el-input v-model="AddForm.SpeName"></el-input>
         </el-form-item>
       </el-form>
@@ -273,7 +273,7 @@
           specSecond: []
         },
         addrules: {
-          value: [{
+          SpeName: [{
             required: true,
             message: '请输入一级规格名称',
             trigger: 'blur'
@@ -661,6 +661,7 @@
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
+            console.log(this.spce)
             this.spce[this.addindex].specSecond.push({
               SpecName: this.editForm.SpecName,
               Stock: this.editForm.Stock,
@@ -679,6 +680,10 @@
       submitOneForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
+            this.AddForm = {
+              SpeName: this.AddForm.SpeName,
+              specSecond: []
+            }
             this.spce.push(this.AddForm)
             console.log(this.spce)
             this.dialogFormVisible1 = false
@@ -713,6 +718,7 @@
         this.spce[index].specSecond.splice(index, 1)
       },
       handleAdd(index) {
+        console.log(index)
         this.editForm = [];
         this.addindex = index
         this.dialogFormVisible = true
@@ -724,6 +730,7 @@
       submitFormwork(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
+            this.demospce = []
             var content = this.$refs.ueditor.getUEContent();
             //商品轮播图
             var banner = '';
@@ -755,6 +762,7 @@
               this.demospce.push(this.demo)
             }
             console.log(this.demospce)
+            // return;
             const loading = this.$loading({
               lock: true,
               text: "Loading",

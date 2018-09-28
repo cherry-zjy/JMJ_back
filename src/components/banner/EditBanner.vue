@@ -57,6 +57,17 @@
           callback();
         }
       };
+      var checkUrl = (rule, value, callback) => {
+        console.log(this.getList.Url)
+        console.log(this.getList.IsJump)
+        if (this.getList.IsJump == 'true') {
+          if ( this.getList.Url == null || this.getList.Url == '') {
+            callback(new Error("请填写跳转地址"));
+          }
+        } else {
+          callback();
+        }
+      };
       return {
         getList: [],
         dialogFormVisible: false,
@@ -65,9 +76,7 @@
         action: '',
         rules: {
           Url: [{
-            required: true,
-            message: '请输入跳转地址',
-            trigger: 'blur'
+            validator: checkUrl
           }, ],
           Image: [{
             required: true,
