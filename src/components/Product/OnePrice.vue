@@ -22,7 +22,7 @@
       </el-table-column>
       <el-table-column label="缩略图" prop="logo">
         <template slot-scope="scope">
-          <img :src="mainurl+scope.row.Image" width="100" />
+          <img :src="mainurl+scope.row.logo" width="100" />
         </template>
       </el-table-column>
       <el-table-column label="商品价格" prop="price">

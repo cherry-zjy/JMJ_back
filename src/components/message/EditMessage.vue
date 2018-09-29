@@ -18,8 +18,9 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
-        <el-form-item label="消息内容" prop="defaultMsg">
-          <UEditor :defaultMsg='defaultMsg' :config='config' ref="ueditor"></UEditor>
+        <el-form-item label="消息内容" prop="Content">
+           <el-input v-model="getList.Content" type="textarea" rows="8"></el-input>
+          <!-- <UEditor :defaultMsg='defaultMsg' :config='config' ref="ueditor"></UEditor> -->
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submitForm('getList')">修改</el-button>
@@ -33,13 +34,13 @@
   import qs from "qs";
   export default {
     data() {
-      var checkdefaultMsg = (rule, value, callback) => {
-        if (encodeURIComponent(this.$refs.ueditor.getUEContent()) == '') {
-          callback(new Error("请输入内容"));
-        } else {
-          callback();
-        }
-      };
+      // var checkdefaultMsg = (rule, value, callback) => {
+      //   if (encodeURIComponent(this.$refs.ueditor.getUEContent()) == '') {
+      //     callback(new Error("请输入内容"));
+      //   } else {
+      //     callback();
+      //   }
+      // };
       var checkLogo = (rule, value, callback) => {
         if (this.imageUrl == '') {
           callback(new Error("请上传图片"));
@@ -60,15 +61,16 @@
           initialFrameWidth: null,
           initialFrameHeight: 500
         },
-        defaultMsg: "这里是初始化内容",
+        // defaultMsg: "这里是初始化内容",
         rules: {
           Image: [{
             required: true,
             validator: checkLogo
           }],
-          defaultMsg: [{
+          Content: [{
             required: true,
-            validator: checkdefaultMsg
+            message: '请输入消息内容',
+            trigger: 'blur'
           }],
           Title: [{
             required: true,
@@ -79,9 +81,9 @@
         find: false
       };
     },
-    components: {
-      UEditor
-    },
+    // components: {
+    //   UEditor
+    // },
     mounted() {
       this.mainurl = mainurl
       this.action = this.mainurl + "/api/UploadPhotos/UpdateForImage";
@@ -123,7 +125,8 @@
                 for (let i = 0; i < response.data.Result.datalist.length; i++) {
                   if (window.location.href.split("id=")[1] == response.data.Result.datalist[i].ID) {
                     this.getList = response.data.Result.datalist[i]
-                    this.defaultMsg = decodeURIComponent(response.data.Result.datalist[i].Content);
+                    // this.defaultMsg = decodeURIComponent(response.data.Result.datalist[i].Content);
+                    // console.log(this.defaultMsg)
                     this.imageUrl = this.mainurl + response.data.Result.datalist[i].Image
                     this.find = true;
                   }
@@ -181,13 +184,12 @@
               spinner: "el-icon-loading",
               background: "rgba(0, 0, 0, 0.7)"
             });
-            var content = this.$refs.ueditor.getUEContent();
             this.$http
               .post("api/Back_MessageManage/MessageEdit",
                 qs.stringify({
                   image: this.getList.Image,
                   title: this.getList.Title,
-                  content: encodeURIComponent(content),
+                  content: this.getList.Content,
                   id: window.location.href.split("id=")[1],
                   Token: getCookie("token"),
                 })

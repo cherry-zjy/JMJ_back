@@ -23,8 +23,6 @@
       </el-table-column>
       <el-table-column label="昵称" prop="nickName">
       </el-table-column>
-      <el-table-column label="地区" prop="Adress">
-      </el-table-column>
       <el-table-column label="手机号" prop="phone">
       </el-table-column>
       <el-table-column label="余额" prop="Price">
@@ -95,7 +93,7 @@
           background: "rgba(0, 0, 0, 0.7)"
         });
         this.$http
-          .get("api/Back_UserManage/CobberList", {
+          .get("api/Back_UserManage/GovList", {
             params: {
               phone: this.sear == '' ? '' - 1 : this.sear,
               pageIndex: this.pageIndex,
@@ -154,6 +152,75 @@
         this.editlist = []
         this.dialogFormVisible = true
       },
+      handleDel(id) {
+        this.$confirm('确认删除?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          const loading = this.$loading({
+            lock: true,
+            text: "Loading",
+            spinner: "el-icon-loading",
+            background: "rgba(0, 0, 0, 0.7)"
+          });
+          this.$http
+            .get("api/Back_UserManage/GovDelete", {
+              params: {
+                ID: id,
+                Token: getCookie("token"),
+              }
+            })
+            .then(
+              function (response) {
+                loading.close();
+                var status = response.data.Status;
+                if (status === 1) {
+                  this.$message({
+                    showClose: true,
+                    type: "success",
+                    message: response.data.Result
+                  });
+                  this.getInfo()
+                } else if (status === 40001) {
+                  this.$message({
+                    showClose: true,
+                    type: "warning",
+                    message: response.data.Result
+                  });
+                  setTimeout(() => {
+                    this.$router.push({
+                      path: "/login"
+                    });
+                  }, 1500);
+                } else {
+                  loading.close();
+                  this.$message({
+                    showClose: true,
+                    type: "warning",
+                    message: response.data.Result
+                  });
+                }
+              }.bind(this)
+            )
+            // 请求error
+            .catch(
+              function (error) {
+                loading.close();
+                this.$notify.error({
+                  title: "错误",
+                  message: "错误：请检查网络"
+                });
+              }.bind(this)
+            );
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+
+      },
       submitaddForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
@@ -164,8 +231,7 @@
               background: "rgba(0, 0, 0, 0.7)"
             });
             this.$http
-              .post("api/Back_UserManage/GovAdd?token=" + getCookie("token") + "&id=" + window.location.href.split(
-                  "id=")[1] + "&phone=" + this.editlist.phone,
+              .post("api/Back_UserManage/GovAdd?token=" + getCookie("token") + "&phone=" + this.editlist.phone,
                 // qs.stringify({
                 //   token: getCookie("token"),
                 //   id:window.location.href.split("id=")[1],

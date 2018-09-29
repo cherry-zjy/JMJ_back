@@ -24,7 +24,7 @@
     <el-table :data="list" style="width: 100%" :border='true'>
       <el-table-column label="图片" prop="Image">
         <template slot-scope="scope">
-          <img :src="mainurl+scope.row.Image" width="100" />
+          <img :src="mainurl+scope.row.logo" width="100" />
         </template>
       </el-table-column>
       <el-table-column label="操作">

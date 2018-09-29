@@ -28,8 +28,10 @@
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" type="primary" plain @click="handleDelete(scope.row.ID,1)">抵用券发放</el-button>
-          <el-button size="mini" type="danger" plain @click="handleDelete(scope.row.ID,2)">关闭发放</el-button>
+          <el-button size="mini" type="primary" plain v-if="scope.row.status==1" disabled>已发放</el-button>
+          <el-button size="mini" type="primary" plain v-if="scope.row.status!==1" @click="handleDelete(scope.row.ID,1)">抵用券发放</el-button>
+          <el-button size="mini" type="danger" plain v-if="scope.row.status==2" disabled>已关闭发放</el-button>
+          <el-button size="mini" type="danger" plain v-if="scope.row.status!==2" @click="handleDelete(scope.row.ID,2)">关闭发放</el-button>
         </template>
       </el-table-column>
     </el-table>
