@@ -305,7 +305,7 @@
             message: '请输入二级规格名称',
             trigger: 'blur'
           }],
-          
+
         },
         rules: {
           defaultMsg: [{
@@ -422,7 +422,7 @@
                 this.yunfei = response.data.Result.ExpressWay == 0 ? false : true
                 this.spce = response.data.Result.specification;
                 if (response.data.Result.IsSellOut) {
-                  
+
                 }
                 this.defaultMsg = decodeURIComponent(response.data.Result.Detail);
                 console.log(this.defaultMsg + '111')
@@ -747,6 +747,14 @@
               var Stock = '';
               var BarCode = '';
               this.demo.SpecName = this.spce[i].SpeName
+              if (this.spce[i].specSecond.length == 0) {
+                this.$message({
+                  showClose: true,
+                  type: "warning",
+                  message: '二级规格不能为空'
+                });
+                return
+              }
               for (let y = 0; y < this.spce[i].specSecond.length; y++) {
                 SecondSpecName += "" + this.spce[i].specSecond[y].SpecName + ",";
                 prodNumber += "" + this.spce[i].specSecond[y].ProdNumber + ",";
@@ -773,7 +781,7 @@
               .post("api/Back_ProductManage/ProductEdit",
                 qs.stringify({
                   token: getCookie("token"),
-                  ID:window.location.href.split("id=")[1],
+                  ID: window.location.href.split("id=")[1],
                   Name: this.getList.prodName,
                   // Number: this.getList.Number,
                   TeamBuyingPrice: -1,

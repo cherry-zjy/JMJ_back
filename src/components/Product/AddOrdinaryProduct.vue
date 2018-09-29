@@ -657,6 +657,14 @@
               var Stock = '';
               var BarCode = '';
               this.demo.SpecName = this.spce[i].value
+              if (this.spce[i].specSecond.length == 0) {
+                this.$message({
+                  showClose: true,
+                  type: "warning",
+                  message: '二级规格不能为空'
+                });
+                return
+              }
               for (let y = 0; y < this.spce[i].children.length; y++) {
                 SecondSpecName += "" + this.spce[i].children[y].SecondSpecName + ",";
                 prodNumber += "" + this.spce[i].children[y].prodNumber + ",";
