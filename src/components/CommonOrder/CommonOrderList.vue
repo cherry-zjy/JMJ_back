@@ -37,7 +37,8 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" type="primary" @click="handleEdit(scope.row.ID)">查看</el-button>
-          <el-button size="mini" type="warning" @click="fahuo(scope.row.ID)">发货</el-button>
+          <el-button size="mini" type="warning" v-if="scope.row.type==1" @click="fahuo(scope.row.ID)">发货</el-button>
+          <el-button size="mini" type="warning" disabled v-if="scope.row.type!==1">发货</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -143,11 +144,11 @@
           },
           {
             ID: 2,
-            Name: '待支付'
+            Name: '待收货'
           },
           {
             ID: 3,
-            Name: '待支付'
+            Name: '待发货'
           },
           {
             ID: 4,

@@ -103,7 +103,7 @@
       return {
         manageList: [], //管理员列表
         pageIndex: 1,
-        pageSize: 2,
+        pageSize: 8,
         pageCount: 1,
         roleList: [], //管理员角色列表
         // 搜索关键字
