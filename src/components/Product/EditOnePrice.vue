@@ -115,7 +115,7 @@
             <el-form-item prop="bannerimg" label="轮播顶图">
               <el-upload class="upload-demo" :action="action" :on-preview="handlePreview" :on-remove="bannerhandleRemove"
                 :file-list="bannerimg" :limit="6" list-type="picture-card" :on-success="bannerhandleAvatarSuccess"
-                :before-upload="beforeAvatarUpload">
+                :before-upload="beforeAvatarUpload" multiple>
                 <i class="el-icon-plus"></i>
                 <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2MB,最多可上传6张</div>
               </el-upload>
@@ -375,7 +375,7 @@
           //   message: '请输入免单所需积分',
           //   trigger: 'blur'
           // }, ],
-          
+
         },
       };
     },
@@ -673,7 +673,11 @@
             });
             this.dialogFormVisible = false
           } else {
-            console.log('error submit!!');
+            this.$message({
+              showClose: true,
+              type: "warning",
+              message: '请完善信息'
+            });
             return false;
           }
         });
@@ -694,7 +698,11 @@
               specSecond: []
             }
           } else {
-            console.log('error submit!!');
+            this.$message({
+              showClose: true,
+              type: "warning",
+              message: '请完善信息'
+            });
             return false;
           }
         });
@@ -739,6 +747,13 @@
             }
             banner = banner.substring(0, banner.length - 1)
             //规格
+            if (this.spce.length == 0) {
+              this.$message({
+                showClose: true,
+                type: "warning",
+                message: '请添加一级规格'
+              });
+            }
             for (let i = 0; i < this.spce.length; i++) {
               this.demo = []
               var SecondSpecName = '';
@@ -780,7 +795,7 @@
               .post("api/Back_ProductManage/ProductEdit",
                 qs.stringify({
                   token: getCookie("token"),
-                  ID:window.location.href.split("id=")[1],
+                  ID: window.location.href.split("id=")[1],
                   Name: this.getList.prodName,
                   TeamBuyingPrice: -1,
                   Classification: this.getList.classificationID,
@@ -851,7 +866,11 @@
                 }.bind(this)
               );
           } else {
-            console.log('error submit!!');
+            this.$message({
+              showClose: true,
+              type: "warning",
+              message: '请完善信息'
+            });
             return false;
           }
         });

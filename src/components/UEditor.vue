@@ -35,7 +35,7 @@
     watch: {
       defaultMsg: function (val) {
         this.defaultMsg = val;
-        console.log('参数更改' + _this.defaultMsg)
+        console.log('参数更改' + this.defaultMsg)
       },
     },
     methods: {

@@ -119,7 +119,7 @@
             <el-form-item prop="bannerimg" label="轮播顶图">
               <el-upload class="upload-demo" :action="action" :on-preview="handlePreview" :on-remove="bannerhandleRemove"
                 :file-list="addbannerimg" limit="6" list-type="picture-card" :on-success="bannerhandleAvatarSuccess"
-                :before-upload="beforeAvatarUpload">
+                :before-upload="beforeAvatarUpload" multiple>
                 <i class="el-icon-plus"></i>
                 <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2MB,最多可上传6张</div>
               </el-upload>
@@ -586,7 +586,11 @@
             });
             this.dialogFormVisible = false
           } else {
-            console.log('error submit!!');
+            this.$message({
+              showClose: true,
+              type: "warning",
+              message: '请完善信息'
+            });
             return false;
           }
         });
@@ -595,6 +599,10 @@
       submitOneForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
+            this.AddForm = {
+              value: this.AddForm.value,
+              children: []
+            }
             this.spce.push(this.AddForm)
             console.log(this.spce)
             this.dialogFormVisible1 = false
@@ -603,7 +611,11 @@
               children: []
             }
           } else {
-            console.log('error submit!!');
+            this.$message({
+              showClose: true,
+              type: "warning",
+              message: '请完善信息'
+            });
             return false;
           }
         });
@@ -633,9 +645,9 @@
       },
       handleAddOne() {
         this.AddForm = {
-              value: '',
-              children: []
-            }
+          value: '',
+          children: []
+        }
         this.dialogFormVisible1 = true
       },
       submitFormwork(formName) {
@@ -649,6 +661,13 @@
             }
             banner = banner.substring(0, banner.length - 1)
             //规格
+            if (this.spce.length == 0) {
+              this.$message({
+                showClose: true,
+                type: "warning",
+                message: '请添加一级规格'
+              });
+            }
             for (let i = 0; i < this.spce.length; i++) {
               this.demo = []
               var SecondSpecName = '';
@@ -657,7 +676,7 @@
               var Stock = '';
               var BarCode = '';
               this.demo.SpecName = this.spce[i].value
-              if (this.spce[i].specSecond.length == 0) {
+              if (this.spce[i].children.length == 0) {
                 this.$message({
                   showClose: true,
                   type: "warning",
@@ -755,7 +774,11 @@
                 }.bind(this)
               );
           } else {
-            console.log('error submit!!');
+            this.$message({
+              showClose: true,
+              type: "warning",
+              message: '请完善信息'
+            });
             return false;
           }
         });

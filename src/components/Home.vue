@@ -28,11 +28,13 @@
     <el-container>
       <aside style="background-color: rgb(250, 245, 245);">
         <div style="text-align:center">
-          <img v-if="!iscloseNav" src="../../static/images/open_nav.png" style="width:30px;height:30px;margin:5px 10px;" alt="" @click="closeNav()">
-          <img v-else src="../../static/images/close_nav.png" style="width:30px;height:30px;margin:5px 10px;" alt="" @click="closeNav()">
+          <img v-if="!iscloseNav" src="../../static/images/open_nav.png" style="width:30px;height:30px;margin:5px 10px;"
+            alt="" @click="closeNav()">
+          <img v-else src="../../static/images/close_nav.png" style="width:30px;height:30px;margin:5px 10px;" alt=""
+            @click="closeNav()">
         </div>
-        <el-menu style="background-color: rgb(250, 245, 245);" class="el-menu-vertical-demo" :default-active="$route.path" router :unique-opened='true'
-          @select="handleSelect" :collapse='iscloseNav'>
+        <el-menu style="background-color: rgb(250, 245, 245);" class="el-menu-vertical-demo" :default-active="$route.path"
+          router :unique-opened='true' @select="handleSelect" :collapse='iscloseNav'>
           <template v-for="(item,index) in menuList">
             <el-submenu :index="index+''" :key="index">
               <template slot="title">
@@ -189,6 +191,11 @@
   .el-header {
     color: #333;
     line-height: 60px;
+  }
+
+  .el-menu-vertical-demo:not(.el-menu--collapse) {
+    width: 250px;
+    min-height: 400px;
   }
 
 </style>
