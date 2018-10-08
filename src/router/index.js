@@ -22,6 +22,7 @@ var OverflowDetail = resolve => require(['../components/common/OverflowDetail.vu
 var AddOverflowDetail = resolve => require(['../components/common/AddOverflowDetail.vue'], resolve)
 var BankList = resolve => require(['../components/common/BankList.vue'], resolve)
 var BankDetaill = resolve => require(['../components/common/BankDetaill.vue'], resolve)
+var BankExchange = resolve => require(['../components/common/BankExchange.vue'], resolve)
 
 // 分类管理
 var FirstLevelList = resolve => require(['../components/classification/FirstLevelList.vue'], resolve)
@@ -114,6 +115,8 @@ export default new Router({
         { path: '/AddOverflowDetail/:id', component: AddOverflowDetail, name: '添加超值热卖' },
         { path: '/BankList', component: BankList, name: '银行列表' },
         { path: '/BankDetaill/:id', component: BankDetaill, name: '银行详情' },
+        { path: '/BankExchange/:id', component: BankExchange, name: '银行兑换详情' },
+        
         //资金明细
         { path: '/FinancementList', component: FinancementList, name: '资金明细' },
         { path: '/FinancementCash', component: FinancementCash, name: '资金提现' },

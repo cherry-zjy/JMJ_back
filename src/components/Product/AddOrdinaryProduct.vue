@@ -228,7 +228,7 @@
           initialFrameWidth: null,
           initialFrameHeight: 500
         },
-        defaultMsg: "这里是初始化内容",
+        defaultMsg: "",
         dialogFormVisible: false,
         dialogFormVisible1: false,
         dialogVisible: false,

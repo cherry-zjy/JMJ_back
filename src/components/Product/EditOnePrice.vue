@@ -223,7 +223,7 @@
           initialFrameWidth: null,
           initialFrameHeight: 500
         },
-        defaultMsg: "请输入初始化内容",
+        defaultMsg: "",
         dialogFormVisible: false,
         dialogFormVisible1: false,
         dialogVisible: false,
@@ -262,6 +262,7 @@
           // Detail:'',
         },
         yunfei: false,
+        showok:'false',
         mainurl: '',
         editForm: [],
         addindex: '', //添加二级规格的index
@@ -428,7 +429,6 @@
                 this.yunfei = response.data.Result.ExpressWay == 0 ? false : true
                 this.spce = response.data.Result.specification;
                 this.defaultMsg = decodeURIComponent(response.data.Result.Detail);
-                console.log(this.defaultMsg + '111')
               } else if (status === 40001) {
                 this.$message({
                   showClose: true,

@@ -139,7 +139,7 @@
         </el-row>
         <p class="title">商品详情</p>
         <el-form-item label="消息内容" prop="defaultMsg">
-          <UEditor :defaultMsg='defaultMsg' :config='config' ref="ueditor"></UEditor>
+          <UEditor :defaultMsg='decodeURIComponent(defaultMsg)' :config='config' ref="ueditor"></UEditor>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submitFormwork('getList')">修改</el-button>
@@ -224,7 +224,7 @@
           initialFrameWidth: null,
           initialFrameHeight: 500
         },
-        defaultMsg: "请输入初始化内容",
+        defaultMsg: "",
         dialogFormVisible: false,
         dialogFormVisible1: false,
         dialogVisible: false,
@@ -428,7 +428,7 @@
                 }
                 this.yunfei = response.data.Result.ExpressWay == 0 ? false : true
                 this.spce = response.data.Result.specification;
-                this.defaultMsg = decodeURIComponent(response.data.Result.Detail);
+                this.defaultMsg = response.data.Result.Detail;
                 console.log(this.defaultMsg + '111')
               } else if (status === 40001) {
                 this.$message({

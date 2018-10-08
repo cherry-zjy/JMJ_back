@@ -22,6 +22,11 @@
             <el-form-item label="商品形式">
               <el-input disabled="disabled" value="每日团购"></el-input>
             </el-form-item>
+            <el-form-item label="活动时间">
+            <el-date-picker v-model="time" value-format="yyyy-MM-dd" @change="getSTime" format="yyyy-MM-dd" type="daterange"
+              start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']">
+            </el-date-picker>
+            </el-form-item>
 
           </el-col>
         </el-row>
@@ -228,7 +233,8 @@
           initialFrameWidth: null,
           initialFrameHeight: 500
         },
-        defaultMsg: "请输入初始化内容",
+        time:'',
+        defaultMsg: "",
         dialogFormVisible: false,
         dialogFormVisible1: false,
         dialogVisible: false,
@@ -418,6 +424,7 @@
                 this.spce = response.data.Result.specification;
                 this.defaultMsg = decodeURIComponent(response.data.Result.Detail);
                 console.log(this.defaultMsg + '111')
+                this.time = [response.data.Result.startTime.substring(0,10),response.data.Result.endTime.substring(0,10)]
               } else if (status === 40001) {
                 this.$message({
                   showClose: true,
@@ -562,6 +569,10 @@
               });
             }.bind(this)
           );
+      },
+      getSTime(val) {
+        console.log(val)
+        this.time = val;
       },
       changeclassification() {
         const loading = this.$loading({
@@ -774,6 +785,8 @@
               this.demospce.push(this.demo)
             }
             console.log(this.demospce)
+            var startTime = this.time[0].substring(0, 10)
+            var endTime = this.time[1].substring(0, 10)
             const loading = this.$loading({
               lock: true,
               text: "Loading",
@@ -804,7 +817,9 @@
                   OutDiscount: -1,
                   Ntegrate: -1,
                   NumOfMem: -1,
-                  SignTimes: -1
+                  SignTimes: -1,
+                  startTime:startTime,
+                  endTime:endTime
                 })
               )
               .then(

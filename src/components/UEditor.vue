@@ -26,16 +26,24 @@
       //初始化UE
       const _this = this;
       this.editor = UE.getEditor("editor", this.config);
+      // console.log(_this.showok)
+      // if (_this.showok) {
+        // console.log(_this.showok)
+        this.editor.addListener("ready", function () {
+          console.log('加载完毕' + _this.defaultMsg)
+          _this.editor.setContent(_this.defaultMsg); // 确保UE加载完成后，放入内容。
+        });
+      // }
 
-      this.editor.addListener("ready", function () {
-        console.log('加载完毕' + _this.defaultMsg)
-        _this.editor.setContent(_this.defaultMsg); // 确保UE加载完成后，放入内容。
-      });
+    },
+    destroyed(){
+      this.editor.destroy()
     },
     watch: {
-      defaultMsg: function (val) {
-        this.defaultMsg = val;
-        console.log('参数更改' + this.defaultMsg)
+      defaultMsg: function (n,o) {
+        // this.$emit('defaultMsg',n)
+        this.editor.setContent(n)
+        // console.log('参数更改' + n)
       },
     },
     methods: {
@@ -48,9 +56,6 @@
         return this.editor.getContentTxt();
       }
     },
-    destroyed() {
-      this.editor.destroy();
-    }
   };
 
 </script>

@@ -64,7 +64,7 @@
               if (status === 1) {
                 this.data = [];
                 this.list = response.data.Result.datalist
-                for (let i = 1; i <= this.list.length; i++) {
+                for (let i = 0; i <= response.data.Result.datalist.length; i++) {
                   this.data.push({
                     key: this.list[i].ID,
                     label: this.list[i].prodName,

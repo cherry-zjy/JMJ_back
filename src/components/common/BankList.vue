@@ -15,6 +15,12 @@
           <span v-if="scope.row.Image==''">无</span>
         </template>
       </el-table-column>
+      <el-table-column label="兑换步骤">
+        <template slot-scope="scope">
+          <el-button size="mini" type="primary" plain @click="handleExchange(scope.row.ID)">查看</el-button>
+          <!-- <el-button size="mini" type="danger" plain icon="el-icon-delete" @click="handleDelete(scope.row.ID)">删除</el-button> -->
+        </template>
+      </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" type="primary" plain @click="handleEdit(scope.row.ID)">详情</el-button>
@@ -101,6 +107,9 @@
       },
       handleEdit(id) {
         this.$router.push("/BankDetaill/id=" + id);
+      },
+      handleExchange(id) {
+        this.$router.push("/BankExchange/id=" + id);
       },
       handleCurrentChange(val) {
         this.pageIndex = val;
