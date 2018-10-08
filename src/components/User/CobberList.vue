@@ -71,6 +71,8 @@
           callback(new Error("请选择省"));
         } else if (this.editlist.erae == '' || this.editlist.erae == undefined) {
           callback(new Error("请选择市"));
+        }else if (this.editlist.minerae == '' || this.editlist.minerae == undefined) {
+          callback(new Error("请选择区"));
         } else {
           callback();
         }
@@ -131,11 +133,20 @@
                     var arr = {
                       label: response.data.Result[i].City[y].CityName,
                       value: response.data.Result[i].City[y].CityID,
+                      children: []
                     }
                     this.Address[i].children.push(arr)
+                    for (var z = 0; z < response.data.Result[i].City[y].Region.length; z++) {
+                      var arr2 = {
+                        label: response.data.Result[i].City[y].Region[z].RegionName,
+                        value: response.data.Result[i].City[y].Region[z].RegionID,
+                      }
+                      this.Address[i].children[y].children.push(arr2)
+                    }
                   }
                 }
                 this.isshow = true
+                
               } else if (status === -1) {
                 this.$message({
                   showClose: true,
@@ -173,10 +184,12 @@
         this.editlist.minerae = this.editlist.selectedOptions[2]
       },
       myAddressErae(value) {
-        for (var y in this.Address) {
+         for (var y in this.Address) {
           for (var z in this.Address[y].children) {
-            if (this.Address[y].children[z].value == value && value != undefined) {
-              return value = this.Address[y].children[z].value;
+            for (var i in this.Address[y].children[z].children) {
+              if (this.Address[y].children[z].children[i].value == value && value != undefined) {
+                return value = this.Address[y].children[z].children[i].value
+              }
             }
           }
         }
@@ -263,7 +276,7 @@
               background: "rgba(0, 0, 0, 0.7)"
             });
             this.$http
-              .post("api/Back_UserManage/CityAdd?token=" + getCookie("token") + "&phone=" + this.editlist.phone +"&city="+this.myAddressErae(this.editlist.erae),
+              .post("api/Back_UserManage/CityAdd?token=" + getCookie("token") + "&phone=" + this.editlist.phone +"&city="+this.myAddressErae(this.editlist.minerae),
                 // qs.stringify({
                 //   token: getCookie("token"),
                 //   id:window.location.href.split("id=")[1],
