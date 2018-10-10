@@ -14,8 +14,8 @@
             <el-form-item label="商品名称" prop="prodName">
               <el-input v-model="getList.prodName"></el-input>
             </el-form-item>
-            <el-form-item label="商品价格" prop="Price">
-              <el-input v-model="getList.Price" type="number"></el-input>
+            <el-form-item label="商品价格" prop="prodPrice">
+              <el-input v-model="getList.prodPrice" type="number"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -401,6 +401,11 @@
           Introduce: [{
             required: true,
             message: '请输入商品简介',
+            trigger: 'blur'
+          }, ],
+          prodPrice: [{
+            required: true,
+            message: '请输入商品价格',
             trigger: 'blur'
           }, ],
           Commission: [{
@@ -855,7 +860,7 @@
               .post("api/Back_ProductManage/ProductEdit",
                 qs.stringify({
                   token: getCookie("token"),
-                  price:this.getList.Price,
+                  price:this.getList.prodPrice,
                   ID: window.location.href.split("id=")[1],
                   Name: this.getList.prodName,
                   TeamBuyingPrice: -1,
@@ -894,7 +899,7 @@
                     });
                     setTimeout(() => {
                       this.$router.push({
-                        path: "/OrdinaryProduct"
+                        path: "/OnePrice"
                       });
                     }, 1500);
                   } else if (status === 40001) {
@@ -904,7 +909,7 @@
                       message: response.data.Result
                     });
                     setTimeout(() => {
-                      tt.$router.push({
+                      this.$router.push({
                         path: "/login"
                       });
                     }, 1500);

@@ -19,8 +19,8 @@
             <el-form-item label="商品形式">
               <el-input disabled="disabled" value="普通商品"></el-input>
             </el-form-item>
-            <el-form-item label="商品价格" prop="Price">
-              <el-input v-model="getList.Price"></el-input>
+            <el-form-item label="商品价格" prop="prodPrice">
+              <el-input v-model="getList.prodPrice"></el-input>
             </el-form-item>
             <!-- <el-form-item label="商品原价" prop="Number">
               <el-input v-model="getList.Number"></el-input>
@@ -389,7 +389,7 @@
             message: '请输入商品名称',
             trigger: 'blur'
           }, ],
-          Price: [{
+          prodPrice: [{
             required: true,
             message: '请输入商品价格',
             trigger: 'blur'
@@ -854,7 +854,7 @@
               .post("api/Back_ProductManage/ProductEdit",
                 qs.stringify({
                   token: getCookie("token"),
-                  price:this.getList.Price,
+                  price:this.getList.prodPrice,
                   ID: window.location.href.split("id=")[1],
                   Name: this.getList.prodName,
                   // Number: this.getList.Number,
@@ -904,7 +904,7 @@
                       message: response.data.Result
                     });
                     setTimeout(() => {
-                      tt.$router.push({
+                      this.$router.push({
                         path: "/login"
                       });
                     }, 1500);

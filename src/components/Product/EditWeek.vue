@@ -19,7 +19,9 @@
             <el-form-item label="商品形式">
               <el-input disabled="disabled" value="每周免单"></el-input>
             </el-form-item>
-
+            <el-form-item label="商品价格" prop="prodPrice">
+              <el-input v-model="getList.prodPrice"></el-input>
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
@@ -371,7 +373,7 @@
             required: true,
             validator: checkdefaultMsg
           }],
-          Price: [{
+          prodPrice: [{
             required: true,
             message: '请输入商品价格',
             trigger: 'blur'
@@ -853,7 +855,7 @@
               .post("api/Back_ProductManage/ProductEdit",
                 qs.stringify({
                   token: getCookie("token"),
-                  price:this.getList.Price,
+                  price:this.getList.prodPrice,
                   ID: window.location.href.split("id=")[1],
                   Name: this.getList.prodName,
                   TeamBuyingPrice: -1,
@@ -892,7 +894,7 @@
                     });
                     setTimeout(() => {
                       this.$router.push({
-                        path: "/OrdinaryProduct"
+                        path: "/WeekList"
                       });
                     }, 1500);
                   } else if (status === 40001) {
@@ -902,7 +904,7 @@
                       message: response.data.Result
                     });
                     setTimeout(() => {
-                      tt.$router.push({
+                      this.$router.push({
                         path: "/login"
                       });
                     }, 1500);
