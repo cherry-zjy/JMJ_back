@@ -19,9 +19,9 @@
             <el-form-item label="商品形式">
               <el-input disabled="disabled" value="普通商品"></el-input>
             </el-form-item>
-            <!-- <el-form-item label="商品原价" prop="Number">
-              <el-input v-model="getList.Number"></el-input>
-            </el-form-item> -->
+            <el-form-item label="商品价格" prop="Price">
+              <el-input v-model="getList.Price"></el-input>
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
@@ -56,11 +56,18 @@
         </el-row>
         <div v-for="(item,index) in spce" :key="index">
           <p class="tabletitle">
-            {{item.value}}
+            <img :src="mainurl+item.FirstImage" style="width:70px;height:70px;vertical-align: middle;"/>
+            一级规格名称：{{item.SpecName}}&nbsp;&nbsp;&nbsp;
+            价格：{{item.Price}}
             <el-button size="mini" type="warning" @click="handleAdd(index)" style="float:right">新增二级规格</el-button>
             <el-button size="mini" type="danger" plain icon="el-icon-delete" @click="DelOne(index)">删除</el-button>
           </p>
-          <el-table style="width: 100%" :border='true' :data="item.children">
+          <el-table style="width: 100%" :border='true' :data="item.spec">
+            <el-table-column label="二级规格图片" prop="SecondImage">
+              <template slot-scope="scope">
+                <img :src="mainurl+scope.row.SecondImage" style="width:60px;height:60px"/>
+              </template>
+            </el-table-column>
             <el-table-column label="二级规格名称" prop="SecondSpecName">
             </el-table-column>
             <el-table-column label="库存" prop="Stock">
@@ -84,9 +91,6 @@
             <el-form-item label="商品简介" prop="Introduce">
               <el-input type="textarea" v-model="getList.Introduce"></el-input>
             </el-form-item>
-            <!-- <el-form-item label="预售商品">
-              <el-switch v-model="getList.Isyushou"></el-switch>
-            </el-form-item> -->
             <!-- <el-form-item label="折扣力度" prop="Salesvolume">
               <el-input v-model="getList.Salesvolume" disabled="disabled" v-if="!getList.Isyushou"></el-input>
               <el-input v-model="getList.Salesvolume" v-if="getList.Isyushou"></el-input>
@@ -109,6 +113,9 @@
             <el-form-item label="商品销量" prop="Salesvolume">
               <el-input v-model="getList.Salesvolume" type="number"></el-input>
             </el-form-item>
+            <el-form-item label="是否推荐">
+              <el-switch v-model="getList.IsRecommended"></el-switch>
+            </el-form-item>
             <el-form-item label="商品佣金" prop="Commission">
               <el-input v-model="getList.Commission" type="number"></el-input>
             </el-form-item>
@@ -117,8 +124,8 @@
         <el-row>
           <el-col :span="12">
             <el-form-item prop="bannerimg" label="轮播顶图">
-              <el-upload class="upload-demo" :action="action" :on-preview="handlePreview" :on-remove="bannerhandleRemove"
-                :file-list="addbannerimg" limit="6" list-type="picture-card" :on-success="bannerhandleAvatarSuccess"
+              <el-upload ref="upload" class="upload-demo" :action="action" :on-preview="handlePreview" :on-remove="bannerhandleRemove"
+                :file-list="addbannerimg" :on-change="bannerchange" :limit="limit" list-type="picture-card" :on-success="bannerhandleAvatarSuccess"
                 :before-upload="beforeAvatarUpload" multiple>
                 <i class="el-icon-plus"></i>
                 <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2MB,最多可上传6张</div>
@@ -153,8 +160,20 @@
     <el-dialog title="新增一级分类名称" :visible.sync="dialogFormVisible1" width="50%">
       <el-form :model="AddForm" :rules="addrules" ref="AddForm" label-width="150px" class="demo-editForm"
         label-position="left">
-        <el-form-item label="一级规格名称" prop="value">
-          <el-input v-model="AddForm.value"></el-input>
+        <el-form-item label="一级规格名称" prop="SpecName">
+          <el-input v-model="AddForm.SpecName"></el-input>
+        </el-form-item>
+        <el-form-item label="一级规格价格" prop="Price">
+          <el-input v-model="AddForm.Price"></el-input>
+        </el-form-item>
+        <el-form-item prop="FirstImage" label="一级规格图片">
+          <el-upload v-model="AddForm.FirstImage" class="avatar-uploader" :action="action" :show-file-list="false"
+            :on-success="handleFirstSuccess" :before-upload="beforeAvatarUpload">
+            <img v-if="FirstImage" :src="FirstImage" class="avatar" width="200">
+            <div v-else class="el-upload el-upload--picture-card">
+              <i class="el-icon-plus"></i>
+            </div>
+          </el-upload>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -166,6 +185,15 @@
     <el-dialog title="新增二级规格名称" :visible.sync="dialogFormVisible" width="50%">
       <el-form :model="editForm" :rules="listrules" ref="editForm" label-width="150px" class="demo-editForm"
         label-position="left">
+        <el-form-item prop="SecondImage" label="二级规格图片">
+          <el-upload v-model="editForm.SecondImage" class="avatar-uploader" :action="action" :show-file-list="false"
+            :on-success="handleSecondSuccess" :before-upload="beforeAvatarUpload">
+            <img v-if="SecondImage" :src="SecondImage" class="avatar" width="200">
+            <div v-else class="el-upload el-upload--picture-card">
+              <i class="el-icon-plus"></i>
+            </div>
+          </el-upload>
+        </el-form-item>
         <el-form-item label="二级规格名称" prop="SecondSpecName">
           <el-input v-model="editForm.SecondSpecName"></el-input>
         </el-form-item>
@@ -223,11 +251,26 @@
           callback();
         }
       };
+      var checkFirstImage = (rule, value, callback) => {
+        if (this.FirstImage == '') {
+          callback(new Error("请上传一级规格图片"));
+        } else {
+          callback();
+        }
+      };
+      var checkSecondImage = (rule, value, callback) => {
+        if (this.SecondImage == '') {
+          callback(new Error("请上传二级规格图片"));
+        } else {
+          callback();
+        }
+      };
       return {
         config: {
           initialFrameWidth: null,
           initialFrameHeight: 500
         },
+        limit: 6,
         defaultMsg: "",
         dialogFormVisible: false,
         dialogFormVisible1: false,
@@ -235,6 +278,8 @@
         //轮播图点击放大
         dialogImageUrl: '',
         imageUrl: '',
+        FirstImage:'',//一级规格图片
+        SecondImage:'',//二级规格图片
         action: '',
         list: [],
         mubanList: [],
@@ -247,8 +292,8 @@
         demo: [], //接口规格暂存参数
         demospce: [], //接口规格参数
         // spce: [{
-        //   value: '一级规格名称1',
-        //   children: [{
+        //   SpecName: '一级规格名称1',
+        //   spec: [{
         //     SecondSpecName: '二级规格名称1',
         //     Stock: '库存',
         //     Price: '价格',
@@ -269,17 +314,32 @@
         editForm: [],
         addindex: '', //添加二级规格的index
         AddForm: {
-          value: '',
-          children: []
+          SpecName: '',
+          Price:'',
+          FirstImage:'',
+          spec: []
         },
         addrules: {
-          value: [{
+          SpecName: [{
             required: true,
             message: '请输入一级规格名称',
             trigger: 'blur'
           }],
+          Price: [{
+            required: true,
+            message: '请输入一级规格价格',
+            trigger: 'blur'
+          }],
+          FirstImage: [{
+            required: true,
+            validator: checkFirstImage
+          }],
         },
         listrules: {
+          SecondImage: [{
+            required: true,
+            validator: checkSecondImage
+          }],
           Stock: [{
             required: true,
             message: '请输入库存',
@@ -306,6 +366,7 @@
             trigger: 'blur'
           }],
         },
+        imgid: [],
         rules: {
           defaultMsg: [{
             required: true,
@@ -316,11 +377,11 @@
             message: '请输入商品名称',
             trigger: 'blur'
           }, ],
-          // Number: [{
-          //   required: true,
-          //   message: '请输入商品原价',
-          //   trigger: 'blur'
-          // }, ],
+          Price: [{
+            required: true,
+            message: '请输入商品价格',
+            trigger: 'blur'
+          }, ],
           ClassificationSecondID: [{
             required: true,
             validator: checkClassification
@@ -546,8 +607,35 @@
         this.dialogImageUrl = file.url;
         this.dialogVisible = true;
       },
-      bannerhandleAvatarSuccess(res, file) {
+      bannerhandleAvatarSuccess(res, file, fileList) {
+        // console.log(this.imgid)
+        // console.log(fileList)
+        // var imglist = fileList;
+        // var file = []
+        // this.$refs.upload.clearFiles();
+        // for (let i = 0; i < this.imgid.length; i++) {
+        //   for (let y = 0; y < imglist.length; y++) {
+        //     if(this.imgid[i].uid == imglist[y].uid){
+        //       file.push(imglist[y])
+        //     }
+        //   }
+        // }
+        // if(file.id == this.imgid){
+        // }
         this.addbannerimg.push(res.Result[0])
+        // console.log(file)
+        // this.fileList = file
+      },
+      bannerchange(file, fileList) {
+        // console.log(fileList)
+      },
+      handleFirstSuccess(res, file){
+        this.FirstImage = URL.createObjectURL(file.raw);
+        this.AddForm.FirstImage = res.Result[0];
+      },
+      handleSecondSuccess(res, file){
+        this.SecondImage = URL.createObjectURL(file.raw);
+        this.editForm.SecondImage = res.Result[0];
       },
       //海报大图
       handleAvatarSuccess(res, file) {
@@ -566,6 +654,8 @@
         }
       },
       beforeAvatarUpload(file) {
+        console.log(file)
+        this.imgid.push(file)
         const isLt2M = file.size / 1024 / 1024 < 2;
         if (!isLt2M) {
           this.$message.error("上传头像图片大小不能超过 2MB!");
@@ -577,7 +667,8 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             console.log(this.spce)
-            this.spce[this.addindex].children.push({
+            this.spce[this.addindex].spec.push({
+              SecondImage:this.editForm.SecondImage,
               SecondSpecName: this.editForm.SecondSpecName,
               Stock: this.editForm.Stock,
               Price: this.editForm.Price,
@@ -585,13 +676,6 @@
               prodNumber: this.editForm.prodNumber,
             });
             this.dialogFormVisible = false
-          } else {
-            this.$message({
-              showClose: true,
-              type: "warning",
-              message: '请完善信息'
-            });
-            return false;
           }
         });
       },
@@ -600,23 +684,20 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             this.AddForm = {
-              value: this.AddForm.value,
-              children: []
+              SpecName: this.AddForm.SpecName,
+              FirstImage: this.AddForm.FirstImage,
+              Price: this.AddForm.Price,
+              spec: []
             }
             this.spce.push(this.AddForm)
             console.log(this.spce)
             this.dialogFormVisible1 = false
             this.AddForm = {
-              value: '',
-              children: []
+              SpecName: '',
+              FirstImage: '',
+              Price: '',
+              spec: []
             }
-          } else {
-            this.$message({
-              showClose: true,
-              type: "warning",
-              message: '请完善信息'
-            });
-            return false;
           }
         });
       },
@@ -636,18 +717,20 @@
 
       },
       Del(index) {
-        this.spce[index].children.splice(index, 1)
+        this.spce[index].spec.splice(index, 1)
       },
       handleAdd(index) {
+        this.SecondImage = ''
         this.editForm = [];
         this.addindex = index
         this.dialogFormVisible = true
       },
       handleAddOne() {
         this.AddForm = {
-          value: '',
-          children: []
+          SpecName: '',
+          spec: []
         }
+        this.FirstImage = ''
         this.dialogFormVisible1 = true
       },
       submitFormwork(formName) {
@@ -661,22 +744,8 @@
             }
             banner = banner.substring(0, banner.length - 1)
             //规格
-            if (this.spce.length == 0) {
-              this.$message({
-                showClose: true,
-                type: "warning",
-                message: '请添加一级规格'
-              });
-            }
             for (let i = 0; i < this.spce.length; i++) {
-              this.demo = []
-              var SecondSpecName = '';
-              var prodNumber = '';
-              var Price = '';
-              var Stock = '';
-              var BarCode = '';
-              this.demo.SpecName = this.spce[i].value
-              if (this.spce[i].children.length == 0) {
+              if (this.spce[i].specSecond.length == 0) {
                 this.$message({
                   showClose: true,
                   type: "warning",
@@ -684,21 +753,9 @@
                 });
                 return
               }
-              for (let y = 0; y < this.spce[i].children.length; y++) {
-                SecondSpecName += "" + this.spce[i].children[y].SecondSpecName + ",";
-                prodNumber += "" + this.spce[i].children[y].prodNumber + ",";
-                Price += "" + this.spce[i].children[y].Price + ",";
-                Stock += "" + this.spce[i].children[y].Stock + ",";
-                BarCode += "" + this.spce[i].children[y].BarCode + ",";
-              }
-              this.demo.SecondSpecName = SecondSpecName.substring(0, SecondSpecName.length - 1)
-              this.demo.prodNumber = prodNumber.substring(0, prodNumber.length - 1)
-              this.demo.Price = Price.substring(0, Price.length - 1)
-              this.demo.Stock = Stock.substring(0, Stock.length - 1)
-              this.demo.BarCode = BarCode.substring(0, BarCode.length - 1)
-              this.demospce.push(this.demo)
             }
-            console.log(this.demospce)
+            console.log(this.spce)
+            // console.log(this.demospce)
             const loading = this.$loading({
               lock: true,
               text: "Loading",
@@ -712,7 +769,7 @@
                   Name: this.getList.Name,
                   // Number: this.getList.Number,
                   ClassificationSecondID: this.getList.ClassificationSecondID,
-                  specs: this.demospce,
+                  specs: this.spce,
                   SpecTypeName: this.getList.SpecTypeName,
                   SpecTypeSecondName: this.getList.SpecTypeSecondName,
                   Introduce: this.getList.Introduce,
@@ -724,6 +781,8 @@
                   Image: banner,
                   ProdPoster: this.getList.ProdPoster,
                   Detail: encodeURIComponent(content),
+                  price: this.getList.Price,
+                  IsRecommended: this.getList.IsRecommended,
                 })
               )
               .then(
@@ -748,7 +807,7 @@
                       message: response.data.Result
                     });
                     setTimeout(() => {
-                      tt.$router.push({
+                      this.$router.push({
                         path: "/login"
                       });
                     }, 1500);

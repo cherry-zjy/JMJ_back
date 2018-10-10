@@ -14,8 +14,11 @@
             <el-form-item label="商品名称" prop="prodName">
               <el-input v-model="getList.prodName"></el-input>
             </el-form-item>
-            <el-form-item label="商品原价" prop="yuanjia">
-              <el-input v-model="getList.yuanjia" type="number"></el-input>
+            <el-form-item label="商品原价" prop="prodPrice">
+              <el-input v-model="getList.prodPrice" type="number"></el-input>
+            </el-form-item>
+            <el-form-item label="商品售价" prop="Price">
+              <el-input v-model="getList.Price" type="number"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -62,11 +65,18 @@
         </el-row>
         <div v-for="(item,index) in spce" :key="index">
           <p class="tabletitle">
-            {{item.SpeName}}
+            <img :src="mainurl+item.FirstImage" style="width:70px;height:70px;vertical-align: middle;"/>
+            一级规格名称：{{item.SpecName}}&nbsp;&nbsp;&nbsp;
+            价格：{{item.Price}}
             <el-button size="mini" type="warning" @click="handleAdd(index)" style="float:right">新增二级规格</el-button>
             <el-button size="mini" type="danger" plain icon="el-icon-delete" @click="DelOne(index)">删除</el-button>
           </p>
           <el-table style="width: 100%" :border='true' :data="item.specSecond">
+            <el-table-column label="二级规格图片" prop="SecondImage">
+              <template slot-scope="scope">
+                <img :src="mainurl+scope.row.SecondImage" style="width:60px;height:60px"/>
+              </template>
+            </el-table-column>
             <el-table-column label="二级规格名称" prop="SpecName">
             </el-table-column>
             <el-table-column label="库存" prop="Stock">
@@ -115,6 +125,9 @@
             <el-form-item label="商品销量" prop="Salesvolume">
               <el-input v-model="getList.Salesvolume" type="number"></el-input>
             </el-form-item>
+            <el-form-item label="是否推荐">
+              <el-switch v-model="getList.IsRecommended"></el-switch>
+            </el-form-item>
             <el-form-item label="商品佣金" prop="Commission">
               <el-input v-model="getList.Commission" type="number"></el-input>
             </el-form-item>
@@ -162,6 +175,18 @@
         <el-form-item label="一级规格名称" prop="SpeName">
           <el-input v-model="AddForm.SpeName"></el-input>
         </el-form-item>
+        <el-form-item label="一级规格价格" prop="Price">
+          <el-input v-model="AddForm.Price"></el-input>
+        </el-form-item>
+        <el-form-item prop="FirstImage" label="一级规格图片">
+          <el-upload v-model="AddForm.FirstImage" class="avatar-uploader" :action="action" :show-file-list="false"
+            :on-success="handleFirstSuccess" :before-upload="beforeAvatarUpload">
+            <img v-if="FirstImage" :src="FirstImage" class="avatar" width="200">
+            <div v-else class="el-upload el-upload--picture-card">
+              <i class="el-icon-plus"></i>
+            </div>
+          </el-upload>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -172,6 +197,15 @@
     <el-dialog title="新增二级规格名称" :visible.sync="dialogFormVisible" width="50%">
       <el-form :model="editForm" :rules="listrules" ref="editForm" label-width="150px" class="demo-editForm"
         label-position="left">
+        <el-form-item prop="SecondImage" label="二级规格图片">
+          <el-upload v-model="editForm.SecondImage" class="avatar-uploader" :action="action" :show-file-list="false"
+            :on-success="handleSecondSuccess" :before-upload="beforeAvatarUpload">
+            <img v-if="SecondImage" :src="SecondImage" class="avatar" width="200">
+            <div v-else class="el-upload el-upload--picture-card">
+              <i class="el-icon-plus"></i>
+            </div>
+          </el-upload>
+        </el-form-item>
         <el-form-item label="二级规格名称" prop="SpecName">
           <el-input v-model="editForm.SpecName"></el-input>
         </el-form-item>
@@ -228,6 +262,20 @@
           callback();
         }
       };
+      var checkFirstImage = (rule, value, callback) => {
+        if (this.FirstImage == '') {
+          callback(new Error("请上传一级规格图片"));
+        } else {
+          callback();
+        }
+      };
+      var checkSecondImage = (rule, value, callback) => {
+        if (this.SecondImage == '') {
+          callback(new Error("请上传二级规格图片"));
+        } else {
+          callback();
+        }
+      };
       return {
         config: {
           initialFrameWidth: null,
@@ -241,6 +289,8 @@
         //轮播图点击放大
         dialogImageUrl: '',
         imageUrl: '',
+        FirstImage:'',//一级规格图片
+        SecondImage:'',//二级规格图片
         action: '',
         list: [],
         mubanList: [],
@@ -278,6 +328,8 @@
         addindex: '', //添加二级规格的index
         AddForm: {
           SpeName: '',
+          Price:'',
+          FirstImage:'',
           specSecond: []
         },
         addrules: {
@@ -286,8 +338,21 @@
             message: '请输入一级规格名称',
             trigger: 'blur'
           }],
+          FirstImage: [{
+            required: true,
+            validator: checkFirstImage
+          }],
+          Price: [{
+            required: true,
+            message: '请输入一级规格价格',
+            trigger: 'blur'
+          }],
         },
         listrules: {
+          SecondImage: [{
+            required: true,
+            validator: checkSecondImage
+          }],
           Stock: [{
             required: true,
             message: '请输入库存',
@@ -324,9 +389,14 @@
             message: '请输入商品名称',
             trigger: 'blur'
           }, ],
-          yuanjia: [{
+          prodPrice: [{
             required: true,
             message: '请输入商品原价',
+            trigger: 'blur'
+          }, ],
+          Price: [{
+            required: true,
+            message: '请输入商品售价',
             trigger: 'blur'
           }, ],
           ClassificationSecondID: [{
@@ -637,6 +707,14 @@
         console.log(this.addbannerimg)
         console.log(this.bannerimg)
       },
+      handleFirstSuccess(res, file){
+        this.FirstImage = URL.createObjectURL(file.raw);
+        this.AddForm.FirstImage = res.Result[0];
+      },
+      handleSecondSuccess(res, file){
+        this.SecondImage = URL.createObjectURL(file.raw);
+        this.editForm.SecondImage = res.Result[0];
+      },
       //海报大图
       handleAvatarSuccess(res, file) {
         this.imageUrl = URL.createObjectURL(file.raw);
@@ -665,6 +743,7 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             this.spce[this.addindex].specSecond.push({
+              SecondImage:this.editForm.SecondImage,
               SpecName: this.editForm.SpecName,
               Stock: this.editForm.Stock,
               Price: this.editForm.Price,
@@ -688,6 +767,8 @@
           if (valid) {
             this.AddForm = {
               SpeName: this.AddForm.SpeName,
+              FirstImage: this.AddForm.FirstImage,
+              Price: this.AddForm.Price,
               specSecond: []
             }
             this.spce.push(this.AddForm)
@@ -695,6 +776,8 @@
             this.dialogFormVisible1 = false
             this.AddForm = {
               SpeName: '',
+              FirstImage: '',
+              Price: '',
               specSecond: []
             }
           } else {
@@ -728,11 +811,13 @@
         this.spce[index].specSecond.splice(index, 1)
       },
       handleAdd(index) {
+        this.SecondImage = ''
         this.editForm = [];
         this.addindex = index
         this.dialogFormVisible = true
       },
       handleAddOne() {
+        this.FirstImage = ''
         this.AddForm = []
         this.dialogFormVisible1 = true
       },
@@ -747,21 +832,7 @@
             }
             banner = banner.substring(0, banner.length - 1)
             //规格
-            if (this.spce.length == 0) {
-              this.$message({
-                showClose: true,
-                type: "warning",
-                message: '请添加一级规格'
-              });
-            }
             for (let i = 0; i < this.spce.length; i++) {
-              this.demo = []
-              var SecondSpecName = '';
-              var prodNumber = '';
-              var Price = '';
-              var Stock = '';
-              var BarCode = '';
-              this.demo.SpecName = this.spce[i].SpeName
               if (this.spce[i].specSecond.length == 0) {
                 this.$message({
                   showClose: true,
@@ -770,21 +841,10 @@
                 });
                 return
               }
-              for (let y = 0; y < this.spce[i].specSecond.length; y++) {
-                SecondSpecName += "" + this.spce[i].specSecond[y].SpecName + ",";
-                prodNumber += "" + this.spce[i].specSecond[y].ProdNumber + ",";
-                Price += "" + this.spce[i].specSecond[y].Price + ",";
-                Stock += "" + this.spce[i].specSecond[y].Stock + ",";
-                BarCode += "" + this.spce[i].specSecond[y].barCode + ",";
-              }
-              this.demo.SecondSpecName = SecondSpecName.substring(0, SecondSpecName.length - 1)
-              this.demo.prodNumber = prodNumber.substring(0, prodNumber.length - 1)
-              this.demo.Price = Price.substring(0, Price.length - 1)
-              this.demo.Stock = Stock.substring(0, Stock.length - 1)
-              this.demo.BarCode = BarCode.substring(0, BarCode.length - 1)
-              this.demospce.push(this.demo)
+              delete this.spce[i].FirstPrice
+              delete this.spce[i].Stock
             }
-            console.log(this.demospce)
+            console.log(this.spce)
             var startTime = this.time[0].substring(0, 10)
             var endTime = this.time[1].substring(0, 10)
             const loading = this.$loading({
@@ -798,11 +858,12 @@
                 qs.stringify({
                   token: getCookie("token"),
                   ID: window.location.href.split("id=")[1],
+                  price:this.getList.prodPrice,
                   Name: this.getList.prodName,
-                  TeamBuyingPrice: this.getList.yuanjia,
+                  TeamBuyingPrice: this.getList.Price,
                   Classification: this.getList.classificationID,
                   ClassificationSecond: this.getList.classificationSecondID,
-                  specs: this.demospce,
+                  specs: this.spce,
                   SpecTypeName: this.getList.SpecTypeName,
                   SpecTypeSecondName: this.getList.SpecTySecondName,
                   Introduce: this.getList.Introduce,
@@ -819,7 +880,8 @@
                   NumOfMem: -1,
                   SignTimes: -1,
                   startTime:startTime,
-                  endTime:endTime
+                  endTime:endTime,
+                  IsRecommended:this.getList.IsRecommended,
                 })
               )
               .then(

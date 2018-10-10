@@ -51,9 +51,9 @@
         </el-form-item>
         <el-form-item label="地区" prop="selectedOptions">
           <i v-if="!isshow" class="el-icon-loading"></i>
-          <el-cascader :options="Address" v-model="editlist.selectedOptions" :change-on-select="true" :clearable="true" :filterable="true"
-              @change="handleChange" v-if="isshow">
-            </el-cascader>
+          <el-cascader :options="Address" v-model="editlist.selectedOptions" :change-on-select="true" :clearable="true"
+            :filterable="true" @change="handleChange" v-if="isshow">
+          </el-cascader>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -71,7 +71,7 @@
           callback(new Error("请选择省"));
         } else if (this.editlist.erae == '' || this.editlist.erae == undefined) {
           callback(new Error("请选择市"));
-        }else if (this.editlist.minerae == '' || this.editlist.minerae == undefined) {
+        } else if (this.editlist.minerae == '' || this.editlist.minerae == undefined) {
           callback(new Error("请选择区"));
         } else {
           callback();
@@ -83,20 +83,20 @@
         pageIndex: 1,
         pageSize: 8,
         pageCount: 1,
-        isshow:false,
+        isshow: false,
         sear: '',
         dialogFormVisible: false,
         editlist: {
-          phone:'',
-          selectedOptions:[],
+          phone: '',
+          selectedOptions: [],
         },
-        Address:[],
+        Address: [],
         rules: {
           phone: [{
             required: true,
             message: '请输入手机号',
             trigger: 'blur'
-          },],
+          }, ],
           selectedOptions: [{
             type: 'array',
             required: true,
@@ -108,10 +108,17 @@
     },
     mounted() {
       this.mainurl = mainurl
-      this.getInfo();
+
+      this.getCity()
     },
     methods: {
       getCity() {
+        const loading = this.$loading({
+          lock: true,
+          text: "Loading",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.7)"
+        });
         this.$http
           .get("api/Address/GetProvinceCityRegion", {
             params: {
@@ -121,6 +128,7 @@
           })
           .then(
             function (response) {
+              loading.close();
               var status = response.data.Status;
               if (status === 1) {
                 for (var i = 0; i < response.data.Result.length; i++) {
@@ -146,7 +154,7 @@
                   }
                 }
                 this.isshow = true
-                
+                this.getInfo();
               } else if (status === -1) {
                 this.$message({
                   showClose: true,
@@ -170,6 +178,7 @@
           // 请求error
           .catch(
             function (error) {
+              loading.close();
               console.log(error)
               this.$notify.error({
                 title: "错误",
@@ -184,7 +193,7 @@
         this.editlist.minerae = this.editlist.selectedOptions[2]
       },
       myAddressErae(value) {
-         for (var y in this.Address) {
+        for (var y in this.Address) {
           for (var z in this.Address[y].children) {
             for (var i in this.Address[y].children[z].children) {
               if (this.Address[y].children[z].children[i].value == value && value != undefined) {
@@ -193,6 +202,22 @@
             }
           }
         }
+      },
+      addfilters(Region) {
+        for (var y in this.Address) {
+          for (var z in this.Address[y].children) {
+            if (this.Address[y].children[z].value == Region && Region != undefined) {
+              return this.Address[y].label + this.Address[y].children[z].label
+            }
+            for (var i in this.Address[y].children[z].children) {
+              if (this.Address[y].children[z].children[i].value == Region && Region != undefined) {
+                return this.Address[y].label + this.Address[y].children[z].label + this.Address[y].children[
+                  z].children[i].label
+              }
+            }
+          }
+        }
+        this.isshow = true
       },
       CreateTime(row, time) {
         var date = row[time.property];
@@ -221,6 +246,9 @@
               var status = response.data.Status;
               if (status === 1) {
                 this.list = response.data.Result.datalist;
+                for (let i = 0; i < this.list.length; i++) {
+                  this.list[i].Adress = this.addfilters(this.list[i].Adress)
+                }
                 this.pageCount = response.data.Result.page;
               } else if (status === 40001) {
                 this.$message({
@@ -246,6 +274,7 @@
           // 请求error
           .catch(
             function (error) {
+              console.log(error)
               loading.close();
               this.$notify.error({
                 title: "错误",
@@ -264,7 +293,6 @@
       handleAdd() {
         this.editlist = []
         this.dialogFormVisible = true
-        this.getCity()
       },
       submitaddForm(formName) {
         this.$refs[formName].validate((valid) => {
@@ -276,7 +304,8 @@
               background: "rgba(0, 0, 0, 0.7)"
             });
             this.$http
-              .post("api/Back_UserManage/CityAdd?token=" + getCookie("token") + "&phone=" + this.editlist.phone +"&city="+this.myAddressErae(this.editlist.minerae),
+              .post("api/Back_UserManage/CityAdd?token=" + getCookie("token") + "&phone=" + this.editlist.phone +
+                "&city=" + this.myAddressErae(this.editlist.minerae),
                 // qs.stringify({
                 //   token: getCookie("token"),
                 //   id:window.location.href.split("id=")[1],

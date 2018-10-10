@@ -2,7 +2,7 @@
   <div>
     <el-breadcrumb separator="|" class="crumb">
       <el-breadcrumb-item :to="{ path: '/' }">后台管理</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/Dailyorderlist' }">每日团购列表</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/DailyList' }">每日团购列表</el-breadcrumb-item>
       <el-breadcrumb-item>每日团购评价</el-breadcrumb-item>
     </el-breadcrumb>
 
