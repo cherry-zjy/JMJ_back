@@ -62,7 +62,7 @@
             <el-button size="mini" type="warning" @click="handleAdd(index)" style="float:right">新增二级规格</el-button>
             <el-button size="mini" type="danger" plain icon="el-icon-delete" @click="DelOne(index)">删除</el-button>
           </p>
-          <el-table style="width: 100%" :border='true' :data="item.spec">
+          <el-table style="width: 100%" :border='true' :data="item.specSecond">
             <el-table-column label="二级规格图片" prop="SecondImage">
               <template slot-scope="scope">
                 <img :src="mainurl+scope.row.SecondImage" style="width:60px;height:60px"/>
@@ -88,7 +88,7 @@
         <p class="title">商品详细信息</p>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="商品简介" prop="Introduce">
+            <el-form-item label="商品简介">
               <el-input type="textarea" v-model="getList.Introduce"></el-input>
             </el-form-item>
             <!-- <el-form-item label="折扣力度" prop="Salesvolume">
@@ -110,7 +110,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="商品销量" prop="Salesvolume">
+            <el-form-item label="商品销量">
               <el-input v-model="getList.Salesvolume" type="number"></el-input>
             </el-form-item>
             <el-form-item label="是否推荐">
@@ -136,7 +136,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item prop="ProdPoster" label="商品海报">
+            <el-form-item label="商品海报">
               <el-upload v-model="getList.ProdPoster" class="avatar-uploader" :action="action" :show-file-list="false"
                 :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
                 <img v-if="imageUrl" :src="imageUrl" class="avatar" width="200">
@@ -206,7 +206,7 @@
         <el-form-item label="商品编号" prop="prodNumber">
           <el-input v-model="editForm.prodNumber"></el-input>
         </el-form-item>
-        <el-form-item label="商品条形码" prop="BarCode">
+        <el-form-item label="商品条形码">
           <el-input v-model="editForm.BarCode"></el-input>
         </el-form-item>
       </el-form>
@@ -317,7 +317,7 @@
           SpecName: '',
           Price:'',
           FirstImage:'',
-          spec: []
+          specSecond: []
         },
         addrules: {
           SpecName: [{
@@ -667,7 +667,7 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             console.log(this.spce)
-            this.spce[this.addindex].spec.push({
+            this.spce[this.addindex].specSecond.push({
               SecondImage:this.editForm.SecondImage,
               SecondSpecName: this.editForm.SecondSpecName,
               Stock: this.editForm.Stock,
@@ -687,7 +687,7 @@
               SpecName: this.AddForm.SpecName,
               FirstImage: this.AddForm.FirstImage,
               Price: this.AddForm.Price,
-              spec: []
+              specSecond: []
             }
             this.spce.push(this.AddForm)
             console.log(this.spce)
@@ -696,7 +696,7 @@
               SpecName: '',
               FirstImage: '',
               Price: '',
-              spec: []
+              specSecond: []
             }
           }
         });
@@ -717,7 +717,7 @@
 
       },
       Del(index) {
-        this.spce[index].spec.splice(index, 1)
+        this.spce[index].specSecond.splice(index, 1)
       },
       handleAdd(index) {
         this.SecondImage = ''
@@ -728,7 +728,7 @@
       handleAddOne() {
         this.AddForm = {
           SpecName: '',
-          spec: []
+          specSecond: []
         }
         this.FirstImage = ''
         this.dialogFormVisible1 = true
@@ -755,7 +755,6 @@
               }
             }
             console.log(this.spce)
-            // console.log(this.demospce)
             const loading = this.$loading({
               lock: true,
               text: "Loading",

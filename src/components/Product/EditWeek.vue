@@ -76,7 +76,7 @@
             </el-table-column>
             <el-table-column label="商品编号" prop="ProdNumber">
             </el-table-column>
-            <el-table-column label="商品条形码" prop="barCode">
+            <el-table-column label="商品条形码">
             </el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
@@ -109,7 +109,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="商品销量" prop="Salesvolume">
+            <el-form-item label="商品销量">
               <el-input v-model="getList.Salesvolume" type="number"></el-input>
             </el-form-item>
             <el-form-item label="是否推荐">
@@ -138,7 +138,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item prop="ProdPoster" label="商品海报">
+            <el-form-item label="商品海报">
               <el-upload v-model="getList.ProdPoster" class="avatar-uploader" :action="action" :show-file-list="false"
                 :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
                 <img v-if="imageUrl" :src="imageUrl" class="avatar" width="200">
@@ -208,7 +208,7 @@
         <el-form-item label="商品编号" prop="ProdNumber">
           <el-input v-model="editForm.ProdNumber"></el-input>
         </el-form-item>
-        <el-form-item label="商品条形码" prop="barCode">
+        <el-form-item label="商品条形码">
           <el-input v-model="editForm.barCode"></el-input>
         </el-form-item>
       </el-form>
@@ -483,7 +483,11 @@
               if (status === 1) {
                 this.getList = response.data.Result;
                 this.changeclassification()
-                this.imageUrl = mainurl + response.data.Result.ProdPoster;
+                if(response.data.Result.ProdPoster == null){
+                  this.imageUrl = ""
+                }else{
+                  this.imageUrl = mainurl + response.data.Result.ProdPoster;
+                }
                 // var imgarr = Array();
                 var imgarr = response.data.Result.Image.split(',')
                 console.log(imgarr)

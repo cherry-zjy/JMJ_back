@@ -91,7 +91,7 @@
         <p class="title">商品详细信息</p>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="商品简介" prop="Introduce">
+            <el-form-item label="商品简介">
               <el-input type="textarea" v-model="getList.Introduce"></el-input>
             </el-form-item>
             <el-form-item label="预售商品">
@@ -112,7 +112,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="商品销量" prop="Salesvolume">
+            <el-form-item label="商品销量">
               <el-input v-model="getList.Salesvolume" type="number"></el-input>
             </el-form-item>
             <el-form-item label="折扣力度" prop="OutDiscount" v-if="getList.IsSellOut">
@@ -141,7 +141,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item prop="ProdPoster" label="商品海报">
+            <el-form-item label="商品海报">
               <el-upload v-model="getList.ProdPoster" class="avatar-uploader" :action="action" :show-file-list="false"
                 :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
                 <img v-if="imageUrl" :src="imageUrl" class="avatar" width="200">
@@ -211,7 +211,7 @@
         <el-form-item label="商品编号" prop="ProdNumber">
           <el-input v-model="editForm.ProdNumber"></el-input>
         </el-form-item>
-        <el-form-item label="商品条形码" prop="barCode">
+        <el-form-item label="商品条形码">
           <el-input v-model="editForm.barCode"></el-input>
         </el-form-item>
       </el-form>
@@ -483,7 +483,11 @@
               if (status === 1) {
                 this.getList = response.data.Result;
                 this.changeclassification()
-                this.imageUrl = mainurl + response.data.Result.ProdPoster;
+                if(response.data.Result.ProdPoster == null){
+                  this.imageUrl = ""
+                }else{
+                  this.imageUrl = mainurl + response.data.Result.ProdPoster;
+                }
                 // var imgarr = Array();
                 var imgarr = response.data.Result.Image.split(',')
                 for (let i = 0; i < imgarr.length; i++) {
