@@ -33,7 +33,7 @@
       </el-table-column>
       <el-table-column label="商品佣金" prop="commission">
       </el-table-column>
-      <el-table-column label="有效时间" prop="commission">
+      <el-table-column label="有效时间">
         <template slot-scope="scope">
           <span>{{scope.row.StartTime | Time}}</span>--
           <span>{{scope.row.EndTime | Time}}</span>

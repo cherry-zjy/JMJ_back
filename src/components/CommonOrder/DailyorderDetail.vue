@@ -93,12 +93,16 @@
         return value
       },
       Paytype: function (value) {
-        if (value == 0) {
-          value = "支付宝"
+        if (value == -1) {
+          value = "余额支付方式"
         } else if (value == 1) {
-          value = "微信"
+          value = "微信内支付"
         } else if (value == 2) {
-          value = "余额"
+          value = "调用微信支付"
+        } else if (value == 0) {
+          value = "默认"
+        }else if (value == 3) {
+          value = "支付宝"
         }
         return value
       }
