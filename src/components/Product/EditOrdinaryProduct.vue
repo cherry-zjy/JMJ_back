@@ -61,7 +61,10 @@
           <p class="tabletitle">
             <img :src="mainurl+item.FirstImage" style="width:70px;height:70px;vertical-align: middle;"/>
             一级规格名称：{{item.SpecName}}&nbsp;&nbsp;&nbsp;
-            价格：{{item.Price}}
+            价格：{{item.Price}}&nbsp;&nbsp;&nbsp;
+            库存：{{item.Stock}}&nbsp;&nbsp;&nbsp;
+            商品编号：{{item.ProdNumber}}&nbsp;&nbsp;&nbsp;
+            商品条形码：{{item.barCode}}&nbsp;&nbsp;&nbsp;
             <el-button size="mini" type="warning" @click="handleAdd(index)" style="float:right">新增二级规格</el-button>
             <el-button size="mini" type="danger" plain icon="el-icon-delete" @click="DelOne(index)">删除</el-button>
           </p>
@@ -118,9 +121,9 @@
             <el-form-item label="折扣力度" prop="OutDiscount" v-if="getList.IsSellOut">
               <el-input v-model="getList.OutDiscount"></el-input>
             </el-form-item>
-            <el-form-item label="是否推荐">
+            <!-- <el-form-item label="是否推荐">
               <el-switch v-model="getList.IsRecommended"></el-switch>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="商品佣金" prop="Commission">
               <el-input v-model="getList.Commission" type="number"></el-input>
             </el-form-item>
@@ -179,6 +182,15 @@
               <i class="el-icon-plus"></i>
             </div>
           </el-upload>
+        </el-form-item>
+        <el-form-item label="库存" prop="Stock">
+          <el-input v-model="AddForm.Stock"></el-input>
+        </el-form-item>
+        <el-form-item label="商品条形码" prop="barCode">
+          <el-input v-model="AddForm.barCode"></el-input>
+        </el-form-item>
+        <el-form-item label="商品编号" prop="ProdNumber">
+          <el-input v-model="AddForm.ProdNumber"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -745,21 +757,14 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             this.spce[this.addindex].specSecond.push({
-              SpecName: this.editForm.SpecName,
+              SecondSpecName: this.editForm.SpecName,
               SecondImage:this.editForm.SecondImage,
               Stock: this.editForm.Stock,
               Price: this.editForm.Price,
-              barCode: this.editForm.barCode,
-              ProdNumber: this.editForm.ProdNumber,
+              BarCode: this.editForm.barCode,
+              prodNumber: this.editForm.ProdNumber,
             });
             this.dialogFormVisible = false
-          } else {
-            this.$message({
-              showClose: true,
-              type: "warning",
-              message: '请完善信息'
-            });
-            return false;
           }
         });
       },
@@ -768,27 +773,26 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             this.AddForm = {
-              SpeName: this.AddForm.SpeName,
+              SpecName: this.AddForm.SpeName,
               FirstImage: this.AddForm.FirstImage,
               Price: this.AddForm.Price,
+              barCode: this.AddForm.barCode,
+              ProdNumber: this.AddForm.ProdNumber,
+              Stock: this.AddForm.Stock,
               specSecond: []
             }
             this.spce.push(this.AddForm)
             console.log(this.spce)
             this.dialogFormVisible1 = false
             this.AddForm = {
-              SpeName: '',
+              SpecName: '',
               FirstImage: '',
               Price: '',
+              barCode: '',
+              ProdNumber: '',
+              Stock: '',
               specSecond: []
             }
-          } else {
-            this.$message({
-              showClose: true,
-              type: "warning",
-              message: '请完善信息'
-            });
-            return false;
           }
         });
       },
@@ -836,14 +840,14 @@
             banner = banner.substring(0, banner.length - 1)
             //规格
             for (let i = 0; i < this.spce.length; i++) {
-              if (this.spce[i].specSecond.length == 0) {
-                this.$message({
-                  showClose: true,
-                  type: "warning",
-                  message: '二级规格不能为空'
-                });
-                return
-              }
+              // if (this.spce[i].specSecond.length == 0) {
+              //   this.$message({
+              //     showClose: true,
+              //     type: "warning",
+              //     message: '二级规格不能为空'
+              //   });
+              //   return
+              // }
               delete this.spce[i].FirstPrice
               delete this.spce[i].Stock
             }

@@ -38,6 +38,7 @@ var EditBanner = resolve => require(['../components/banner/EditBanner.vue'], res
 //抵用券管理
 var PreferentialList = resolve => require(['../components/Preferentia/PreferentialList.vue'], resolve)
 var AddPreferential = resolve => require(['../components/Preferentia/AddPreferential.vue'], resolve)
+var RedPackage = resolve => require(['../components/Preferentia/RedPackage.vue'], resolve)
 //商品管理
 var OrdinaryProduct = resolve => require(['../components/Product/OrdinaryProduct.vue'], resolve)
 var AddOrdinaryProduct = resolve => require(['../components/Product/AddOrdinaryProduct.vue'], resolve)
@@ -134,6 +135,8 @@ export default new Router({
         //抵用券管理
         { path: '/PreferentialList', component: PreferentialList, name: '优惠券列表' }, 
         { path: '/AddPreferential', component: AddPreferential, name: '添加优惠券' },
+        { path: '/RedPackage', component: RedPackage, name: '红包' },
+        
         //商品管理 
         { path: '/OrdinaryProduct', component: OrdinaryProduct, name: '普通商品列表' }, 
         { path: '/AddOrdinaryProduct', component: AddOrdinaryProduct, name: '添加普通商品' }, 
