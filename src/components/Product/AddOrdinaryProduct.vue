@@ -60,7 +60,7 @@
             一级规格名称：{{item.SpecName}}&nbsp;&nbsp;&nbsp;
             价格：{{item.Price}}&nbsp;&nbsp;&nbsp;
             库存：{{item.Stock}}&nbsp;&nbsp;&nbsp;
-            商品编号：{{item.ProdNumber}}&nbsp;&nbsp;&nbsp;
+            商品编号：{{item.CommodityNumber}}&nbsp;&nbsp;&nbsp;
             商品条形码：{{item.barCode}}&nbsp;&nbsp;&nbsp;
             <el-button size="mini" type="warning" @click="handleAdd(index)" style="float:right">新增二级规格</el-button>
             <el-button size="mini" type="danger" plain icon="el-icon-delete" @click="DelOne(index)">删除</el-button>
@@ -77,7 +77,7 @@
             </el-table-column>
             <el-table-column label="价格" prop="Price">
             </el-table-column>
-            <el-table-column label="商品编号" prop="prodNumber">
+            <el-table-column label="商品编号" prop="ProdNumber">
             </el-table-column>
             <el-table-column label="商品条形码" prop="barCode">
             </el-table-column>
@@ -184,8 +184,8 @@
         <el-form-item label="商品条形码" prop="barCode">
           <el-input v-model="AddForm.barCode"></el-input>
         </el-form-item>
-        <el-form-item label="商品编号" prop="ProdNumber">
-          <el-input v-model="AddForm.ProdNumber"></el-input>
+        <el-form-item label="商品编号" prop="CommodityNumber">
+          <el-input v-model="AddForm.CommodityNumber"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -206,8 +206,8 @@
             </div>
           </el-upload>
         </el-form-item>
-        <el-form-item label="二级规格名称" prop="SecondSpecName">
-          <el-input v-model="editForm.SecondSpecName"></el-input>
+        <el-form-item label="二级规格名称" prop="SpecName">
+          <el-input v-model="editForm.SpecName"></el-input>
         </el-form-item>
         <el-form-item label="库存" prop="Stock">
           <el-input v-model="editForm.Stock"></el-input>
@@ -215,11 +215,11 @@
         <el-form-item label="价格" prop="Price">
           <el-input v-model="editForm.Price" type="number"></el-input>
         </el-form-item>
-        <el-form-item label="商品编号" prop="prodNumber">
-          <el-input v-model="editForm.prodNumber"></el-input>
+        <el-form-item label="商品编号" prop="ProdNumber">
+          <el-input v-model="editForm.ProdNumber"></el-input>
         </el-form-item>
-        <el-form-item label="商品条形码">
-          <el-input v-model="editForm.BarCode"></el-input>
+        <el-form-item label="商品条形码" prop="barCode">
+          <el-input v-model="editForm.barCode"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -256,7 +256,6 @@
         }
       };
       var checkClassification = (rule, value, callback) => {
-        console.log(this.getList.ClassificationSecondID)
         if (this.getList.ClassificationSecondID == '' || this.getList.ClassificationSecondID == undefined) {
           callback(new Error("请选择商品分类"));
         } else {
@@ -310,13 +309,13 @@
         //     Stock: '库存',
         //     Price: '价格',
         //     BarCode: '商品条形码',
-        //     prodNumber: '商品编号',
+        //     ProdNumber: '商品编号',
         //   }, {
         //     SecondSpecName: '二级规格名称2',
         //     Stock: '库存',
         //     Price: '价格',
         //     BarCode: '商品条形码',
-        //     prodNumber: '商品编号',
+        //     ProdNumber: '商品编号',
         //   }],
         // }], //一级规格
         getList: {
@@ -346,6 +345,11 @@
             required: true,
             validator: checkFirstImage
           }],
+          CommodityNumber: [{
+            required: true,
+            message: '请输入商品编号',
+            trigger: 'blur'
+          }],
         },
         listrules: {
           SecondImage: [{
@@ -362,17 +366,17 @@
             message: '请输入价格',
             trigger: 'blur'
           }],
-          BarCode: [{
+          barCode: [{
             required: true,
             message: '请输入商品条形码',
             trigger: 'blur'
           }],
-          prodNumber: [{
+          ProdNumber: [{
             required: true,
             message: '请输入商品编号',
             trigger: 'blur'
           }],
-          SecondSpecName: [{
+          SpecName: [{
             required: true,
             message: '请输入二级规格名称',
             trigger: 'blur'
@@ -678,15 +682,15 @@
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            console.log(this.spce)
             this.spce[this.addindex].specSecond.push({
-              SecondSpecName: this.editForm.SpecName,
+              SpecName: this.editForm.SpecName,
               SecondImage:this.editForm.SecondImage,
               Stock: this.editForm.Stock,
               Price: this.editForm.Price,
-              BarCode: this.editForm.barCode,
-              prodNumber: this.editForm.ProdNumber,
+              barCode: this.editForm.barCode,
+              ProdNumber: this.editForm.ProdNumber,
             });
+            console.log(this.spce)
             this.dialogFormVisible = false
           }
         });
@@ -696,11 +700,11 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             this.AddForm = {
-              SpecName: this.AddForm.SpeName,
+              SpecName: this.AddForm.SpecName,
               FirstImage: this.AddForm.FirstImage,
               Price: this.AddForm.Price,
               barCode: this.AddForm.barCode,
-              ProdNumber: this.AddForm.ProdNumber,
+              CommodityNumber: this.AddForm.CommodityNumber,
               Stock: this.AddForm.Stock,
               specSecond: []
             }
@@ -712,7 +716,7 @@
               FirstImage: '',
               Price: '',
               barCode: '',
-              ProdNumber: '',
+              CommodityNumber: '',
               Stock: '',
               specSecond: []
             }
@@ -752,6 +756,7 @@
         this.dialogFormVisible1 = true
       },
       submitFormwork(formName) {
+        console.log(this.spce)
         this.$refs[formName].validate((valid) => {
           if (valid) {
             var content = this.$refs.ueditor.getUEContent();
@@ -764,9 +769,18 @@
             //规格
             for (let i = 0; i < this.spce.length; i++) {
               delete this.spce[i].FirstPrice
-              delete this.spce[i].Stock
+              for (let y = 0; y < this.spce[i].specSecond.length; y++) {
+                console.log(this.spce[i].specSecond[y])
+                this.spce[i].specSecond[y].prodNumber = this.spce[i].specSecond[y].ProdNumber;
+                this.spce[i].specSecond[y].SecondSpecName = this.spce[i].specSecond[y].SpecName;
+                this.spce[i].specSecond[y].BarCode = this.spce[i].specSecond[y].barCode;
+                delete this.spce[i].specSecond[y].ProdNumber
+                delete this.spce[i].specSecond[y].SpecName
+                delete this.spce[i].specSecond[y].barCode
+              }
             }
             console.log(this.spce)
+            // return;
             const loading = this.$loading({
               lock: true,
               text: "Loading",
@@ -783,17 +797,17 @@
                   specs: this.spce,
                   SpecTypeName: this.getList.SpecTypeName,
                   SpecTypeSecondName: this.getList.SpecTypeSecondName,
-                  Introduce: this.getList.Introduce,
+                  Introduce: this.getList.Introduce ? this.getList.Introduce : -1,
                   IsOutSourcing: this.getList.IsOutSourcing,
-                  Salesvolume: this.getList.Salesvolume,
+                  Salesvolume: this.getList.Salesvolume ? this.getList.Salesvolume : 0,
                   Commission: this.getList.Commission,
                   ExpressWay: this.getList.yunfei ? this.getList.ExpressWay : 0,
                   FreightNameID: this.getList.yunfei ? this.getList.FreightNameID : -1,
                   Image: banner,
-                  ProdPoster: this.getList.ProdPoster,
+                  ProdPoster: this.getList.ProdPoster ? this.getList.ProdPoster : -1,
                   Detail: encodeURIComponent(content),
                   price: this.getList.Price,
-                  IsRecommended: this.getList.IsRecommended,
+                  IsRecommended: false,
                 })
               )
               .then(

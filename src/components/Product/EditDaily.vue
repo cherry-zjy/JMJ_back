@@ -69,8 +69,8 @@
             一级规格名称：{{item.SpecName}}&nbsp;&nbsp;&nbsp;
             价格：{{item.Price}}&nbsp;&nbsp;&nbsp;
             库存：{{item.Stock}}&nbsp;&nbsp;&nbsp;
-            商品编号：{{item.ProdNumber}}&nbsp;&nbsp;&nbsp;
-            商品条形码：{{item.barCode}}&nbsp;&nbsp;&nbsp;
+            商品编号：{{item.CommodityNumber}}&nbsp;&nbsp;&nbsp;
+            商品条形码：{{item.BarCode}}&nbsp;&nbsp;&nbsp;
             <el-button size="mini" type="warning" @click="handleAdd(index)" style="float:right">新增二级规格</el-button>
             <el-button size="mini" type="danger" plain icon="el-icon-delete" @click="DelOne(index)">删除</el-button>
           </p>
@@ -175,8 +175,8 @@
     <el-dialog title="新增一级分类名称" :visible.sync="dialogFormVisible1" width="50%">
       <el-form :model="AddForm" :rules="addrules" ref="AddForm" label-width="150px" class="demo-editForm"
         label-position="left">
-        <el-form-item label="一级规格名称" prop="SpeName">
-          <el-input v-model="AddForm.SpeName"></el-input>
+        <el-form-item label="一级规格名称" prop="SpecName">
+          <el-input v-model="AddForm.SpecName"></el-input>
         </el-form-item>
         <el-form-item label="一级规格价格" prop="Price">
           <el-input v-model="AddForm.Price"></el-input>
@@ -193,11 +193,11 @@
         <el-form-item label="库存" prop="Stock">
           <el-input v-model="AddForm.Stock"></el-input>
         </el-form-item>
-        <el-form-item label="商品条形码" prop="barCode">
-          <el-input v-model="AddForm.barCode"></el-input>
+        <el-form-item label="商品条形码" prop="BarCode">
+          <el-input v-model="AddForm.BarCode"></el-input>
         </el-form-item>
-        <el-form-item label="商品编号" prop="ProdNumber">
-          <el-input v-model="AddForm.ProdNumber"></el-input>
+        <el-form-item label="商品编号" prop="CommodityNumber">
+          <el-input v-model="AddForm.CommodityNumber"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -339,13 +339,16 @@
         editForm: [],
         addindex: '', //添加二级规格的index
         AddForm: {
-          SpeName: '',
-          Price:'',
-          FirstImage:'',
+          SpecName: '',
+          Price: '',
+          FirstImage: '',
+          BarCode: '',
+          CommodityNumber: '',
+          Stock: '',
           specSecond: []
         },
         addrules: {
-          SpeName: [{
+          SpecName: [{
             required: true,
             message: '请输入一级规格名称',
             trigger: 'blur'
@@ -357,6 +360,11 @@
           Price: [{
             required: true,
             message: '请输入一级规格价格',
+            trigger: 'blur'
+          }],
+          CommodityNumber: [{
+            required: true,
+            message: '请输入商品编号',
             trigger: 'blur'
           }],
         },
@@ -759,12 +767,12 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             this.spce[this.addindex].specSecond.push({
-              SecondSpecName: this.editForm.SpecName,
-              SecondImage:this.editForm.SecondImage,
+              SpecName: this.editForm.SpecName,
+              SecondImage: this.editForm.SecondImage,
               Stock: this.editForm.Stock,
               Price: this.editForm.Price,
-              BarCode: this.editForm.barCode,
-              prodNumber: this.editForm.ProdNumber,
+              barCode: this.editForm.barCode,
+              ProdNumber: this.editForm.ProdNumber,
             });
             this.dialogFormVisible = false
           }
@@ -775,11 +783,11 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             this.AddForm = {
-              SpecName: this.AddForm.SpeName,
+              SpecName: this.AddForm.SpecName,
               FirstImage: this.AddForm.FirstImage,
               Price: this.AddForm.Price,
-              barCode: this.AddForm.barCode,
-              ProdNumber: this.AddForm.ProdNumber,
+              BarCode: this.AddForm.BarCode,
+              CommodityNumber: this.AddForm.CommodityNumber,
               Stock: this.AddForm.Stock,
               specSecond: []
             }
@@ -790,8 +798,8 @@
               SpecName: '',
               FirstImage: '',
               Price: '',
-              barCode: '',
-              ProdNumber: '',
+              BarCode: '',
+              CommodityNumber: '',
               Stock: '',
               specSecond: []
             }
@@ -826,7 +834,15 @@
       },
       handleAddOne() {
         this.FirstImage = ''
-        this.AddForm = []
+        this.AddForm = {
+          SpecName: '',
+          Price: '',
+          FirstImage: '',
+          BarCode: '',
+          CommodityNumber: '',
+          Stock: '',
+          specSecond: []
+        }
         this.dialogFormVisible1 = true
       },
       submitFormwork(formName) {
@@ -841,16 +857,19 @@
             banner = banner.substring(0, banner.length - 1)
             //规格
             for (let i = 0; i < this.spce.length; i++) {
-              // if (this.spce[i].specSecond.length == 0) {
-              //   this.$message({
-              //     showClose: true,
-              //     type: "warning",
-              //     message: '二级规格不能为空'
-              //   });
-              //   return
-              // }
               delete this.spce[i].FirstPrice
-              delete this.spce[i].Stock
+              this.spce[i].Stock = this.spce[i].Stock == '' ? -1 : this.spce[i].Stock
+              this.spce[i].CommodityNumber = this.spce[i].CommodityNumber == '' ? -1 : this.spce[i].CommodityNumber
+              this.spce[i].BarCode = this.spce[i].BarCode == '' ? -1 : this.spce[i].BarCode
+              for (let y = 0; y < this.spce[i].specSecond.length; y++) {
+                console.log(this.spce[i].specSecond[y])
+                this.spce[i].specSecond[y].prodNumber = this.spce[i].specSecond[y].ProdNumber;
+                this.spce[i].specSecond[y].SecondSpecName = this.spce[i].specSecond[y].SpecName;
+                this.spce[i].specSecond[y].BarCode = this.spce[i].specSecond[y].barCode;
+                delete this.spce[i].specSecond[y].ProdNumber
+                delete this.spce[i].specSecond[y].SpecName
+                delete this.spce[i].specSecond[y].barCode
+              }
             }
             console.log(this.spce)
             var startTime = this.time[0].substring(0, 10)
