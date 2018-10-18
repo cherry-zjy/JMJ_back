@@ -77,13 +77,13 @@
             </el-table-column>
             <el-table-column label="价格" prop="Price">
             </el-table-column>
-            <el-table-column label="商品编号" prop="ProdNumber">
+            <el-table-column label="商品编号" prop="CommodityNumber">
             </el-table-column>
-            <el-table-column label="商品条形码" prop="barCode">
+            <el-table-column label="商品条形码" prop="BarCode">
             </el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
-                <el-button size="mini" type="danger" plain icon="el-icon-delete" @click="Del(scope.$index)">删除</el-button>
+                <el-button size="mini" type="danger" plain icon="el-icon-delete" @click="Del(index,scope.$index)">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -223,11 +223,11 @@
         <el-form-item label="价格" prop="Price">
           <el-input v-model="editForm.Price" type="number"></el-input>
         </el-form-item>
-        <el-form-item label="商品编号" prop="ProdNumber">
-          <el-input v-model="editForm.ProdNumber"></el-input>
+        <el-form-item label="商品编号" prop="CommodityNumber">
+          <el-input v-model="editForm.CommodityNumber"></el-input>
         </el-form-item>
-        <el-form-item label="商品条形码">
-          <el-input v-model="editForm.barCode"></el-input>
+        <el-form-item label="商品条形码" prop="BarCode">
+          <el-input v-model="editForm.BarCode"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -378,12 +378,12 @@
             message: '请输入价格',
             trigger: 'blur'
           }],
-          barCode: [{
+          BarCode: [{
             required: true,
             message: '请输入商品条形码',
             trigger: 'blur'
           }],
-          ProdNumber: [{
+          CommodityNumber: [{
             required: true,
             message: '请输入商品编号',
             trigger: 'blur'
@@ -786,8 +786,8 @@
               SecondImage: this.editForm.SecondImage,
               Stock: this.editForm.Stock,
               Price: this.editForm.Price,
-              barCode: this.editForm.barCode,
-              ProdNumber: this.editForm.ProdNumber,
+              BarCode: this.editForm.BarCode,
+              CommodityNumber: this.editForm.CommodityNumber,
             });
             this.dialogFormVisible = false
           }
@@ -836,10 +836,8 @@
         });
 
       },
-      Del(index) {
-        console.log(this.spce)
-        // console.log(this.addindex)
-        this.spce[index].specSecond.splice(index, 1)
+      Del(pindex,index) {
+        this.spce[pindex].specSecond.splice(index, 1)
       },
       handleAdd(index) {
         this.SecondImage = ''
@@ -878,12 +876,10 @@
               this.spce[i].BarCode = this.spce[i].BarCode == '' ? -1 : this.spce[i].BarCode
               for (let y = 0; y < this.spce[i].specSecond.length; y++) {
                 console.log(this.spce[i].specSecond[y])
-                this.spce[i].specSecond[y].prodNumber = this.spce[i].specSecond[y].ProdNumber;
+                this.spce[i].specSecond[y].prodNumber = this.spce[i].specSecond[y].CommodityNumber;
                 this.spce[i].specSecond[y].SecondSpecName = this.spce[i].specSecond[y].SpecName;
-                this.spce[i].specSecond[y].BarCode = this.spce[i].specSecond[y].barCode;
-                delete this.spce[i].specSecond[y].ProdNumber
+                delete this.spce[i].specSecond[y].CommodityNumber
                 delete this.spce[i].specSecond[y].SpecName
-                delete this.spce[i].specSecond[y].barCode
               }
             }
             console.log(this.spce)
