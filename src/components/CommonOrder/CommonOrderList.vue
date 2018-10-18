@@ -49,64 +49,15 @@
     </div>
 
     <!--模态框-->
-    <el-dialog title="详情" :visible.sync="FormVisible">
-      <el-form :model="editForm" label-width="120px" ref="editForm">
-        <el-row>
-          <el-col :span="12">
-            <p class="title">订单信息</p>
-            <el-form-item label="订单号">
-              {{editForm.orderNo}}
-            </el-form-item>
-            <el-form-item label="用户名">
-              {{editForm.userName}}
-            </el-form-item>
-            <el-form-item label="购买信息">
-              {{editForm.BuyMessage}}
-            </el-form-item>
-            <el-form-item label="商品金额">
-              {{editForm.prodPrice}}
-            </el-form-item>
-            <el-form-item label="抵用券">
-              {{editForm.zheKou}}
-            </el-form-item>
-            <el-form-item label="红包">
-              {{editForm.hongBao}}
-            </el-form-item>
-            <el-form-item label="实付金额">
-              {{editForm.onlinePrice}}
-            </el-form-item>
-            <el-form-item label="支付方式">
-              {{editForm.Paytype | Paytype}}
-            </el-form-item>
-            <el-form-item label="支付时间">
-              {{editForm.payTime}}
-            </el-form-item>
-            <el-form-item label="身份验证">
-              {{editForm.Identity}}
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <p class="title">收货信息</p>
-            <el-form-item label="订单状态">
-              {{editForm.orderType | orderType}}
-            </el-form-item>
-            <el-form-item label="收货人姓名">
-              {{editForm.consigneeName}}
-            </el-form-item>
-            <el-form-item label="收货人电话">
-              {{editForm.phone}}
-            </el-form-item>
-            <el-form-item label="收货人地址">
-              {{editForm.Adress}}
-            </el-form-item>
-            <el-form-item label="物流单号">
-              {{editForm.LogisticsNumber}}
-            </el-form-item>
-          </el-col>
-        </el-row>
+    <el-dialog title="新增" :visible.sync="FormVisible">
+      <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
+        <el-form-item label="运单号" prop="ExpressNumber">
+          <el-input v-model="addForm.ExpressNumber" auto-complete="off"></el-input>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click.native="FormVisible = false">关闭</el-button>
+        <el-button @click.native="addFormVisible = false">取消</el-button>
+        <el-button type="primary" @click.native="addSubmit" :loading="addLoading">提交</el-button>
       </div>
     </el-dialog>
   </div>
@@ -125,15 +76,27 @@
         list: [],
         mainurl: '',
         type: -1,
+        fahuoid:'',
         editForm: {
           OrderNumber: ''
         },
+        addForm:{
+          ExpressNumber:''
+        },
+        addLoading: false,
         FormVisible: false,
         pageIndex: 1,
         pageSize: 8,
         pageCount: 1,
         orderNo: '',
         name: '',
+        addFormRules: {
+          ExpressNumber: [{
+            required: true,
+            message: "请输入运单号",
+            trigger: "blur"
+          }],
+        },
         typeList: [{
             ID: -1,
             Name: '全部'
@@ -275,73 +238,70 @@
       handleEdit(id) {
         this.$router.push("/CommonOrderDetail/id=" + id);
       },
-      fahuo(id){
-        this.$confirm('确认发货?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          const loading = this.$loading({
-            lock: true,
-            text: "Loading",
-            spinner: "el-icon-loading",
-            background: "rgba(0, 0, 0, 0.7)"
-          });
-          this.$http
-            .get("api/Back_OrderManage/Consignment", {
-              params: {
-                ID: id,
-                Token: getCookie("token"),
-              }
-            })
-            .then(
-              function (response) {
-                loading.close();
-                var status = response.data.Status;
-                if (status === 1) {
-                  this.$message({
-                    showClose: true,
-                    type: "success",
-                    message: response.data.Result
-                  });
-                  this.getInfo()
-                } else if (status === 40001) {
-                  this.$message({
-                    showClose: true,
-                    type: "warning",
-                    message: response.data.Result
-                  });
-                  setTimeout(() => {
-                    this.$router.push({
-                      path: "/login"
+      addSubmit() {
+        this.$refs.addForm.validate(valid => {
+          if (valid) {
+            //判断是否填写完整  --true
+              this.addLoading = true;
+              // 将token传入参数中
+              // 发保存请求
+              this.$http
+                .get("api/Back_OrderManage/Consignment", {
+                  params: {
+                    Token:getCookie("token"),
+                    ID:this.fahuoid,
+                    ExpressNumber:this.addForm.ExpressNumber
+                  }
+                })
+                .then(
+                  function (response) {
+                    this.addLoading = false;
+                    var status = response.data.Status;
+                    if (status === 1) {
+                      // 表单重置
+                      this.$refs["addForm"].resetFields();
+                      this.FormVisible = false;
+                      this.$message({
+                        showClose: true,
+                        type: "success",
+                        message: response.data.Result
+                      });
+                      this.getInfo();
+                    } else if (status === 40001) {
+                      this.$message({
+                        showClose: true,
+                        type: "warning",
+                        message: response.data.Result
+                      });
+                      setTimeout(() => {
+                        this.$router.push({
+                          path: "/login"
+                        });
+                      }, 1500);
+                    } else {
+                      this.$message({
+                        showClose: true,
+                        type: "warning",
+                        message: response.data.Result
+                      });
+                    }
+                  }.bind(this)
+                )
+                // 请求error
+                .catch(
+                  function (error) {
+                    this.$notify.error({
+                      title: "错误",
+                      message: "错误：请检查网络"
                     });
-                  }, 1500);
-                } else {
-                  loading.close();
-                  this.$message({
-                    showClose: true,
-                    type: "warning",
-                    message: response.data.Result
-                  });
-                }
-              }.bind(this)
-            )
-            // 请求error
-            .catch(
-              function (error) {
-                loading.close();
-                this.$notify.error({
-                  title: "错误",
-                  message: "错误：请检查网络"
-                });
-              }.bind(this)
-            );
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });
+                  }.bind(this)
+                );
+          }
         });
+      },
+      fahuo(id){
+        this.FormVisible = true
+        this.fahuoid = id;
       }
     },
 
