@@ -8,16 +8,28 @@
     <el-row>
       <p class="title">佣金设置</p>
       <el-form label-width="150px" class="demo-editForm" v-for="(item,index) in list" :key="index">
-        <el-col :span="12">
+        <el-col :span="12" v-if="item.Name !== '买' &&item.Name !== '满'">
           <el-form-item :label="item.Name" v-if="index%2==0" :id="item.ID">
             <el-input v-model="item.Content" type="number"></el-input>&nbsp;%
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="12" v-if="item.Name !== '买' &&item.Name !== '满'">
           <el-form-item :label="item.Name" v-if="index%2!==0" :id="item.ID">
             <el-input v-model="item.Content" type="number"></el-input>&nbsp;%
           </el-form-item>
         </el-col>
+        <div>
+        <el-col :span="12" v-if="item.Name == '买'">
+          <el-form-item :label="item.Name" :id="item.ID">
+            <el-input v-model="item.Content" type="number"></el-input>&nbsp;元
+          </el-form-item>
+        </el-col>
+        <el-col :span="12" v-if="item.Name == '满'">
+          <el-form-item :label="item.Name" :id="item.ID">
+            <el-input v-model="item.Content" type="number"></el-input>&nbsp;件
+          </el-form-item>
+        </el-col>
+        </div>
       </el-form>
     </el-row>
     <div class="center">
