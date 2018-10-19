@@ -44,31 +44,31 @@
         </p>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="一级总名称" prop="SpecTypeName">
+            <el-form-item label="一级总名称">
               <el-input v-model="getList.SpecTypeName"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="二级总名称" prop="SpecTySecondName">
+            <el-form-item label="二级总名称">
               <el-input v-model="getList.SpecTySecondName"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <div v-for="(item,index) in spce" :key="index">
           <p class="tabletitle">
-            <img :src="mainurl+item.FirstImage" style="width:70px;height:70px;vertical-align: middle;"/>
+            <img  v-if="item.FirstImage" :src="mainurl+item.FirstImage" style="width:70px;height:70px;vertical-align: middle;"/>
             一级规格名称：{{item.SpecName}}&nbsp;&nbsp;&nbsp;
-            价格：{{item.Price}}&nbsp;&nbsp;&nbsp;
             库存：{{item.Stock}}&nbsp;&nbsp;&nbsp;
+            价格：{{item.Price}}&nbsp;&nbsp;&nbsp;
             商品编号：{{item.CommodityNumber}}&nbsp;&nbsp;&nbsp;
-            商品条形码：{{item.BarCode}}&nbsp;&nbsp;&nbsp;
+            商品条形码：{{item.barCode}}&nbsp;&nbsp;&nbsp;
             <el-button size="mini" type="warning" @click="handleAdd(index)" style="float:right">新增二级规格</el-button>
             <el-button size="mini" type="danger" plain icon="el-icon-delete" @click="DelOne(index)">删除</el-button>
           </p>
           <el-table style="width: 100%" :border='true' :data="item.specSecond">
-            <el-table-column label="二级规格图片" prop="SecondImage">
-              <template slot-scope="scope">
-                <img :src="mainurl+scope.row.SecondImage" style="width:60px;height:60px"/>
+            <el-table-column label="二级规格图片">
+              <template slot-scope="scope" v-if="scope.row.SecondImage">
+                <img :src="mainurl+scope.row.SecondImage" style="width:60px;height:60px" />
               </template>
             </el-table-column>
             <el-table-column label="二级规格名称" prop="SpecName">
@@ -165,29 +165,29 @@
     <el-dialog title="新增一级分类名称" :visible.sync="dialogFormVisible1" width="50%">
       <el-form :model="AddForm" :rules="addrules" ref="AddForm" label-width="150px" class="demo-editForm"
         label-position="left">
+        <el-form-item label="一级规格图片">
+        <el-upload v-model="AddForm.FirstImage" class="avatar-uploader" :action="action" :show-file-list="false"
+          :on-success="handleFirstSuccess" :before-upload="beforeAvatarUpload">
+          <img v-if="FirstImage" :src="FirstImage" class="avatar" width="200">
+          <div v-else class="el-upload el-upload--picture-card">
+            <i class="el-icon-plus"></i>
+          </div>
+        </el-upload>
+      </el-form-item>
         <el-form-item label="一级规格名称" prop="SpecName">
           <el-input v-model="AddForm.SpecName"></el-input>
-        </el-form-item>
-        <el-form-item label="一级规格价格" prop="Price">
-          <el-input v-model="AddForm.Price"></el-input>
-        </el-form-item>
-        <el-form-item prop="FirstImage" label="一级规格图片">
-          <el-upload v-model="AddForm.FirstImage" class="avatar-uploader" :action="action" :show-file-list="false"
-            :on-success="handleFirstSuccess" :before-upload="beforeAvatarUpload">
-            <img v-if="FirstImage" :src="FirstImage" class="avatar" width="200">
-            <div v-else class="el-upload el-upload--picture-card">
-              <i class="el-icon-plus"></i>
-            </div>
-          </el-upload>
         </el-form-item>
         <el-form-item label="库存" prop="Stock">
           <el-input v-model="AddForm.Stock"></el-input>
         </el-form-item>
-        <el-form-item label="商品条形码" prop="BarCode">
-          <el-input v-model="AddForm.BarCode"></el-input>
+        <el-form-item label="价格" prop="Price">
+          <el-input v-model="AddForm.Price"></el-input>
         </el-form-item>
         <el-form-item label="商品编号" prop="CommodityNumber">
           <el-input v-model="AddForm.CommodityNumber"></el-input>
+        </el-form-item>
+        <el-form-item label="商品条形码">
+          <el-input v-model="AddForm.barCode"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -199,7 +199,7 @@
     <el-dialog title="新增二级规格名称" :visible.sync="dialogFormVisible" width="50%">
       <el-form :model="editForm" :rules="listrules" ref="editForm" label-width="150px" class="demo-editForm"
         label-position="left">
-        <el-form-item prop="SecondImage" label="二级规格图片">
+        <el-form-item label="二级规格图片">
           <el-upload v-model="editForm.SecondImage" class="avatar-uploader" :action="action" :show-file-list="false"
             :on-success="handleSecondSuccess" :before-upload="beforeAvatarUpload">
             <img v-if="SecondImage" :src="SecondImage" class="avatar" width="200">
@@ -220,7 +220,7 @@
         <el-form-item label="商品编号" prop="CommodityNumber">
           <el-input v-model="editForm.CommodityNumber"></el-input>
         </el-form-item>
-        <el-form-item label="商品条形码" prop="BarCode">
+        <el-form-item label="商品条形码">
           <el-input v-model="editForm.BarCode"></el-input>
         </el-form-item>
       </el-form>
@@ -355,6 +355,11 @@
           CommodityNumber: [{
             required: true,
             message: '请输入商品编号',
+            trigger: 'blur'
+          }],
+          Stock: [{
+            required: true,
+            message: '请输入库存',
             trigger: 'blur'
           }],
         },
@@ -509,7 +514,7 @@
               if (status === 1) {
                 this.getList = response.data.Result;
                 this.changeclassification()
-                if(response.data.Result.ProdPoster == null){
+                if(response.data.Result.ProdPoster == ''){
                   this.imageUrl = ""
                 }else{
                   this.imageUrl = mainurl + response.data.Result.ProdPoster;
