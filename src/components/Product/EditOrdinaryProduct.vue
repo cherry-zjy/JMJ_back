@@ -113,6 +113,7 @@
                 </el-select>
               </div>
             </el-form-item>
+            
           </el-col>
           <el-col :span="12">
             <el-form-item label="商品销量">
@@ -126,6 +127,12 @@
             </el-form-item> -->
             <el-form-item label="商品佣金" prop="Commission">
               <el-input v-model="getList.Commission" type="number"></el-input>
+            </el-form-item>
+            <el-form-item label="商品库存">
+              <el-input v-model="getList.Stock"></el-input>
+            </el-form-item>
+            <el-form-item label="商品条形码">
+              <el-input v-model="getList.BarCode"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -891,8 +898,8 @@
                   Classification: this.getList.classificationID,
                   ClassificationSecond: this.getList.classificationSecondID,
                   specs: this.spce,
-                  SpecTypeName: this.getList.SpecTypeName,
-                  SpecTypeSecondName: this.getList.SpecTySecondName,
+                  SpecTypeName: this.getList.SpecTypeName ? this.getList.SpecTypeName : -1,
+                  SpecTypeSecondName: this.getList.SpecTypeSecondName ? this.getList.SpecTypeSecondName : -1,
                   Introduce: this.getList.Introduce,
                   IsOutSourcing: this.getList.IsOutSourcing,
                   Salesvolume: this.getList.Salesvolume,
@@ -909,6 +916,8 @@
                   startTime: null,
                   endTime: null,
                   IsRecommended: this.getList.IsRecommended,
+                  Stock:this.getList.Stock,
+                  BarCode:this.getList.BarCode
                 })
               )
               .then(

@@ -70,7 +70,7 @@
               loading.close();
               var status = response.data.Status;
               if (status === 1) {
-                this.list.defaultMsg = response.data.Result.ExchangeDetail
+                this.defaultMsg = decodeURIComponent(response.data.Result.ExchangeDetail)
               } else if (status === 40001) {
                 this.$message({
                   showClose: true,

@@ -21,12 +21,12 @@
         <div>
         <el-col :span="12" v-if="item.Name == '买'">
           <el-form-item :label="item.Name" :id="item.ID">
-            <el-input v-model="item.Content" type="number"></el-input>&nbsp;元
+            <el-input v-model="item.Content" type="number"></el-input>&nbsp;件
           </el-form-item>
         </el-col>
         <el-col :span="12" v-if="item.Name == '满'">
           <el-form-item :label="item.Name" :id="item.ID">
-            <el-input v-model="item.Content" type="number"></el-input>&nbsp;件
+            <el-input v-model="item.Content" type="number"></el-input>&nbsp;元
           </el-form-item>
         </el-col>
         </div>

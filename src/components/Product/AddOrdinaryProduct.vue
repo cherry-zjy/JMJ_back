@@ -111,6 +111,9 @@
                 </el-select>
               </div>
             </el-form-item>
+            <el-form-item label="商品库存">
+              <el-input v-model="getList.Stock"></el-input>
+            </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="商品销量">
@@ -122,6 +125,10 @@
             <el-form-item label="商品佣金" prop="Commission">
               <el-input v-model="getList.Commission" type="number"></el-input>
             </el-form-item>
+            <el-form-item label="商品条形码">
+              <el-input v-model="getList.BarCode"></el-input>
+            </el-form-item>
+            
           </el-col>
         </el-row>
         <el-row>
@@ -774,14 +781,15 @@
             //规格
             for (let i = 0; i < this.spce.length; i++) {
               delete this.spce[i].FirstPrice
+              this.spce[i].Stock = this.spce[i].Stock == '' ? -1 : this.spce[i].Stock
+              this.spce[i].CommodityNumber = this.spce[i].CommodityNumber == '' ? -1 : this.spce[i].CommodityNumber
+              this.spce[i].BarCode = this.spce[i].BarCode == '' ? -1 : this.spce[i].BarCode
               for (let y = 0; y < this.spce[i].specSecond.length; y++) {
                 console.log(this.spce[i].specSecond[y])
-                this.spce[i].specSecond[y].prodNumber = this.spce[i].specSecond[y].ProdNumber;
+                this.spce[i].specSecond[y].prodNumber = this.spce[i].specSecond[y].CommodityNumber;
                 this.spce[i].specSecond[y].SecondSpecName = this.spce[i].specSecond[y].SpecName;
-                this.spce[i].specSecond[y].BarCode = this.spce[i].specSecond[y].barCode;
-                delete this.spce[i].specSecond[y].ProdNumber
+                delete this.spce[i].specSecond[y].CommodityNumber
                 delete this.spce[i].specSecond[y].SpecName
-                delete this.spce[i].specSecond[y].barCode
               }
             }
             console.log(this.spce)
@@ -800,8 +808,8 @@
                   // Number: this.getList.Number,
                   ClassificationSecondID: this.getList.ClassificationSecondID,
                   specs: this.spce,
-                  SpecTypeName: this.getList.SpecTypeName,
-                  SpecTypeSecondName: this.getList.SpecTypeSecondName,
+                  SpecTypeName: this.getList.SpecTypeName ? this.getList.SpecTypeName : -1,
+                  SpecTypeSecondName: this.getList.SpecTypeSecondName ? this.getList.SpecTypeSecondName : -1,
                   Introduce: this.getList.Introduce ? this.getList.Introduce : -1,
                   IsOutSourcing: this.getList.IsOutSourcing,
                   Salesvolume: this.getList.Salesvolume ? this.getList.Salesvolume : 0,
@@ -813,6 +821,8 @@
                   Detail: encodeURIComponent(content),
                   price: this.getList.Price,
                   IsRecommended: false,
+                  Stock:this.getList.Stock,
+                  BarCode:this.getList.BarCode
                 })
               )
               .then(

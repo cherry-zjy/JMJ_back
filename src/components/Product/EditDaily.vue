@@ -26,9 +26,9 @@
               <el-input disabled="disabled" value="每日团购"></el-input>
             </el-form-item>
             <el-form-item label="活动时间">
-            <el-date-picker v-model="time" value-format="yyyy-MM-dd" @change="getSTime" format="yyyy-MM-dd" type="daterange"
-              start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']">
-            </el-date-picker>
+              <el-date-picker v-model="time" value-format="yyyy-MM-dd" @change="getSTime" format="yyyy-MM-dd" type="daterange"
+                start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']">
+              </el-date-picker>
             </el-form-item>
 
           </el-col>
@@ -123,6 +123,9 @@
                 </el-select>
               </div>
             </el-form-item>
+            <el-form-item label="商品库存">
+              <el-input v-model="getList.Stock"></el-input>
+            </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="商品销量">
@@ -133,6 +136,9 @@
             </el-form-item> -->
             <el-form-item label="商品佣金" prop="Commission">
               <el-input v-model="getList.Commission" type="number"></el-input>
+            </el-form-item>
+            <el-form-item label="商品条形码">
+              <el-input v-model="getList.BarCode"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -176,14 +182,14 @@
       <el-form :model="AddForm" :rules="addrules" ref="AddForm" label-width="150px" class="demo-editForm"
         label-position="left">
         <el-form-item label="一级规格图片">
-        <el-upload v-model="AddForm.FirstImage" class="avatar-uploader" :action="action" :show-file-list="false"
-          :on-success="handleFirstSuccess" :before-upload="beforeAvatarUpload">
-          <img v-if="FirstImage" :src="FirstImage" class="avatar" width="200">
-          <div v-else class="el-upload el-upload--picture-card">
-            <i class="el-icon-plus"></i>
-          </div>
-        </el-upload>
-      </el-form-item>
+          <el-upload v-model="AddForm.FirstImage" class="avatar-uploader" :action="action" :show-file-list="false"
+            :on-success="handleFirstSuccess" :before-upload="beforeAvatarUpload">
+            <img v-if="FirstImage" :src="FirstImage" class="avatar" width="200">
+            <div v-else class="el-upload el-upload--picture-card">
+              <i class="el-icon-plus"></i>
+            </div>
+          </el-upload>
+        </el-form-item>
         <el-form-item label="一级规格名称" prop="SpecName">
           <el-input v-model="AddForm.SpecName"></el-input>
         </el-form-item>
@@ -293,7 +299,7 @@
           initialFrameWidth: null,
           initialFrameHeight: 500
         },
-        time:'',
+        time: '',
         defaultMsg: "",
         dialogFormVisible: false,
         dialogFormVisible1: false,
@@ -301,8 +307,8 @@
         //轮播图点击放大
         dialogImageUrl: '',
         imageUrl: '',
-        FirstImage:'',//一级规格图片
-        SecondImage:'',//二级规格图片
+        FirstImage: '', //一级规格图片
+        SecondImage: '', //二级规格图片
         action: '',
         list: [],
         mubanList: [],
@@ -503,9 +509,9 @@
               if (status === 1) {
                 this.getList = response.data.Result;
                 this.changeclassification()
-                if(response.data.Result.ProdPoster == ''){
+                if (response.data.Result.ProdPoster == '') {
                   this.imageUrl = ""
-                }else{
+                } else {
                   this.imageUrl = mainurl + response.data.Result.ProdPoster;
                 }
                 // var imgarr = Array();
@@ -522,7 +528,8 @@
                 this.yunfei = response.data.Result.ExpressWay == 0 ? false : true
                 this.spce = response.data.Result.specification;
                 this.defaultMsg = decodeURIComponent(response.data.Result.Detail);
-                this.time = [response.data.Result.startTime.substring(0,10),response.data.Result.endTime.substring(0,10)]
+                this.time = [response.data.Result.startTime.substring(0, 10), response.data.Result.endTime.substring(0,
+                  10)]
               } else if (status === 40001) {
                 this.$message({
                   showClose: true,
@@ -735,11 +742,11 @@
         console.log(this.addbannerimg)
         console.log(this.bannerimg)
       },
-      handleFirstSuccess(res, file){
+      handleFirstSuccess(res, file) {
         this.FirstImage = URL.createObjectURL(file.raw);
         this.AddForm.FirstImage = res.Result[0];
       },
-      handleSecondSuccess(res, file){
+      handleSecondSuccess(res, file) {
         this.SecondImage = URL.createObjectURL(file.raw);
         this.editForm.SecondImage = res.Result[0];
       },
@@ -825,7 +832,7 @@
         });
 
       },
-      Del(pindex,index) {
+      Del(pindex, index) {
         this.spce[pindex].specSecond.splice(index, 1)
       },
       handleAdd(index) {
@@ -872,6 +879,7 @@
               }
             }
             console.log(this.spce)
+            // return;
             var startTime = this.time[0].substring(0, 10)
             var endTime = this.time[1].substring(0, 10)
             const loading = this.$loading({
@@ -885,14 +893,14 @@
                 qs.stringify({
                   token: getCookie("token"),
                   ID: window.location.href.split("id=")[1],
-                  price:this.getList.prodPrice,
+                  price: this.getList.prodPrice,
                   Name: this.getList.prodName,
                   TeamBuyingPrice: this.getList.Price,
                   Classification: this.getList.classificationID,
                   ClassificationSecond: this.getList.classificationSecondID,
                   specs: this.spce,
-                  SpecTypeName: this.getList.SpecTypeName,
-                  SpecTypeSecondName: this.getList.SpecTySecondName,
+                  SpecTypeName: this.getList.SpecTypeName ? this.getList.SpecTypeName : -1,
+                  SpecTypeSecondName: this.getList.SpecTypeSecondName ? this.getList.SpecTypeSecondName : -1,
                   Introduce: this.getList.Introduce,
                   IsOutSourcing: this.getList.IsOutSourcing,
                   Salesvolume: this.getList.Salesvolume,
@@ -906,9 +914,11 @@
                   Ntegrate: -1,
                   NumOfMem: -1,
                   SignTimes: -1,
-                  startTime:startTime,
-                  endTime:endTime,
-                  IsRecommended:this.getList.IsRecommended,
+                  startTime: startTime,
+                  endTime: endTime,
+                  IsRecommended: this.getList.IsRecommended,
+                  Stock:this.getList.Stock,
+                  BarCode:this.getList.BarCode
                 })
               )
               .then(
