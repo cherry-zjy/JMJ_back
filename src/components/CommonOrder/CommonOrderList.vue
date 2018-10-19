@@ -52,8 +52,12 @@
     <el-dialog title="新增" :visible.sync="FormVisible">
       <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
         <el-form-item label="运单号" prop="ExpressNumber">
-          <el-input v-model="addForm.ExpressNumber" auto-complete="off"></el-input>
+          <el-input v-model="addForm.ExpressNumber"></el-input>
         </el-form-item>
+        <el-form-item label="快递公司" prop="Company">
+          <el-input v-model="addForm.Company"></el-input>
+        </el-form-item>
+        
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="addFormVisible = false">取消</el-button>
@@ -81,7 +85,8 @@
           OrderNumber: ''
         },
         addForm:{
-          ExpressNumber:''
+          ExpressNumber:'',
+          Company:''
         },
         addLoading: false,
         FormVisible: false,
@@ -94,6 +99,11 @@
           ExpressNumber: [{
             required: true,
             message: "请输入运单号",
+            trigger: "blur"
+          }],
+          Company: [{
+            required: true,
+            message: "请输入快递公司",
             trigger: "blur"
           }],
         },
@@ -250,7 +260,8 @@
                   params: {
                     Token:getCookie("token"),
                     ID:this.fahuoid,
-                    ExpressNumber:this.addForm.ExpressNumber
+                    ExpressNumber:this.addForm.ExpressNumber,
+                    Company:this.addForm.Company
                   }
                 })
                 .then(
