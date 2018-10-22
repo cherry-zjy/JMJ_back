@@ -17,7 +17,7 @@
       <el-table-column label="评价等级" prop="Star">
       </el-table-column>
       <el-table-column label="评价图片">
-        <template slot-scope="scope">
+        <template slot-scope="scope" v-if="scope.row.Image">
           <img :src="mainurl+item" width="100" v-for="(item,index) in scope.row.Image.split(',')" :key="index" @click="handlePreview(item)" />
         </template>
       </el-table-column>
@@ -111,7 +111,7 @@
         this.getInfo();
       },
       handleDel(id){
-        his.$confirm('确认删除该评价?', '提示', {
+        this.$confirm('确认删除该评价?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'

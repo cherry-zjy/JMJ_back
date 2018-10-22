@@ -124,12 +124,12 @@
           spinner: "el-icon-loading",
           background: "rgba(0, 0, 0, 0.7)"
         });
-        this.$http
-          .post("api/Back_PreferentialManage/PreferentialValue?token=" + getCookie("token"),
-            // qs.stringify({
-            //   token: getCookie("token"),
-            // })
-          )
+          this.$http
+          .get("api/Back_PreferentialManage/PreferentialValue", {
+            params: {
+              Token: getCookie("token"),
+            }
+          })
           .then(
             function (response) {
               loading.close();
