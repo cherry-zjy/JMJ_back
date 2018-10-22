@@ -103,15 +103,14 @@
             <el-form-item label="身份验证">
               <el-switch v-model="getList.IsOutSourcing"></el-switch>
             </el-form-item>
-            <el-form-item label="快递运费">
-              <el-switch v-model="yunfei"></el-switch>
-              <div v-if="yunfei" style="display:inline-block">
-                <el-input v-model="getList.ExpressWay" style="width:120px" type="number"></el-input>元
-                <el-select v-model="getList.FreightFormworkID" placeholder="运费模板" prop="FreightFormworkID">
-                  <el-option v-for="item in mubanList" :key="item.ID" :label="item.Name" :value="item.ID">
-                  </el-option>
-                </el-select>
-              </div>
+            <el-form-item label="快递运费" prop="ExpressWay">
+              <el-input v-model="getList.ExpressWay" style="width:120px" type="number"></el-input>元
+            </el-form-item>
+            <el-form-item label="快递模板" prop="FreightFormworkID">
+              <el-select v-model="getList.FreightFormworkID" placeholder="运费模板">
+                <el-option v-for="item in mubanList" :key="item.ID" :label="item.Name" :value="item.ID">
+                </el-option>
+              </el-select>
             </el-form-item>
             
           </el-col>
@@ -288,13 +287,6 @@
           callback();
         }
       };
-      var checkFormwork = (rule, value, callback) => {
-        if (this.getList.yunfei && this.getList.FreightFormworkID == '') {
-          callback(new Error("请选择运费模板"));
-        } else {
-          callback();
-        }
-      };
       return {
         config: {
           initialFrameWidth: null,
@@ -340,7 +332,6 @@
           IsOutSourcing: false,
           // Detail:'',
         },
-        yunfei: false,
         mainurl: '',
         editForm: [],
         addindex: '', //添加二级规格的index
@@ -465,10 +456,6 @@
             message: '请输入折扣力度',
             trigger: 'blur'
           }],
-          FreightFormworkID: [{
-            required: true,
-            validator: checkFormwork
-          }],
           bannerimg: [{
             required: true,
             validator: checkbannerimg
@@ -477,6 +464,16 @@
             required: true,
             validator: checkLogo
           }],
+          ExpressWay: [{
+            required: true,
+            message: '请输入运费快递',
+            trigger: 'blur'
+          }, ],
+          FreightFormworkID: [{
+            required: true,
+            message: '请输入快递模板',
+            trigger: 'change'
+          }, ],
         },
       };
     },
@@ -904,8 +901,8 @@
                   IsOutSourcing: this.getList.IsOutSourcing,
                   Salesvolume: this.getList.Salesvolume,
                   Commission: this.getList.Commission,
-                  ExpressWay: this.yunfei ? this.getList.ExpressWay : 0,
-                  FreightNameID: this.yunfei ? this.getList.FreightFormworkID : -1,
+                  ExpressWay: this.getList.ExpressWay,
+                  FreightNameID: this.getList.FreightFormworkID,
                   Image: banner,
                   ProdPoster: this.getList.ProdPoster,
                   Detail: encodeURIComponent(content),

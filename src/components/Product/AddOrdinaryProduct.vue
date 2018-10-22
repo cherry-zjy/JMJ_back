@@ -101,15 +101,14 @@
             <el-form-item label="身份验证">
               <el-switch v-model="getList.IsOutSourcing"></el-switch>
             </el-form-item>
-            <el-form-item label="快递运费">
-              <el-switch v-model="getList.yunfei"></el-switch>
-              <div v-if="getList.yunfei" style="display:inline-block">
-                <el-input v-model="getList.ExpressWay" style="width:120px" type="number"></el-input>元
-                <el-select v-model="getList.FreightNameID" placeholder="运费模板">
-                  <el-option v-for="item in mubanList" :key="item.ID" :label="item.Name" :value="item.ID">
-                  </el-option>
-                </el-select>
-              </div>
+            <el-form-item label="快递运费" prop="ExpressWay">
+              <el-input v-model="getList.ExpressWay" style="width:120px" type="number"></el-input>元
+            </el-form-item>
+            <el-form-item label="快递模板" prop="FreightNameID">
+              <el-select v-model="getList.FreightNameID" placeholder="运费模板">
+                <el-option v-for="item in mubanList" :key="item.ID" :label="item.Name" :value="item.ID">
+                </el-option>
+              </el-select>
             </el-form-item>
             <el-form-item label="商品库存">
               <el-input v-model="getList.Stock"></el-input>
@@ -128,7 +127,7 @@
             <el-form-item label="商品条形码">
               <el-input v-model="getList.BarCode"></el-input>
             </el-form-item>
-            
+
           </el-col>
         </el-row>
         <el-row>
@@ -171,14 +170,14 @@
       <el-form :model="AddForm" :rules="addrules" ref="AddForm" label-width="150px" class="demo-editForm"
         label-position="left">
         <el-form-item label="一级规格图片">
-        <el-upload v-model="AddForm.FirstImage" class="avatar-uploader" :action="action" :show-file-list="false"
-          :on-success="handleFirstSuccess" :before-upload="beforeAvatarUpload">
-          <img v-if="FirstImage" :src="FirstImage" class="avatar" width="200">
-          <div v-else class="el-upload el-upload--picture-card">
-            <i class="el-icon-plus"></i>
-          </div>
-        </el-upload>
-      </el-form-item>
+          <el-upload v-model="AddForm.FirstImage" class="avatar-uploader" :action="action" :show-file-list="false"
+            :on-success="handleFirstSuccess" :before-upload="beforeAvatarUpload">
+            <img v-if="FirstImage" :src="FirstImage" class="avatar" width="200">
+            <div v-else class="el-upload el-upload--picture-card">
+              <i class="el-icon-plus"></i>
+            </div>
+          </el-upload>
+        </el-form-item>
         <el-form-item label="一级规格名称" prop="SpecName">
           <el-input v-model="AddForm.SpecName"></el-input>
         </el-form-item>
@@ -452,6 +451,16 @@
             required: true,
             validator: checkLogo
           }],
+          ExpressWay: [{
+            required: true,
+            message: '请输入运费快递',
+            trigger: 'blur'
+          }, ],
+          FreightNameID: [{
+            required: true,
+            message: '请输入快递模板',
+            trigger: 'change'
+          }, ],
         },
       };
     },
@@ -814,15 +823,15 @@
                   IsOutSourcing: this.getList.IsOutSourcing,
                   Salesvolume: this.getList.Salesvolume ? this.getList.Salesvolume : 0,
                   Commission: this.getList.Commission,
-                  ExpressWay: this.getList.yunfei ? this.getList.ExpressWay : 0,
-                  FreightNameID: this.getList.yunfei ? this.getList.FreightNameID : -1,
+                  ExpressWay: this.getList.ExpressWay,
+                  FreightNameID: this.getList.FreightNameID,
                   Image: banner,
                   ProdPoster: this.getList.ProdPoster ? this.getList.ProdPoster : -1,
                   Detail: encodeURIComponent(content),
                   price: this.getList.Price,
                   IsRecommended: false,
-                  Stock:this.getList.Stock,
-                  BarCode:this.getList.BarCode
+                  Stock: this.getList.Stock,
+                  BarCode: this.getList.BarCode
                 })
               )
               .then(

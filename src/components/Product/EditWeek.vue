@@ -94,15 +94,14 @@
             <el-form-item label="商品简介" prop="Introduce">
               <el-input type="textarea" v-model="getList.Introduce"></el-input>
             </el-form-item>
-            <el-form-item label="快递运费">
-              <el-switch v-model="yunfei"></el-switch>
-              <div v-if="yunfei" style="display:inline-block">
-                <el-input v-model="getList.ExpressWay" style="width:120px" type="number"></el-input>元
-                <el-select v-model="getList.FreightFormworkID" placeholder="运费模板">
-                  <el-option v-for="item in mubanList" :key="item.ID" :label="item.Name" :value="item.ID">
-                  </el-option>
-                </el-select>
-              </div>
+            <el-form-item label="快递运费" prop="ExpressWay">
+              <el-input v-model="getList.ExpressWay" style="width:120px" type="number"></el-input>元
+            </el-form-item>
+            <el-form-item label="快递模板" prop="FreightFormworkID">
+              <el-select v-model="getList.FreightFormworkID" placeholder="运费模板">
+                <el-option v-for="item in mubanList" :key="item.ID" :label="item.Name" :value="item.ID">
+                </el-option>
+              </el-select>
             </el-form-item>
             <el-form-item label="商品库存">
               <el-input v-model="getList.Stock"></el-input>
@@ -335,7 +334,6 @@
           IsOutSourcing: false,
           // Detail:'',
         },
-        yunfei: false,
         mainurl: '',
         editForm: [],
         addindex: '', //添加二级规格的index
@@ -467,6 +465,16 @@
             required: true,
             validator: checkLogo
           }],
+          ExpressWay: [{
+            required: true,
+            message: '请输入运费快递',
+            trigger: 'blur'
+          }, ],
+          FreightFormworkID: [{
+            required: true,
+            message: '请输入快递模板',
+            trigger: 'change'
+          }, ],
           SignTimes: [{
             required: true,
             message: '请输入免单所需签到次数',
@@ -917,8 +925,8 @@
                   IsOutSourcing: this.getList.IsOutSourcing,
                   Salesvolume: this.getList.Salesvolume,
                   Commission: this.getList.Commission,
-                  ExpressWay: this.yunfei ? this.getList.ExpressWay : 0,
-                  FreightNameID: this.yunfei ? this.getList.FreightFormworkID : -1,
+                  ExpressWay:this.getList.ExpressWay,
+                  FreightNameID:this.getList.FreightFormworkID,
                   Image: banner,
                   ProdPoster: this.getList.ProdPoster,
                   Detail: encodeURIComponent(content),
