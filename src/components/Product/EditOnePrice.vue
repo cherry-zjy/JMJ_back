@@ -111,7 +111,7 @@
             <el-form-item label="商品库存">
               <el-input v-model="getList.Stock"></el-input>
             </el-form-item>
-            <el-form-item label="商品编码" prop="prodNumber">
+            <el-form-item label="商品编码">
               <el-input v-model="getList.prodNumber"></el-input>
             </el-form-item>
             <!-- <el-form-item label="免单所需签到次数" prop="SignTimes">
@@ -916,6 +916,14 @@
             }
             banner = banner.substring(0, banner.length - 1)
             //规格
+            if (this.spce.length == 0) {
+              this.$message({
+                showClose: true,
+                type: "warning",
+                message: '一级规格不能为空'
+              });
+              return;
+            }
             for (let i = 0; i < this.spce.length; i++) {
               delete this.spce[i].FirstPrice
               this.spce[i].Stock = this.spce[i].Stock == '' ? -1 : this.spce[i].Stock
@@ -968,7 +976,7 @@
                   endTime:endTime,
                   IsRecommended:this.getList.IsRecommended,
                   Stock:this.getList.Stock,
-                  BarCode:this.getList.BarCode ? this.getList.BarCode : -1,
+                  BarCode:this.getList.BarCode,
                   ProdCode:this.getList.prodNumber,
                 })
               )

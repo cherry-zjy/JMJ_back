@@ -138,7 +138,7 @@
             <el-form-item label="商品条形码">
               <el-input v-model="getList.BarCode"></el-input>
             </el-form-item>
-            <el-form-item label="商品编码" prop="prodNumber">
+            <el-form-item label="商品编码">
               <el-input v-model="getList.prodNumber"></el-input>
             </el-form-item>
           </el-col>
@@ -303,7 +303,7 @@
         }
       };
       return {
-        currentpage:0,
+        currentpage: 0,
         config: {
           initialFrameWidth: null,
           initialFrameHeight: 500
@@ -556,9 +556,10 @@
                 }
                 this.spce = response.data.Result.specification;
                 this.defaultMsg = decodeURIComponent(response.data.Result.Detail);
-                if (response.data.Result.startTime&&response.data.Result.endTime) {
-                  this.time = [response.data.Result.startTime.substring(0, 10), response.data.Result.endTime.substring(0,
-                  10)]
+                if (response.data.Result.startTime && response.data.Result.endTime) {
+                  this.time = [response.data.Result.startTime.substring(0, 10), response.data.Result.endTime.substring(
+                    0,
+                    10)]
                 }
               } else if (status === 40001) {
                 this.$message({
@@ -899,6 +900,14 @@
             }
             banner = banner.substring(0, banner.length - 1)
             //规格
+            if (this.spce.length == 0) {
+              this.$message({
+                showClose: true,
+                type: "warning",
+                message: '一级规格不能为空'
+              });
+              return;
+            }
             for (let i = 0; i < this.spce.length; i++) {
               delete this.spce[i].FirstPrice
               this.spce[i].Stock = this.spce[i].Stock == '' ? -1 : this.spce[i].Stock
@@ -953,9 +962,9 @@
                   startTime: startTime,
                   endTime: endTime,
                   IsRecommended: this.getList.IsRecommended,
-                  Stock:this.getList.Stock,
-                  BarCode:this.getList.BarCode ? this.getList.BarCode : -1,
-                  ProdCode:this.getList.prodNumber,
+                  Stock: this.getList.Stock,
+                  BarCode: this.getList.BarCode,
+                  ProdCode: this.getList.prodNumber,
                 })
               )
               .then(
@@ -970,7 +979,7 @@
                     });
                     setTimeout(() => {
                       this.$router.push({
-                        path: "/DailyList?page="+window.location.href.split("&page=")[1]
+                        path: "/DailyList?page=" + window.location.href.split("&page=")[1]
                       });
                     }, 1500);
                   } else if (status === 40001) {
@@ -1052,7 +1061,8 @@
   .tabletitle {
     margin: 20px 0;
   }
-  .editbtn{
+
+  .editbtn {
     position: fixed;
     right: 5%;
     top: 15%
