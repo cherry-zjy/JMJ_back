@@ -34,6 +34,7 @@
             </div>
             <el-radio label="8">海外馆Banner</el-radio>
             <el-radio label="9">一口价（两件99）</el-radio>
+            <el-radio label="10">个人海报</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="跳转地址" prop="Url">
