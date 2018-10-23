@@ -53,7 +53,8 @@
     </el-table>
     <!-- 分页 -->
     <div class="block">
-      <el-pagination @current-change="handleCurrentChange" layout="prev, pager, next,jumper" :page-count="pageCount">
+      <el-pagination @current-change="handleCurrentChange" :current-page.sync="pageIndex"
+        layout="prev, pager, next, jumper" :page-count="pageCount">
       </el-pagination>
     </div>
   </div>
@@ -80,8 +81,12 @@
       };
     },
     mounted() {
+      if (window.location.href.split("page=")[1]) {
+        this.pageIndex = Number(window.location.href.split("page=")[1])
+      }
       this.mainurl = mainurl
       this.getInfo();
+      this.pageCount = 10;
     },
     filters:{
       Time: function (value) {
@@ -152,7 +157,7 @@
         this.getInfo();
       },
       handleEdit(id) {
-        this.$router.push("/EditDaily/id=" + id);
+        this.$router.push("/EditDaily/id=" + id + "&page=" + this.pageIndex);
       },
       handleAdd() {
         this.$router.push("/AddDaily");

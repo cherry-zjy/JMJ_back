@@ -112,7 +112,9 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            
+            <el-form-item label="商品编码" prop="prodNumber">
+              <el-input v-model="getList.prodNumber"></el-input>
+            </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="商品销量">
@@ -166,7 +168,7 @@
           <UEditor :defaultMsg='defaultMsg' :config='config' ref="ueditor"></UEditor>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitFormwork('getList')">修改</el-button>
+          <el-button type="primary" @click="submitFormwork('getList')" class="editbtn">修改</el-button>
         </el-form-item>
       </el-form>
     </el-main>
@@ -288,6 +290,7 @@
         }
       };
       return {
+        currentpage:0,
         config: {
           initialFrameWidth: null,
           initialFrameHeight: 500
@@ -474,6 +477,11 @@
             message: '请输入快递模板',
             trigger: 'change'
           }, ],
+          prodNumber: [{
+            required: true,
+            message: '请输入商品编码',
+            trigger: 'change'
+          }, ],
         },
       };
     },
@@ -481,6 +489,8 @@
       UEditor
     },
     mounted() {
+      this.currentpage = window.location.href.split("&page=")[1]
+      console.log(this.currentpage)
       this.mainurl = mainurl
       this.action = this.mainurl + "/api/UploadPhotos/UpdateForImage";
       this.getType();
@@ -500,7 +510,7 @@
           .get("api/Back_ProductManage/ProductEditDetail", {
             params: {
               type: 1,
-              id: window.location.href.split("id=")[1],
+              id: window.location.href.split("id=")[1].split("&")[0],
               // id: "9b657980-3cba-e811-89dc-00e0702bdc11",
               Token: getCookie("token"),
             }
@@ -888,7 +898,7 @@
                 qs.stringify({
                   token: getCookie("token"),
                   price: this.getList.prodPrice,
-                  ID: window.location.href.split("id=")[1],
+                  ID: window.location.href.split("id=")[1].split("&page")[0],
                   Name: this.getList.prodName,
                   // Number: this.getList.Number,
                   TeamBuyingPrice: -1,
@@ -914,7 +924,8 @@
                   endTime: null,
                   IsRecommended: this.getList.IsRecommended,
                   Stock:this.getList.Stock,
-                  BarCode:this.getList.BarCode
+                  BarCode:this.getList.BarCode ? this.getList.BarCode : -1,
+                  ProdCode:this.getList.prodNumber,
                 })
               )
               .then(
@@ -929,7 +940,7 @@
                     });
                     setTimeout(() => {
                       this.$router.push({
-                        path: "/OrdinaryProduct"
+                        path: "/OrdinaryProduct?page="+window.location.href.split("&page=")[1]
                       });
                     }, 1500);
                   } else if (status === 40001) {
@@ -1010,6 +1021,11 @@
 
   .tabletitle {
     margin: 20px 0;
+  }
+  .editbtn{
+    position: fixed;
+    right: 5%;
+    top: 15%
   }
 
 </style>

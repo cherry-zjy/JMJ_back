@@ -22,6 +22,11 @@
             <el-form-item label="商品形式">
               <el-input disabled="disabled" value="一口价"></el-input>
             </el-form-item>
+            <el-form-item label="活动时间" prop="time">
+              <el-date-picker v-model="time" value-format="yyyy-MM-dd" @change="getSTime" format="yyyy-MM-dd" type="daterange"
+                start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']">
+              </el-date-picker>
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
@@ -77,9 +82,9 @@
             </el-table-column>
             <el-table-column label="价格" prop="Price">
             </el-table-column>
-            <el-table-column label="商品编号" prop="ProdNumber">
+            <el-table-column label="商品编号" prop="CommodityNumber">
             </el-table-column>
-            <el-table-column label="商品条形码" prop="barCode">
+            <el-table-column label="商品条形码" prop="BarCode">
             </el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
@@ -105,6 +110,9 @@
             </el-form-item>
             <el-form-item label="商品库存">
               <el-input v-model="getList.Stock"></el-input>
+            </el-form-item>
+            <el-form-item label="商品编码" prop="prodNumber">
+              <el-input v-model="getList.prodNumber"></el-input>
             </el-form-item>
             <!-- <el-form-item label="免单所需签到次数" prop="SignTimes">
               <el-input v-model="getList.SignTimes" type="number"></el-input>
@@ -162,7 +170,7 @@
           <UEditor :defaultMsg='defaultMsg' :config='config' ref="ueditor"></UEditor>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitFormwork('getList')">修改</el-button>
+          <el-button type="primary" class="editbtn" @click="submitFormwork('getList')">修改</el-button>
         </el-form-item>
       </el-form>
     </el-main>
@@ -283,7 +291,16 @@
           callback();
         }
       };
+      var checktime = (rule, value, callback) => {
+        if (this.time == '') {
+          callback(new Error("请选择活动时间"));
+        } else {
+          callback();
+        }
+      };
       return {
+        currentpage:0,
+        time: '',
         config: {
           initialFrameWidth: null,
           initialFrameHeight: 500
@@ -409,6 +426,15 @@
             message: '请输入商品名称',
             trigger: 'blur'
           }, ],
+          time: [{
+            required: true,
+            validator: checktime
+          }],
+          prodNumber: [{
+            required: true,
+            message: '请输入商品编码',
+            trigger: 'change'
+          }, ],
           // TeamBuyingPrice: [{
           //   required: true,
           //   message: '请输入商品原价',
@@ -499,6 +525,8 @@
       UEditor
     },
     mounted() {
+      this.currentpage = window.location.href.split("&page=")[1]
+      console.log(this.currentpage)
       this.mainurl = mainurl
       this.action = this.mainurl + "/api/UploadPhotos/UpdateForImage";
       this.getType();
@@ -518,7 +546,7 @@
           .get("api/Back_ProductManage/ProductEditDetail", {
             params: {
               type: 1,
-              id: window.location.href.split("id=")[1],
+              id: window.location.href.split("id=")[1].split("&")[0],
               Token: getCookie("token"),
             }
           })
@@ -533,6 +561,10 @@
                   this.imageUrl = ""
                 }else{
                   this.imageUrl = mainurl + response.data.Result.ProdPoster;
+                }
+                if (response.data.Result.startTime&&response.data.Result.endTime) {
+                  this.time = [response.data.Result.startTime.substring(0, 10), response.data.Result.endTime.substring(0,
+                  10)]
                 }
                 // var imgarr = Array();
                 var imgarr = response.data.Result.Image.split(',')
@@ -579,6 +611,10 @@
               });
             }.bind(this)
           );
+      },
+      getSTime(val) {
+        console.log(val)
+        this.time = val;
       },
       getType() {
         const loading = this.$loading({
@@ -893,6 +929,8 @@
                 delete this.spce[i].specSecond[y].SpecName
               }
             }
+            var startTime = this.time[0].substring(0, 10)
+            var endTime = this.time[1].substring(0, 10)
             console.log(this.spce)
             const loading = this.$loading({
               lock: true,
@@ -905,7 +943,7 @@
                 qs.stringify({
                   token: getCookie("token"),
                   price:this.getList.prodPrice,
-                  ID: window.location.href.split("id=")[1],
+                  ID: window.location.href.split("id=")[1].split("&page")[0],
                   Name: this.getList.prodName,
                   TeamBuyingPrice: -1,
                   Classification: this.getList.classificationID,
@@ -926,11 +964,12 @@
                   Ntegrate: -1,
                   NumOfMem: -1,
                   SignTimes: -1,
-                  startTime:null,
-                  endTime:null,
+                  startTime:startTime,
+                  endTime:endTime,
                   IsRecommended:this.getList.IsRecommended,
                   Stock:this.getList.Stock,
-                  BarCode:this.getList.BarCode
+                  BarCode:this.getList.BarCode ? this.getList.BarCode : -1,
+                  ProdCode:this.getList.prodNumber,
                 })
               )
               .then(
@@ -945,7 +984,7 @@
                     });
                     setTimeout(() => {
                       this.$router.push({
-                        path: "/OnePrice"
+                        path: "/OnePrice?page="+window.location.href.split("&page=")[1]
                       });
                     }, 1500);
                   } else if (status === 40001) {
@@ -1026,6 +1065,11 @@
 
   .tabletitle {
     margin: 20px 0;
+  }
+  .editbtn{
+    position: fixed;
+    right: 5%;
+    top: 15%
   }
 
 </style>

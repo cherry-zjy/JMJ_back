@@ -47,7 +47,11 @@
     </el-table>
     <!-- 分页 -->
     <div class="block">
-      <el-pagination @current-change="handleCurrentChange" layout="prev, pager, next,jumper" :page-count="pageCount">
+      <!-- <el-pagination :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="prev, pager, next,jumper"
+        :page-count="pageCount">
+      </el-pagination> -->
+      <el-pagination @current-change="handleCurrentChange" :current-page.sync="pageIndex"
+        layout="prev, pager, next, jumper" :page-count="pageCount">
       </el-pagination>
     </div>
   </div>
@@ -64,7 +68,7 @@
       };
       return {
         list: [],
-        classificationList:[{
+        classificationList: [{
           ID: "-1",
           Name: "全部"
         }],
@@ -74,11 +78,16 @@
         pageSize: 8,
         pageCount: 1,
         sear: '',
+        // currentPage: 4
       };
     },
     mounted() {
+      if (window.location.href.split("page=")[1]) {
+        this.pageIndex = Number(window.location.href.split("page=")[1])
+      }
       this.mainurl = mainurl
       this.getType();
+      this.pageCount = 10;
     },
     methods: {
       getType() {
@@ -149,7 +158,7 @@
           .get("api/Back_ProductManage/OrdinaryProduct", {
             params: {
               classificationID: this.classificationID,
-              sear: this.sear==''?''-1:this.sear,
+              sear: this.sear == '' ? '' - 1 : this.sear,
               pageIndex: this.pageIndex,
               pageSize: this.pageSize,
               Token: getCookie("token"),
@@ -199,76 +208,76 @@
         this.getInfo();
       },
       handleEdit(id) {
-        this.$router.push("/EditOrdinaryProduct/id=" + id);
+        this.$router.push("/EditOrdinaryProduct/id=" + id + "&page=" + this.pageIndex);
       },
-      handleAdd(){
+      handleAdd() {
         this.$router.push("/AddOrdinaryProduct");
       },
-      comment(id){
+      comment(id) {
         this.$router.push("/OrdinaryComment/id=" + id);
       },
-      handleDelete(id){
+      handleDelete(id) {
         this.$confirm('确认删除?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           const loading = this.$loading({
-              lock: true,
-              text: "Loading",
-              spinner: "el-icon-loading",
-              background: "rgba(0, 0, 0, 0.7)"
-            });
-            this.$http
-              .post("api/Back_ProductManage/prodDelete?token="+getCookie("token")+"&ID="+id,
-                // qs.stringify({
-                //   token: getCookie("token"),
-                //   ID: id,
-                // })
-              )
-              .then(
-                function (response) {
-                  loading.close();
-                  var status = response.data.Status;
-                  if (status === 1) {
-                    this.$message({
-                      showClose: true,
-                      type: "success",
-                      message: response.data.Result
-                    });
-                    this.getInfo()
-                  } else if (status === 40001) {
-                    this.$message({
-                      showClose: true,
-                      type: "warning",
-                      message: response.data.Result
-                    });
-                    setTimeout(() => {
-                      tt.$router.push({
-                        path: "/login"
-                      });
-                    }, 1500);
-                  } else {
-                    loading.close();
-                    this.$message({
-                      showClose: true,
-                      type: "warning",
-                      message: response.data.Result
-                    });
-                  }
-                }.bind(this)
-              )
-              // 请求error
-              .catch(
-                function (error) {
-                  console.log(error)
-                  loading.close();
-                  this.$notify.error({
-                    title: "错误",
-                    message: "错误：请检查网络"
+            lock: true,
+            text: "Loading",
+            spinner: "el-icon-loading",
+            background: "rgba(0, 0, 0, 0.7)"
+          });
+          this.$http
+            .post("api/Back_ProductManage/prodDelete?token=" + getCookie("token") + "&ID=" + id,
+              // qs.stringify({
+              //   token: getCookie("token"),
+              //   ID: id,
+              // })
+            )
+            .then(
+              function (response) {
+                loading.close();
+                var status = response.data.Status;
+                if (status === 1) {
+                  this.$message({
+                    showClose: true,
+                    type: "success",
+                    message: response.data.Result
                   });
-                }.bind(this)
-              );
+                  this.getInfo()
+                } else if (status === 40001) {
+                  this.$message({
+                    showClose: true,
+                    type: "warning",
+                    message: response.data.Result
+                  });
+                  setTimeout(() => {
+                    tt.$router.push({
+                      path: "/login"
+                    });
+                  }, 1500);
+                } else {
+                  loading.close();
+                  this.$message({
+                    showClose: true,
+                    type: "warning",
+                    message: response.data.Result
+                  });
+                }
+              }.bind(this)
+            )
+            // 请求error
+            .catch(
+              function (error) {
+                console.log(error)
+                loading.close();
+                this.$notify.error({
+                  title: "错误",
+                  message: "错误：请检查网络"
+                });
+              }.bind(this)
+            );
         }).catch(() => {
           this.$message({
             type: 'info',
