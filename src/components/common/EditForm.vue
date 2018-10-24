@@ -47,7 +47,11 @@
       <el-form :model="editForm" :rules="listrules" ref="editForm" label-width="150px" class="demo-editForm"
         label-position="left">
         <el-form-item label="配送区域" prop="Provinces">
-          <el-input v-model="editForm.Provinces"></el-input>
+          <i v-if="!isshow" class="el-icon-loading"></i>
+          <el-select v-else v-model="editForm.Provinces" placeholder="请选择">
+            <el-option v-for="item in Address" :key="item.label" :label="item.label" :value="item.label">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="首件" prop="First">
           <el-input v-model="editForm.First"></el-input>
@@ -79,11 +83,12 @@
         getList: [],
         mainurl: '',
         editForm: [],
+        isshow:false,
         listrules: {
           Provinces: [{
             required: true,
             message: '请输入配送区域',
-            trigger: 'blur'
+            trigger: 'change'
           }],
           First: [{
             required: true,
@@ -136,6 +141,56 @@
       this.getInfo();
     },
     methods: {
+      getCity() {
+        this.$http
+          .get("api/Address/GetProvinceCityRegion", {
+            params: {
+              pageIndex: 1,
+              pageSize: 999
+            }
+          })
+          .then(
+            function (response) {
+              var status = response.data.Status;
+              if (status === 1) {
+                for (var i = 0; i < response.data.Result.length; i++) {
+                  this.Address[i] = {
+                    label: response.data.Result[i].ProvinceName,
+                    value: response.data.Result[i].ProvinceID,
+                  }
+                }
+                this.isshow = true
+              } else if (status === -1) {
+                this.$message({
+                  showClose: true,
+                  type: "warning",
+                  message: response.data.Result
+                });
+                setTimeout(() => {
+                  this.$router.push({
+                    path: "/login"
+                  });
+                }, 1500);
+              } else {
+                this.$message({
+                  showClose: true,
+                  type: "warning",
+                  message: response.data.Result
+                });
+              }
+            }.bind(this)
+          )
+          // 请求error
+          .catch(
+            function (error) {
+              console.log(error)
+              this.$notify.error({
+                title: "错误",
+                message: "错误：请检查网络"
+              });
+            }.bind(this)
+          );
+      },
       getInfo() {
         const loading = this.$loading({
           lock: true,
@@ -212,6 +267,9 @@
       },
       handleAdd(index, row) {
         this.dialogFormVisible = true
+        if (this.Address = []) {
+          this.getCity()
+        }
       },
       submitFormwork(formName) {
         this.$refs[formName].validate((valid) => {

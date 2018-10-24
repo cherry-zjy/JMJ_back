@@ -163,7 +163,7 @@
           <UEditor :defaultMsg='defaultMsg' :config='config' ref="ueditor"></UEditor>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitFormwork('getList')">新增</el-button>
+          <el-button type="primary" class="editbtn" @click="submitFormwork('getList')">新增</el-button>
         </el-form-item>
       </el-form>
     </el-main>
@@ -935,6 +935,11 @@
 
   .tabletitle {
     margin: 20px 0;
+  }
+  .editbtn {
+    position: fixed;
+    right: 5%;
+    top: 15%
   }
 
 </style>

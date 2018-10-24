@@ -55,7 +55,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="二级总名称">
-              <el-input v-model="getList.SpecTySecondName"></el-input>
+              <el-input v-model="getList.SpecTypeSecondName"></el-input>
             </el-form-item>
           </el-col>
         </el-row>

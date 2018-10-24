@@ -17,8 +17,8 @@
         </el-form-item>
         <el-form-item label="是否跳转" prop="IsJump">
           <el-radio-group v-model="getList.IsJump">
-            <el-radio label="true">是</el-radio>
-            <el-radio label="false">否</el-radio>
+            <el-radio :label="true">是</el-radio>
+            <el-radio :label="false">否</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="适用范围" prop="Position">
@@ -37,7 +37,10 @@
             <el-radio label="10">个人海报</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="跳转地址" prop="Url">
+        <el-form-item label="跳转地址" prop="Url" v-if="getList.jump">
+          <el-input v-model="getList.Url"></el-input>
+        </el-form-item>
+        <el-form-item label="跳转地址" v-if="!getList.jump">
           <el-input v-model="getList.Url"></el-input>
         </el-form-item>
         <el-form-item>

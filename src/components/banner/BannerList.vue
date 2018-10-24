@@ -84,6 +84,8 @@
           return Position = "海外馆Banner"
         } else if (Position == 9) {
           return Position = "一口价（两件99）"
+        }else if (Position == 10) {
+          return Position = "个人海报"
         }
         return Position
       },
