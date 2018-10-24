@@ -55,9 +55,17 @@
           <el-input v-model="addForm.ExpressNumber"></el-input>
         </el-form-item>
         <el-form-item label="快递公司" prop="Company">
-          <el-input v-model="addForm.Company"></el-input>
+          <!-- <el-input v-model="addForm.Company"></el-input> -->
+          <el-upload class="avatar-uploader" :action="action" :show-file-list="false"
+            :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+            <el-select v-if="imageUrl" v-model="addForm.Company" filterable remote placeholder="请输入快递公司关键字" :remote-method="remoteMethod"
+              :loading="loading">
+              <el-option v-for="item in options4" :key="item.ExpressCode" :label="item.ExpressName" :value="item.ExpressCode">
+              </el-option>
+            </el-select>
+            <img v-else src="../../../static/images/add.png" class="avatar" style="width:150px;">
+          </el-upload>
         </el-form-item>
-        
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="addFormVisible = false">取消</el-button>
@@ -78,17 +86,22 @@
       };
       return {
         list: [],
+        options4:[],//快递公司,带value
+        citylist:[],//快递公司,不带value
+        imageUrl: false,
         mainurl: '',
         type: -1,
-        fahuoid:'',
+        fahuoid: '',
         editForm: {
           OrderNumber: ''
         },
-        addForm:{
-          ExpressNumber:'',
-          Company:''
+        addForm: {
+          ExpressNumber: '',
+          Company: ''
         },
+        action:'',
         addLoading: false,
+        loading:false,
         FormVisible: false,
         pageIndex: 1,
         pageSize: 8,
@@ -161,8 +174,32 @@
     mounted() {
       this.mainurl = mainurl
       this.getInfo();
+      this.action = this.mainurl + "/api/Back_OrderManage/ExpressToExcel?token=" + getCookie("token");
     },
     methods: {
+      remoteMethod(query) {
+        if (query !== '') {
+          this.loading = false;
+          this.options4 = this.citylist.filter(item => {
+            return item.ExpressName.toLowerCase()
+              .indexOf(query.toLowerCase()) > -1;
+          });
+          console.log(this.options4)
+        } else {
+          this.options4 = [];
+        }
+      },
+      handleAvatarSuccess(res, file) {
+        this.imageUrl = true;
+        this.citylist = res.Result
+      },
+      beforeAvatarUpload(file) {
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isLt2M) {
+          this.$message.error("文件大小不能超过 2MB!");
+        }
+        return isLt2M;
+      },
       CreateTime(row, time) {
         var date = row[time.property];
         return date.replace("T", " ").split(".")[0];
@@ -252,65 +289,65 @@
         this.$refs.addForm.validate(valid => {
           if (valid) {
             //判断是否填写完整  --true
-              this.addLoading = true;
-              // 将token传入参数中
-              // 发保存请求
-              this.$http
-                .get("api/Back_OrderManage/Consignment", {
-                  params: {
-                    Token:getCookie("token"),
-                    ID:this.fahuoid,
-                    ExpressNumber:this.addForm.ExpressNumber,
-                    Company:this.addForm.Company
-                  }
-                })
-                .then(
-                  function (response) {
-                    this.addLoading = false;
-                    var status = response.data.Status;
-                    if (status === 1) {
-                      // 表单重置
-                      this.$refs["addForm"].resetFields();
-                      this.FormVisible = false;
-                      this.$message({
-                        showClose: true,
-                        type: "success",
-                        message: response.data.Result
-                      });
-                      this.getInfo();
-                    } else if (status === 40001) {
-                      this.$message({
-                        showClose: true,
-                        type: "warning",
-                        message: response.data.Result
-                      });
-                      setTimeout(() => {
-                        this.$router.push({
-                          path: "/login"
-                        });
-                      }, 1500);
-                    } else {
-                      this.$message({
-                        showClose: true,
-                        type: "warning",
-                        message: response.data.Result
-                      });
-                    }
-                  }.bind(this)
-                )
-                // 请求error
-                .catch(
-                  function (error) {
-                    this.$notify.error({
-                      title: "错误",
-                      message: "错误：请检查网络"
+            this.addLoading = true;
+            // 将token传入参数中
+            // 发保存请求
+            this.$http
+              .get("api/Back_OrderManage/Consignment", {
+                params: {
+                  Token: getCookie("token"),
+                  ID: this.fahuoid,
+                  ExpressNumber: this.addForm.ExpressNumber,
+                  Company: this.addForm.Company
+                }
+              })
+              .then(
+                function (response) {
+                  this.addLoading = false;
+                  var status = response.data.Status;
+                  if (status === 1) {
+                    // 表单重置
+                    this.$refs["addForm"].resetFields();
+                    this.FormVisible = false;
+                    this.$message({
+                      showClose: true,
+                      type: "success",
+                      message: response.data.Result
                     });
-                  }.bind(this)
-                );
+                    this.getInfo();
+                  } else if (status === 40001) {
+                    this.$message({
+                      showClose: true,
+                      type: "warning",
+                      message: response.data.Result
+                    });
+                    setTimeout(() => {
+                      this.$router.push({
+                        path: "/login"
+                      });
+                    }, 1500);
+                  } else {
+                    this.$message({
+                      showClose: true,
+                      type: "warning",
+                      message: response.data.Result
+                    });
+                  }
+                }.bind(this)
+              )
+              // 请求error
+              .catch(
+                function (error) {
+                  this.$notify.error({
+                    title: "错误",
+                    message: "错误：请检查网络"
+                  });
+                }.bind(this)
+              );
           }
         });
       },
-      fahuo(id){
+      fahuo(id) {
         this.FormVisible = true
         this.fahuoid = id;
       }
@@ -349,8 +386,9 @@
   .el-dialog {
     width: 80%;
   }
+
   .el-form-item {
     margin-bottom: 0;
-}
+  }
 
 </style>

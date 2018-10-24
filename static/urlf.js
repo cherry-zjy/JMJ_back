@@ -1,4 +1,5 @@
 var mainurl = "http://jmj.kimijia.com/"
+// var mainurl = "http://192.168.1.104/JMJ/"
 
 function setCookie(name, value) {
 	var Days = 30;

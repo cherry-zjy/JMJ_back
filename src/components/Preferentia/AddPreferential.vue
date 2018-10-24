@@ -59,13 +59,22 @@
           callback();
         }
       };
+      var checktype = (rule, value, callback) => {
+        console.log(this.getList.classificationID)
+        if (this.getList.classificationID == -1) {
+          callback(new Error("请输入抵用券适用商品种类"));
+        } else {
+          callback();
+        }
+      };
       return {
         Level: [],
         datalist: [],
         getList: {
           Full: '',
           CutPrice: '',
-          time: ''
+          time: '',
+          classificationID:-1
         },
         Info: [],
         mainurl: '',
@@ -97,7 +106,7 @@
           }],
           classificationID: [{
             required: true,
-            message: '请选择抵用券适用商品种类',
+            validator: checktype,
             trigger: 'change'
           }],
           Name: [{
