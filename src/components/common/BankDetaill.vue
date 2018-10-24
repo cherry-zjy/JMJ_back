@@ -44,6 +44,12 @@
         <el-form-item label="余额" prop="Exbalance">
           <el-input v-model="addForm.Exbalance"></el-input>
         </el-form-item>
+        <el-form-item label="审核周期" prop="AuditCycle">
+          <el-input v-model="addForm.AuditCycle"></el-input>
+        </el-form-item>
+        <el-form-item label="积分数" prop="integral">
+          <el-input v-model="addForm.integral"></el-input>
+        </el-form-item>
         <el-form-item label="兑换方式" prop="ExChangeWay">
           <el-radio-group v-model="addForm.ExChangeWay">
             <el-radio class="radio" :label="1">输入兑换码</el-radio>
@@ -73,6 +79,12 @@
             <el-radio class="radio" :label="1">输入兑换码</el-radio>
             <el-radio class="radio" :label="2">上传二维码截图</el-radio>
           </el-radio-group>
+        </el-form-item>
+        <el-form-item label="审核周期" prop="AuditCycle">
+          <el-input v-model="editForm.AuditCycle"></el-input>
+        </el-form-item>
+        <el-form-item label="积分数" prop="integral">
+          <el-input v-model="editForm.integral"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -115,7 +127,17 @@
             required: true,
             message: "请选择兑换方式",
             trigger: "change"
-          }]
+          }],
+          AuditCycle: [{
+            required: true,
+            message: "请输入审核周期",
+            trigger: "blur"
+          }],
+          integral: [{
+            required: true,
+            message: "请输入积分数",
+            trigger: "blur"
+          }],
         },
         editForm: [],
         editFormVisible: false,
@@ -143,7 +165,17 @@
             required: true,
             message: "请选择兑换方式",
             trigger: "change"
-          }]
+          }],
+          AuditCycle: [{
+            required: true,
+            message: "请输入审核周期",
+            trigger: "blur"
+          }],
+          integral: [{
+            required: true,
+            message: "请输入积分数",
+            trigger: "blur"
+          }],
         },
       };
     },
@@ -223,7 +255,9 @@
           changeWay: 1,
           Exbalance: '',
           Coin: '',
-          Name: ''
+          Name: '',
+          integral: '',
+          AuditCycle: '',
         },
         this.addFormVisible = true
       },
@@ -318,6 +352,8 @@
                   coin: this.addForm.Coin,
                   Exbalance: this.addForm.Exbalance,
                   changeWay: this.addForm.ExChangeWay,
+                  integral: this.addForm.integral,
+                  AuditCycle: this.addForm.AuditCycle,
                 }
               })
               .then(
@@ -387,6 +423,8 @@
                   coin: this.editForm.ExCoin,
                   Exbalance: this.editForm.ExBalance,
                   changeWay: this.editForm.ExChangeWay,
+                  integral: this.editForm.integral,
+                  AuditCycle: this.editForm.AuditCycle,
                 }
               })
               .then(

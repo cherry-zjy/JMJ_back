@@ -213,7 +213,7 @@
               para.Token = getCookie("token");
               // 发保存请求
               this.$http
-                .get("api/Role/Edit", {
+                .get("api/Role/EditRole", {
                   params: {
                     ID: para.ID,
                     Role: para.Name,
@@ -273,7 +273,7 @@
               para.Token = getCookie("token");
               // 发保存请求
               this.$http
-                .get("api/Role/Add", {
+                .get("api/Role/AddRole", {
                   params: {
                     Role: para.Name,
                     Token: para.Token
