@@ -48,7 +48,7 @@
         label-position="left">
         <el-form-item label="配送区域" prop="Provinces">
           <i v-if="!isshow" class="el-icon-loading"></i>
-          <el-select v-else v-model="editForm.Provinces" placeholder="请选择">
+          <el-select v-else v-model="editForm.Provinces" multiple placeholder="请选择">
             <el-option v-for="item in Address" :key="item.label" :label="item.label" :value="item.label">
             </el-option>
           </el-select>
@@ -195,8 +195,15 @@
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
+            var Provinces = ''
+            for (let i = 0; i < this.editForm.Provinces.length; i++) {
+              Provinces += this.editForm.Provinces[i]+',';
+            }
+            Provinces = Provinces.substring(0,Provinces.length-1)
+            // console.log(Provinces)
+            // return;
             this.list.push({
-              Provinces: this.editForm.Provinces,
+              Provinces: Provinces,
               First: this.editForm.First,
               FirstPrice: this.editForm.FirstPrice,
               Per: this.editForm.Per,
@@ -246,7 +253,11 @@
                       type: "success",
                       message: response.data.Result
                     });
-                    this.getInfo()
+                    setTimeout(() => {
+                      this.$router.push({
+                        path: "/FreightFormworkList"
+                      });
+                    }, 1500);
                   } else if (status === 40001) {
                     this.$message({
                       showClose: true,
@@ -254,7 +265,7 @@
                       message: response.data.Result
                     });
                     setTimeout(() => {
-                      tt.$router.push({
+                      this.$router.push({
                         path: "/login"
                       });
                     }, 1500);
@@ -271,6 +282,7 @@
               // 请求error
               .catch(
                 function (error) {
+                  console.log(error)
                   loading.close();
                   this.$notify.error({
                     title: "错误",

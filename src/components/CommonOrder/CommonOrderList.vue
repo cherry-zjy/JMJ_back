@@ -20,7 +20,7 @@
     <el-table :data="list" style="width: 100%" :border='true'>
       <el-table-column label="订单编号" prop="OrderNo">
       </el-table-column>
-      <el-table-column label="订单完成时间" prop="FinishTime">
+      <el-table-column label="订单完成时间" prop="FinishTime" :formatter="CreateTime">
       </el-table-column>
       <el-table-column label="商品名称" prop="prdName">
       </el-table-column>
@@ -202,7 +202,9 @@
       },
       CreateTime(row, time) {
         var date = row[time.property];
-        return date.replace("T", " ").split(".")[0];
+        if (date) {
+          return date.replace("T", " ").split(".")[0];          
+        }
       },
       Type(row, type) {
         var type = row[type.property];
