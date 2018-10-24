@@ -33,6 +33,11 @@
       </el-table-column>
       <el-table-column label="商品佣金" prop="commission">
       </el-table-column>
+      <el-table-column label="活动时间" prop="Name">
+        <template slot-scope="scope" v-if="scope.row.startTime&&scope.row.endTime">
+          {{scope.row.startTime | time}}--{{scope.row.endTime | time}}
+        </template>
+      </el-table-column>
       <el-table-column label="商品评价" prop="Name">
         <template slot-scope="scope">
           <el-button size="mini" type="primary" @click="comment(scope.row.ID)">查看</el-button>
@@ -73,6 +78,13 @@
         startTime:'',
         endTime:'',
       };
+    },
+    filters: {
+      time: function (value) {
+        if (value) {
+          return value.substring(0,10)
+        } 
+      }
     },
     mounted() {
       if (window.location.href.split("page=")[1]) {

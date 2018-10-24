@@ -18,8 +18,9 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
-        <el-form-item label="消息内容" prop="defaultMsg">
-          <UEditor :defaultMsg='defaultMsg' :config='config' ref="ueditor"></UEditor>
+        <el-form-item label="消息内容" prop="Content">
+          <el-input v-model="getList.Content" type="textarea" rows="8"></el-input>
+          <!-- <UEditor :defaultMsg='defaultMsg' :config='config' ref="ueditor"></UEditor> -->
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submitForm('getList')">修改</el-button>
@@ -65,9 +66,10 @@
             required: true,
             validator: checkLogo
           }],
-          defaultMsg: [{
+          Content: [{
             required: true,
-            validator: checkdefaultMsg
+            message: '请输入消息内容',
+            trigger: 'blur'
           }],
           Title: [{
             required: true,
@@ -106,13 +108,13 @@
               spinner: "el-icon-loading",
               background: "rgba(0, 0, 0, 0.7)"
             });
-            var content = this.$refs.ueditor.getUEContent();
+            // var content = this.$refs.ueditor.getUEContent();
             this.$http
                 .post("api/Back_MessageManage/MessageAdd",
                   qs.stringify({
                     image: this.getList.Image,
                     title: this.getList.Title,
-                    content: encodeURIComponent(content),
+                    content: this.getList.Content,
                     Token: getCookie("token"),
                   })
                 )
