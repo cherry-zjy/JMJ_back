@@ -55,16 +55,7 @@
           <el-input v-model="addForm.ExpressNumber" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="快递公司" prop="Company">
-          <!-- <el-input v-model="addForm.Company"></el-input> -->
-          <el-upload class="avatar-uploader" :action="action" :show-file-list="false"
-            :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-            <el-select v-if="imageUrl" v-model="addForm.Company" filterable remote placeholder="请输入快递公司关键字" :remote-method="remoteMethod"
-              :loading="loading">
-              <el-option v-for="item in options4" :key="item.ExpressCode" :label="item.ExpressName" :value="item.ExpressCode">
-              </el-option>
-            </el-select>
-            <img v-else src="../../../static/images/add.png" class="avatar" style="width:150px;">
-          </el-upload>
+          <el-autocomplete v-model="addForm.Company" :fetch-suggestions="querySearchAsync" placeholder="请输入内容" @select="handleSelect"></el-autocomplete>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -180,6 +171,36 @@
       this.action = this.mainurl + "/api/Back_OrderManage/ExpressToExcel?token=" + getCookie("token");
     },
     methods: {
+      forBreak() {
+        // 加入快递公司是手动输入的，需要多加一层判断该公司是否存在于数据源中。若不存在则不能发货
+        for (let index = 0; index < expresss.length; index++) {
+          const element = expresss[index];
+          if (this.addForm.Company == element.value) {
+            return true;
+          }
+        }
+      },
+      querySearchAsync(queryString, cb) {
+        var restaurants = this.restaurants;
+        var results = queryString ?
+          restaurants.filter(this.createStateFilter(queryString)) :
+          restaurants;
+
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+          cb(results);
+        }, 1000 * Math.random());
+      },
+      createStateFilter(queryString) {
+        return state => {
+          return (
+            state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
+          );
+        };
+      },
+      handleSelect(item) {
+        this.addForm.Company = item.value;
+      },
       remoteMethod(query) {
         if (query !== '') {
           this.loading = false;

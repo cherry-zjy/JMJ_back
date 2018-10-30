@@ -55,12 +55,7 @@
           <el-input v-model="addForm.ExpressNumber"></el-input>
         </el-form-item>
         <el-form-item label="快递公司" prop="Company">
-          <el-autocomplete
-  v-model="addForm.Company"
-  :fetch-suggestions="querySearchAsync"
-  placeholder="请输入内容"
-  @select="handleSelect"
-></el-autocomplete>
+          <el-autocomplete v-model="addForm.Company" :fetch-suggestions="querySearchAsync" placeholder="请输入内容" @select="handleSelect"></el-autocomplete>
           <!-- <el-input v-model="addForm.Company"></el-input> -->
           <!-- <el-upload class="avatar-uploader" :action="action" :show-file-list="false"
             :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
@@ -81,390 +76,388 @@
   </div>
 </template>
 <script>
-import expresss from "../../../static/js/express.js";
-export default {
-  data() {
-    var checkLogo = (rule, value, callback) => {
-      if (this.imageUrl == "") {
-        callback(new Error("请上传图片"));
-      } else {
-        callback();
-      }
-    };
-    return {
-      restaurants: [],
-      CompanyName: "",
-      timeout: null,
-      list: [],
-      options4: [], //快递公司,带value
-      citylist: [], //快递公司,不带value
-      imageUrl: false,
-      mainurl: "",
-      type: -1,
-      fahuoid: "",
-      editForm: {
-        OrderNumber: ""
-      },
-      addForm: {
-        ExpressNumber: "",
-        Company: ""
-      },
-      action: "",
-      addLoading: false,
-      loading: false,
-      FormVisible: false,
-      pageIndex: 1,
-      pageSize: 8,
-      pageCount: 1,
-      orderNo: "",
-      name: "",
-      addFormRules: {
-        ExpressNumber: [
-          {
+  import expresss from "../../../static/js/express.js";
+  export default {
+    data() {
+      var checkLogo = (rule, value, callback) => {
+        if (this.imageUrl == "") {
+          callback(new Error("请上传图片"));
+        } else {
+          callback();
+        }
+      };
+      return {
+        restaurants: [],
+        CompanyName: "",
+        timeout: null,
+        list: [],
+        options4: [], //快递公司,带value
+        citylist: [], //快递公司,不带value
+        imageUrl: false,
+        mainurl: "",
+        type: -1,
+        fahuoid: "",
+        editForm: {
+          OrderNumber: ""
+        },
+        addForm: {
+          ExpressNumber: "",
+          Company: ""
+        },
+        action: "",
+        addLoading: false,
+        loading: false,
+        FormVisible: false,
+        pageIndex: 1,
+        pageSize: 8,
+        pageCount: 1,
+        orderNo: "",
+        name: "",
+        addFormRules: {
+          ExpressNumber: [{
             required: true,
             message: "请输入运单号",
             trigger: "blur"
-          }
-        ],
-        Company: [
-          {
+          }],
+          Company: [{
             required: true,
             message: "请输入快递公司",
             trigger: "blur"
+          }]
+        },
+        typeList: [{
+            ID: -1,
+            Name: "全部"
+          },
+          {
+            ID: 1,
+            Name: "待付款"
+          },
+          {
+            ID: 2,
+            Name: "待收货"
+          },
+          {
+            ID: 3,
+            Name: "待发货"
+          },
+          {
+            ID: 4,
+            Name: "待评价"
           }
         ]
-      },
-      typeList: [
-        {
-          ID: -1,
-          Name: "全部"
-        },
-        {
-          ID: 1,
-          Name: "待付款"
-        },
-        {
-          ID: 2,
-          Name: "待收货"
-        },
-        {
-          ID: 3,
-          Name: "待发货"
-        },
-        {
-          ID: 4,
-          Name: "待评价"
-        }
-      ]
-    };
-  },
-  filters: {
-    orderType: function(value) {
-      if (value == 0) {
-        value = "未支付";
-      } else if (value == 1) {
-        value = "待发货";
-      } else if (value == 2) {
-        value = "待收货";
-      } else if (value == 3) {
-        value = "待评价";
-      } else if (value == 4) {
-        value = "已评价";
-      } else if (value == 9) {
-        value = "已取消";
-      }
-      return value;
-    },
-    Paytype: function(value) {
-      if (value == 0) {
-        value = "支付宝";
-      } else if (value == 1) {
-        value = "微信";
-      } else if (value == 2) {
-        value = "余额";
-      }
-      return value;
-    }
-  },
-  mounted() {
-    this.restaurants = expresss;
-    this.mainurl = mainurl;
-    this.getInfo();
-    this.action =
-      this.mainurl +
-      "/api/Back_OrderManage/ExpressToExcel?token=" +
-      getCookie("token");
-  },
-  methods: {
-    querySearchAsync(queryString, cb) {
-      var restaurants = this.restaurants;
-      var results = queryString
-        ? restaurants.filter(this.createStateFilter(queryString))
-        : restaurants;
-
-      clearTimeout(this.timeout);
-      this.timeout = setTimeout(() => {
-        cb(results);
-      }, 1000 * Math.random());
-    },
-    createStateFilter(queryString) {
-      return state => {
-        return (
-          state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-        );
       };
     },
-    handleSelect(item) {
-      this.addForm.Company = item.value;
+    filters: {
+      orderType: function (value) {
+        if (value == 0) {
+          value = "未支付";
+        } else if (value == 1) {
+          value = "待发货";
+        } else if (value == 2) {
+          value = "待收货";
+        } else if (value == 3) {
+          value = "待评价";
+        } else if (value == 4) {
+          value = "已评价";
+        } else if (value == 9) {
+          value = "已取消";
+        }
+        return value;
+      },
+      Paytype: function (value) {
+        if (value == 0) {
+          value = "支付宝";
+        } else if (value == 1) {
+          value = "微信";
+        } else if (value == 2) {
+          value = "余额";
+        }
+        return value;
+      }
     },
-    remoteMethod(query) {
-      if (query !== "") {
-        this.loading = false;
-        this.options4 = this.citylist.filter(item => {
+    mounted() {
+      this.restaurants = expresss;
+      this.mainurl = mainurl;
+      this.getInfo();
+      this.action =
+        this.mainurl +
+        "/api/Back_OrderManage/ExpressToExcel?token=" +
+        getCookie("token");
+    },
+    methods: {
+      querySearchAsync(queryString, cb) {
+        var restaurants = this.restaurants;
+        var results = queryString ?
+          restaurants.filter(this.createStateFilter(queryString)) :
+          restaurants;
+
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+          cb(results);
+        }, 1000 * Math.random());
+      },
+      createStateFilter(queryString) {
+        return state => {
           return (
-            item.ExpressName.toLowerCase().indexOf(query.toLowerCase()) > -1
+            state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
           );
+        };
+      },
+      handleSelect(item) {
+        this.addForm.Company = item.value;
+      },
+      remoteMethod(query) {
+        if (query !== "") {
+          this.loading = false;
+          this.options4 = this.citylist.filter(item => {
+            return (
+              item.ExpressName.toLowerCase().indexOf(query.toLowerCase()) > -1
+            );
+          });
+          console.log(this.options4);
+        } else {
+          this.options4 = [];
+        }
+      },
+      handleAvatarSuccess(res, file) {
+        this.imageUrl = true;
+        this.citylist = res.Result;
+      },
+      beforeAvatarUpload(file) {
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isLt2M) {
+          this.$message.error("文件大小不能超过 2MB!");
+        }
+        return isLt2M;
+      },
+      CreateTime(row, time) {
+        var date = row[time.property];
+        if (date) {
+          return date.replace("T", " ").split(".")[0];
+        }
+      },
+      Type(row, type) {
+        var type = row[type.property];
+        if (type == 0) {
+          type = "未支付";
+        } else if (type == 1) {
+          type = "待发货";
+        } else if (type == 2) {
+          type = "待收货";
+        } else if (type == 3) {
+          type = "待评价";
+        } else if (type == 4) {
+          type = "已评价";
+        } else if (type == 9) {
+          type = "已取消";
+        }
+        return type;
+      },
+      getInfo() {
+        const loading = this.$loading({
+          lock: true,
+          text: "Loading",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.7)"
         });
-        console.log(this.options4);
-      } else {
-        this.options4 = [];
-      }
-    },
-    handleAvatarSuccess(res, file) {
-      this.imageUrl = true;
-      this.citylist = res.Result;
-    },
-    beforeAvatarUpload(file) {
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isLt2M) {
-        this.$message.error("文件大小不能超过 2MB!");
-      }
-      return isLt2M;
-    },
-    CreateTime(row, time) {
-      var date = row[time.property];
-      if (date) {
-        return date.replace("T", " ").split(".")[0];
-      }
-    },
-    Type(row, type) {
-      var type = row[type.property];
-      if (type == 0) {
-        type = "未支付";
-      } else if (type == 1) {
-        type = "待发货";
-      } else if (type == 2) {
-        type = "待收货";
-      } else if (type == 3) {
-        type = "待评价";
-      } else if (type == 4) {
-        type = "已评价";
-      } else if (type == 9) {
-        type = "已取消";
-      }
-      return type;
-    },
-    getInfo() {
-      const loading = this.$loading({
-        lock: true,
-        text: "Loading",
-        spinner: "el-icon-loading",
-        background: "rgba(0, 0, 0, 0.7)"
-      });
-      this.$http
-        .get("api/Back_OrderManage/CommonOrderList", {
-          params: {
-            orderNo: this.orderNo == "" ? "" - 1 : this.orderNo,
-            name: this.name == "" ? "" - 1 : this.name,
-            type: this.type,
-            pageIndex: this.pageIndex,
-            pageSize: this.pageSize,
-            Token: getCookie("token")
-          }
-        })
-        .then(
-          function(response) {
-            loading.close();
-            var status = response.data.Status;
-            if (status === 1) {
-              this.list = response.data.Result.datalist;
-              this.pageCount = response.data.Result.page;
-            } else if (status === 40001) {
-              this.$message({
-                showClose: true,
-                type: "warning",
-                message: response.data.Result
-              });
-              setTimeout(() => {
-                this.$router.push({
-                  path: "/login"
-                });
-              }, 1500);
-            } else {
+        this.$http
+          .get("api/Back_OrderManage/CommonOrderList", {
+            params: {
+              orderNo: this.orderNo == "" ? "" - 1 : this.orderNo,
+              name: this.name == "" ? "" - 1 : this.name,
+              type: this.type,
+              pageIndex: this.pageIndex,
+              pageSize: this.pageSize,
+              Token: getCookie("token")
+            }
+          })
+          .then(
+            function (response) {
               loading.close();
-              this.$message({
-                showClose: true,
-                type: "warning",
-                message: response.data.Result
+              var status = response.data.Status;
+              if (status === 1) {
+                this.list = response.data.Result.datalist;
+                this.pageCount = response.data.Result.page;
+              } else if (status === 40001) {
+                this.$message({
+                  showClose: true,
+                  type: "warning",
+                  message: response.data.Result
+                });
+                setTimeout(() => {
+                  this.$router.push({
+                    path: "/login"
+                  });
+                }, 1500);
+              } else {
+                loading.close();
+                this.$message({
+                  showClose: true,
+                  type: "warning",
+                  message: response.data.Result
+                });
+              }
+            }.bind(this)
+          )
+          // 请求error
+          .catch(
+            function (error) {
+              loading.close();
+              this.$notify.error({
+                title: "错误",
+                message: "错误：请检查网络"
+              });
+            }.bind(this)
+          );
+      },
+      handleCurrentChange(val) {
+        this.pageIndex = val;
+        this.getInfo();
+      },
+      handleEdit(id) {
+        this.$router.push("/CommonOrderDetail/id=" + id);
+      },
+      forBreak() {
+        // 加入快递公司是手动输入的，需要多加一层判断该公司是否存在于数据源中。若不存在则不能发货
+        for (let index = 0; index < expresss.length; index++) {
+          const element = expresss[index];
+          if (this.addForm.Company == element.value) {
+            return true;
+          }
+        }
+      },
+      addSubmit() {
+        this.$refs.addForm.validate(valid => {
+          if (valid) {
+            //判断是否填写正确  --true
+            if (this.forBreak()) {
+              this.addLoading = true;
+              // 将token传入参数中
+              // 发保存请求
+              this.$http
+                .get("api/Back_OrderManage/Consignment", {
+                  params: {
+                    token: getCookie("token"),
+                    id: this.fahuoid,
+                    ExpressNumber: this.addForm.ExpressNumber,
+                    ExpressCode: this.addForm.Company
+                  }
+                })
+                .then(
+                  function (response) {
+                    this.addLoading = false;
+                    var status = response.data.Status;
+                    if (status === 1) {
+                      // 表单重置
+                      this.$refs["addForm"].resetFields();
+                      this.FormVisible = false;
+                      this.$message({
+                        showClose: true,
+                        type: "success",
+                        message: response.data.Result
+                      });
+                      this.getInfo();
+                    } else if (status === 40001) {
+                      this.$message({
+                        showClose: true,
+                        type: "warning",
+                        message: response.data.Result
+                      });
+                      setTimeout(() => {
+                        this.$router.push({
+                          path: "/login"
+                        });
+                      }, 1500);
+                    } else {
+                      this.$message({
+                        showClose: true,
+                        type: "warning",
+                        message: response.data.Result
+                      });
+                    }
+                  }.bind(this)
+                )
+                // 请求error
+                .catch(
+                  function (error) {
+                    this.addLoading = false;
+                    this.$notify.error({
+                      title: "错误",
+                      message: "错误：请检查网络"
+                    });
+                  }.bind(this)
+                );
+            } else {
+              this.$notify.error({
+                title: "错误",
+                message: "错误：请匹配正确的快递公司"
               });
             }
-          }.bind(this)
-        )
-        // 请求error
-        .catch(
-          function(error) {
-            loading.close();
-            this.$notify.error({
-              title: "错误",
-              message: "错误：请检查网络"
-            });
-          }.bind(this)
-        );
-    },
-    handleCurrentChange(val) {
-      this.pageIndex = val;
-      this.getInfo();
-    },
-    handleEdit(id) {
-      this.$router.push("/CommonOrderDetail/id=" + id);
-    },
-    forBreak() {
-      // 加入快递公司是手动输入的，需要多加一层判断该公司是否存在于数据源中。若不存在则不能发货
-      for (let index = 0; index < expresss.length; index++) {
-        const element = expresss[index];
-        if (this.addForm.Company == element.value) {
-          return true;
-        }
-      }
-    },
-    addSubmit() {
-      this.$refs.addForm.validate(valid => {
-        if (valid) {
-          //判断是否填写正确  --true
-          if (this.forBreak()) {
-            this.addLoading = true;
-            // 将token传入参数中
-            // 发保存请求
-            this.$http
-              .get("api/Back_OrderManage/Consignment", {
-                params: {
-                  token: getCookie("token"),
-                  id: this.fahuoid,
-                  ExpressNumber: this.addForm.ExpressNumber,
-                  ExpressCode: this.addForm.Company
-                }
-              })
-              .then(
-                function(response) {
-                  this.addLoading = false;
-                  var status = response.data.Status;
-                  if (status === 1) {
-                    // 表单重置
-                    this.$refs["addForm"].resetFields();
-                    this.FormVisible = false;
-                    this.$message({
-                      showClose: true,
-                      type: "success",
-                      message: response.data.Result
-                    });
-                    this.getInfo();
-                  } else if (status === 40001) {
-                    this.$message({
-                      showClose: true,
-                      type: "warning",
-                      message: response.data.Result
-                    });
-                    setTimeout(() => {
-                      this.$router.push({
-                        path: "/login"
-                      });
-                    }, 1500);
-                  } else {
-                    this.$message({
-                      showClose: true,
-                      type: "warning",
-                      message: response.data.Result
-                    });
-                  }
-                }.bind(this)
-              )
-              // 请求error
-              .catch(
-                function(error) {
-                  this.addLoading = false;
-                  this.$notify.error({
-                    title: "错误",
-                    message: "错误：请检查网络"
-                  });
-                }.bind(this)
-              );
-          } else {
-            this.$notify.error({
-              title: "错误",
-              message: "错误：请匹配正确的快递公司"
-            });
           }
-        }
-      });
-    },
-    fahuo(id) {
-      this.FormVisible = true;
-      this.fahuoid = id;
+        });
+      },
+      fahuo(id) {
+        this.FormVisible = true;
+        this.fahuoid = id;
+      }
     }
-  }
-};
+  };
+
 </script>
 <style scoped>
-/* 面包屑 */
+  /* 面包屑 */
 
-.crumb {
-  height: 36px;
-  line-height: 36px;
-}
+  .crumb {
+    height: 36px;
+    line-height: 36px;
+  }
 
-.block {
-  text-align: center;
-  padding: 20px 0;
-}
+  .block {
+    text-align: center;
+    padding: 20px 0;
+  }
 
-.el-row {
-  padding: 20px 0px;
-}
+  .el-row {
+    padding: 20px 0px;
+  }
 
-.title {
-  font-size: 22px;
-  padding-bottom: 15px;
-  font-weight: bolder;
-}
+  .title {
+    font-size: 22px;
+    padding-bottom: 15px;
+    font-weight: bolder;
+  }
 
-.el-input {
-  width: 50%;
-}
+  .el-input {
+    width: 50%;
+  }
 
-.el-dialog {
-  width: 80%;
-}
+  .el-dialog {
+    width: 80%;
+  }
 
-.el-form-item {
-  margin-bottom: 0;
-}
-#company {
-  -webkit-appearance: none;
-  background-color: #fff;
-  background-image: none;
-  border-radius: 4px;
-  border: 1px solid #dcdfe6;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  color: #606266;
-  display: inline-block;
-  font-size: inherit;
-  height: 40px;
-  line-height: 40px;
-  outline: 0;
-  padding: 0 15px;
-  -webkit-transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
-  transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
-  width: 100%;
-}
+  .el-form-item {
+    margin-bottom: 0;
+  }
+
+  #company {
+    -webkit-appearance: none;
+    background-color: #fff;
+    background-image: none;
+    border-radius: 4px;
+    border: 1px solid #dcdfe6;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    color: #606266;
+    display: inline-block;
+    font-size: inherit;
+    height: 40px;
+    line-height: 40px;
+    outline: 0;
+    padding: 0 15px;
+    -webkit-transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+    transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+    width: 100%;
+  }
+
 </style>

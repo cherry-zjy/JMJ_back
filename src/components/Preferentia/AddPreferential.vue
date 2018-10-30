@@ -14,7 +14,7 @@
         <el-form-item label="抵用券类型" prop="Type">
           <el-radio-group v-model="getList.Type">
             <el-radio label="1">折扣券</el-radio>
-            <el-radio label="2">红包</el-radio>
+            <el-radio label="2">商品抵用券</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="抵用券使用条件" prop="condition">
