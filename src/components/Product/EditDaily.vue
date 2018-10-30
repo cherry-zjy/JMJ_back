@@ -141,6 +141,9 @@
             <el-form-item label="商品编码">
               <el-input v-model="getList.prodNumber"></el-input>
             </el-form-item>
+            <el-form-item label="赠送优惠券商品">
+              <el-switch v-model="getList.Appoint"></el-switch>
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
@@ -965,6 +968,7 @@
                   Stock: this.getList.Stock,
                   BarCode: this.getList.BarCode,
                   ProdCode: this.getList.prodNumber,
+                  Appoint:this.getList.Appoint
                 })
               )
               .then(
