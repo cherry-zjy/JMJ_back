@@ -7,7 +7,10 @@
 
     <el-main>
       <el-form :model="getList" ref="getList" label-width="150px" class="demo-ruleForm" :rules="rules" style="width:70%">
-        <el-form-item label="红包额度" prop="Content">
+        <el-form-item label="名字" prop="Name">
+          <el-input v-model="getList.Name"></el-input>
+        </el-form-item>
+        <el-form-item label="满减" prop="Content">
           <el-input v-model="getList.Content"></el-input>
         </el-form-item>
         <el-form-item label="红包有效日期" prop="time">
@@ -35,9 +38,14 @@
             message: '请输入红包有效日期',
             trigger: 'blur'
           }],
-          content: [{
+          Content: [{
             required: true,
-            message: '请输入红包额度',
+            message: '请输入满减',
+            trigger: 'blur'
+          }, ],
+          Name: [{
+            required: true,
+            message: '请输入名字',
             trigger: 'blur'
           }, ],
         },
@@ -122,6 +130,7 @@
                   start: startTime,
                   end: endTime,
                   content: this.getList.Content,
+                  Name: this.getList.Name,
                   Token: getCookie("token"),
                 }
               })
