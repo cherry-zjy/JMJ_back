@@ -2,7 +2,7 @@
   <div>
     <el-breadcrumb separator="|" class="crumb">
       <el-breadcrumb-item :to="{ path: '/' }">后台管理</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/CobberList' }">城市合伙人列表</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/GovList' }">官方合伙人列表</el-breadcrumb-item>
       <el-breadcrumb-item>城市合伙人详情</el-breadcrumb-item>
     </el-breadcrumb>
 

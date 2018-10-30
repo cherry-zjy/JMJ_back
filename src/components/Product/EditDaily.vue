@@ -14,11 +14,11 @@
             <el-form-item label="商品名称" prop="prodName">
               <el-input v-model="getList.prodName"></el-input>
             </el-form-item>
-            <el-form-item label="商品原价" prop="prodPrice">
-              <el-input v-model="getList.prodPrice" type="number"></el-input>
+            <el-form-item label="商品原价" prop="TeamBuyingPrice">
+              <el-input v-model="getList.TeamBuyingPrice" type="number"></el-input>
             </el-form-item>
-            <el-form-item label="商品售价" prop="Price">
-              <el-input v-model="getList.Price" type="number"></el-input>
+            <el-form-item label="商品售价" prop="prodPrice">
+              <el-input v-model="getList.prodPrice" type="number"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -437,12 +437,12 @@
             message: '请输入商品编码',
             trigger: 'change'
           }, ],
-          prodPrice: [{
+          TeamBuyingPrice: [{
             required: true,
             message: '请输入商品原价',
             trigger: 'blur'
           }, ],
-          Price: [{
+          prodPrice: [{
             required: true,
             message: '请输入商品售价',
             trigger: 'blur'
@@ -938,9 +938,9 @@
                 qs.stringify({
                   token: getCookie("token"),
                   ID: window.location.href.split("id=")[1].split("&page")[0],
-                  price: this.getList.prodPrice,
+                  TeamBuyingPrice: this.getList.TeamBuyingPrice,
                   Name: this.getList.prodName,
-                  TeamBuyingPrice: this.getList.Price,
+                  prodPrice: this.getList.prodPrice,
                   Classification: this.getList.classificationID,
                   ClassificationSecond: this.getList.classificationSecondID,
                   specs: this.spce,

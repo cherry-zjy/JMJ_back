@@ -231,7 +231,7 @@
               background: "rgba(0, 0, 0, 0.7)"
             });
             this.$http
-              .post("api/Back_UserManage/GovAdd?token=" + getCookie("token") + "&phone=" + this.editlist.phone,
+              .get("api/Back_UserManage/GovAdd?token=" + getCookie("token") + "&phone=" + this.editlist.phone,
                 // qs.stringify({
                 //   token: getCookie("token"),
                 //   id:window.location.href.split("id=")[1],

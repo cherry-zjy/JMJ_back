@@ -905,7 +905,7 @@
               .post("api/Back_ProductManage/ProductEdit",
                 qs.stringify({
                   token: getCookie("token"),
-                  price: this.getList.prodPrice,
+                  prodPrice: this.getList.prodPrice,
                   ID: window.location.href.split("id=")[1].split("&page")[0],
                   Name: this.getList.prodName,
                   // Number: this.getList.Number,

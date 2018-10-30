@@ -129,7 +129,7 @@
                   position: this.getList.position,
                   id: window.location.href.split("id=")[1],
                   Token: getCookie("token"),
-                  Url:this.getList.Url,
+                  url:this.getList.IsJump?this.getList.Url:-1,
                 }
               })
               .then(

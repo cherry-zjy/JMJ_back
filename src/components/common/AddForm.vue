@@ -11,12 +11,12 @@
         <el-form-item label="模板名称" prop="Name">
           <el-input v-model="getList.Name"></el-input>
         </el-form-item>
-        <el-form-item label="计费方式" prop="Type">
+        <!-- <el-form-item label="计费方式" prop="Type">
           <el-radio-group v-model="getList.Type">
             <el-radio label="0">按件</el-radio>
             <el-radio label="1">按重量</el-radio>
           </el-radio-group>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="配送区域">
           <el-button size="mini" type="primary" @click="handleAdd()" style="float:right">新增</el-button>
           <el-table :data="list" style="width: 100%;margin:60px 0" :border='true'>

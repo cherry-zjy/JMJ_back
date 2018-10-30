@@ -147,7 +147,6 @@
                   if (window.location.href.split("id=")[1] == response.data.Result.datalist[i].ID) {
                     this.getList = response.data.Result.datalist[i]
                     console.log(this.getList)
-                    this.getList.IsJump = ""+response.data.Result.datalist[i].IsJump+""
                     this.getList.Position = ""+response.data.Result.datalist[i].Position+""
                     this.imageUrl = this.mainurl + response.data.Result.datalist[i].Image
                     this.find = true;
@@ -214,7 +213,7 @@
                   position: this.getList.Position,
                   id: window.location.href.split("id=")[1],
                   Token: getCookie("token"),
-                  Url:this.getList.Url,
+                  url:this.getList.IsJump?this.getList.Url:-1,
                 }
               })
               .then(

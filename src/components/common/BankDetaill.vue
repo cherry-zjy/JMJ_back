@@ -47,8 +47,8 @@
         <el-form-item label="审核周期" prop="AuditCycle">
           <el-input v-model="addForm.AuditCycle"></el-input>
         </el-form-item>
-        <el-form-item label="积分数" prop="integral">
-          <el-input v-model="addForm.integral"></el-input>
+        <el-form-item label="积分数" prop="Integral">
+          <el-input v-model="addForm.Integral"></el-input>
         </el-form-item>
         <el-form-item label="兑换方式" prop="ExChangeWay">
           <el-radio-group v-model="addForm.ExChangeWay">
@@ -83,8 +83,8 @@
         <el-form-item label="审核周期" prop="AuditCycle">
           <el-input v-model="editForm.AuditCycle"></el-input>
         </el-form-item>
-        <el-form-item label="积分数" prop="integral">
-          <el-input v-model="editForm.integral"></el-input>
+        <el-form-item label="积分数" prop="Integral">
+          <el-input v-model="editForm.Integral"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -133,7 +133,7 @@
             message: "请输入审核周期",
             trigger: "blur"
           }],
-          integral: [{
+          Integral: [{
             required: true,
             message: "请输入积分数",
             trigger: "blur"
@@ -171,7 +171,7 @@
             message: "请输入审核周期",
             trigger: "blur"
           }],
-          integral: [{
+          Integral: [{
             required: true,
             message: "请输入积分数",
             trigger: "blur"
@@ -256,7 +256,7 @@
           Exbalance: '',
           Coin: '',
           Name: '',
-          integral: '',
+          Integral: '',
           AuditCycle: '',
         },
         this.addFormVisible = true
@@ -352,7 +352,7 @@
                   coin: this.addForm.Coin,
                   Exbalance: this.addForm.Exbalance,
                   changeWay: this.addForm.ExChangeWay,
-                  integral: this.addForm.integral,
+                  integral: this.addForm.Integral,
                   AuditCycle: this.addForm.AuditCycle,
                 }
               })
@@ -423,7 +423,7 @@
                   coin: this.editForm.ExCoin,
                   Exbalance: this.editForm.ExBalance,
                   changeWay: this.editForm.ExChangeWay,
-                  integral: this.editForm.integral,
+                  integral: this.editForm.Integral,
                   AuditCycle: this.editForm.AuditCycle,
                 }
               })

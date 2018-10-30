@@ -53,4 +53,11 @@ export default {
 #el-popover-2199 {
   border: 2px solid #3f3f3f !important;
 }
+
+  /* 选择快递公司的 弹框 #ui-id-1 */
+  #ui-id-1{
+    z-index: 200000;
+  max-height: 300px;
+  overflow: hidden
+  }
 </style>
