@@ -62,11 +62,11 @@
       },
       getInfo() {
         const loading = this.$loading({
-              lock: true,
-              text: "Loading",
-              spinner: "el-icon-loading",
-              background: "rgba(0, 0, 0, 0.7)"
-            });
+          lock: true,
+          text: "Loading",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.7)"
+        });
         this.$http
           .get("api/Back_PreferentialManage/RedPackageDetail", {
             params: {
@@ -79,7 +79,8 @@
               var status = response.data.Status;
               if (status === 1) {
                 this.getList = response.data.Result
-                this.getList.time = [response.data.Result.StartTime.substring(0,10),response.data.Result.EndTime.substring(0,10)]
+                this.getList.time = [response.data.Result.StartTime.substring(0, 10), response.data.Result.EndTime.substring(
+                  0, 10)]
               } else if (status === 40001) {
                 this.$message({
                   showClose: true,

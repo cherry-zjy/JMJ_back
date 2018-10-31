@@ -111,14 +111,14 @@
             <el-form-item label="商品库存">
               <el-input v-model="getList.Stock"></el-input>
             </el-form-item>
-            <el-form-item label="免单所需签到次数" prop="SignTimes">
-              <el-input v-model="getList.SignTimes" type="number"></el-input>
-            </el-form-item>
             <el-form-item label="开团成功人数" prop="NumOfMem">
               <el-input v-model="getList.NumOfMem" type="number"></el-input>
             </el-form-item>
-            <el-form-item label="连签5次额外得积分" prop="signfivepoint">
-              <el-input v-model="getList.signfivepoint" type="number"></el-input>
+            <el-form-item label="签到一次所得积分" prop="signpoint">
+              <el-input v-model="getList.signpoint" type="number"></el-input>
+            </el-form-item>
+            <el-form-item label="免单所需签到次数" prop="SignTimes">
+              <el-input v-model="getList.SignTimes" type="number"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -131,12 +131,6 @@
             <el-form-item label="商品佣金" prop="Commission">
               <el-input v-model="getList.Commission" type="number"></el-input>
             </el-form-item>
-            <el-form-item label="免单所需积分" prop="Ntegrate">
-              <el-input v-model="getList.Ntegrate" type="number"></el-input>
-            </el-form-item>
-            <el-form-item label="签到一次所得积分" prop="signpoint">
-              <el-input v-model="getList.signpoint" type="number"></el-input>
-            </el-form-item>
             <el-form-item label="商品条形码">
               <el-input v-model="getList.BarCode"></el-input>
             </el-form-item>
@@ -145,6 +139,12 @@
             </el-form-item>
             <el-form-item label="赠送优惠券商品">
               <el-switch v-model="getList.Appoint"></el-switch>
+            </el-form-item>
+            <el-form-item label="连签5次额外得积分" prop="signfivepoint">
+              <el-input v-model="getList.signfivepoint" type="number"></el-input>
+            </el-form-item>
+            <el-form-item label="免单所需积分">
+              <el-input v-model="getList.Ntegrate" disabled="disabled" type="number"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -188,14 +188,14 @@
       <el-form :model="AddForm" :rules="addrules" ref="AddForm" label-width="150px" class="demo-editForm"
         label-position="left">
         <el-form-item label="一级规格图片">
-        <el-upload v-model="AddForm.FirstImage" class="avatar-uploader" :action="action" :show-file-list="false"
-          :on-success="handleFirstSuccess" :before-upload="beforeAvatarUpload">
-          <img v-if="FirstImage" :src="FirstImage" class="avatar" width="200">
-          <div v-else class="el-upload el-upload--picture-card">
-            <i class="el-icon-plus"></i>
-          </div>
-        </el-upload>
-      </el-form-item>
+          <el-upload v-model="AddForm.FirstImage" class="avatar-uploader" :action="action" :show-file-list="false"
+            :on-success="handleFirstSuccess" :before-upload="beforeAvatarUpload">
+            <img v-if="FirstImage" :src="FirstImage" class="avatar" width="200">
+            <div v-else class="el-upload el-upload--picture-card">
+              <i class="el-icon-plus"></i>
+            </div>
+          </el-upload>
+        </el-form-item>
         <el-form-item label="一级规格名称" prop="SpecName">
           <el-input v-model="AddForm.SpecName"></el-input>
         </el-form-item>
@@ -308,7 +308,7 @@
         }
       };
       return {
-        currentpage:0,
+        currentpage: 0,
         time: '',
         config: {
           initialFrameWidth: null,
@@ -321,8 +321,8 @@
         //轮播图点击放大
         dialogImageUrl: '',
         imageUrl: '',
-        FirstImage:'',//一级规格图片
-        SecondImage:'',//二级规格图片
+        FirstImage: '', //一级规格图片
+        SecondImage: '', //二级规格图片
         action: '',
         list: [],
         mubanList: [],
@@ -352,6 +352,9 @@
         // }], //一级规格
         getList: {
           IsOutSourcing: false,
+          signpoint: '',
+          SignTimes: '',
+          signfivepoint: ''
           // Detail:'',
         },
         mainurl: '',
@@ -544,7 +547,35 @@
       this.getmuban();
       this.getInfo();
     },
-
+    watch: {
+      reversedsignpoint: function (n, o) {
+        var value = parseInt(this.getList.SignTimes/5) * this.getList.signfivepoint
+        this.getList.Ntegrate = this.getList.SignTimes * this.getList.signpoint + value
+      },
+      reversedSignTimes: function (n, o) {
+        var value = parseInt(this.getList.SignTimes/5) * this.getList.signfivepoint
+        this.getList.Ntegrate = this.getList.SignTimes * this.getList.signpoint + value
+      },
+      reversedsignfivepoint: function (n, o) {
+        var value = parseInt(this.getList.SignTimes/5) * this.getList.signfivepoint
+        this.getList.Ntegrate = this.getList.SignTimes * this.getList.signpoint + value
+      },
+    },
+    computed: {
+      // 计算属性的 getter
+      reversedsignpoint: function () {
+        // `this` 指向 vm 实例
+        return this.getList.signpoint
+      },
+      reversedSignTimes: function () {
+        // `this` 指向 vm 实例
+        return this.getList.SignTimes
+      },
+      reversedsignfivepoint: function () {
+        // `this` 指向 vm 实例
+        return this.getList.signfivepoint
+      }
+    },
     methods: {
       getInfo() {
         const loading = this.$loading({
@@ -568,14 +599,15 @@
               if (status === 1) {
                 this.getList = response.data.Result;
                 this.changeclassification()
-                if(response.data.Result.ProdPoster == ''){
+                if (response.data.Result.ProdPoster == '') {
                   this.imageUrl = ""
-                }else{
+                } else {
                   this.imageUrl = mainurl + response.data.Result.ProdPoster;
                 }
-                if (response.data.Result.startTime&&response.data.Result.endTime) {
-                  this.time = [response.data.Result.startTime.substring(0, 10), response.data.Result.endTime.substring(0,
-                  10)]
+                if (response.data.Result.startTime && response.data.Result.endTime) {
+                  this.time = [response.data.Result.startTime.substring(0, 10), response.data.Result.endTime.substring(
+                    0,
+                    10)]
                 }
                 // var imgarr = Array();
                 var imgarr = response.data.Result.Image.split(',')
@@ -809,11 +841,11 @@
         this.imageUrl = URL.createObjectURL(file.raw);
         this.getList.ProdPoster = res.Result[0];
       },
-      handleFirstSuccess(res, file){
+      handleFirstSuccess(res, file) {
         this.FirstImage = URL.createObjectURL(file.raw);
         this.AddForm.FirstImage = res.Result[0];
       },
-      handleSecondSuccess(res, file){
+      handleSecondSuccess(res, file) {
         this.SecondImage = URL.createObjectURL(file.raw);
         this.editForm.SecondImage = res.Result[0];
       },
@@ -894,7 +926,7 @@
         });
 
       },
-      Del(pindex,index) {
+      Del(pindex, index) {
         this.spce[pindex].specSecond.splice(index, 1)
       },
       handleAdd(index) {
@@ -961,7 +993,7 @@
               .post("api/Back_ProductManage/ProductEdit",
                 qs.stringify({
                   token: getCookie("token"),
-                  prodPrice:this.getList.prodPrice,
+                  prodPrice: this.getList.prodPrice,
                   ID: window.location.href.split("id=")[1].split("&page")[0],
                   Name: this.getList.prodName,
                   TeamBuyingPrice: -1,
@@ -974,8 +1006,8 @@
                   IsOutSourcing: this.getList.IsOutSourcing,
                   Salesvolume: this.getList.Salesvolume,
                   Commission: this.getList.Commission,
-                  ExpressWay:this.getList.ExpressWay,
-                  FreightNameID:this.getList.FreightFormworkID,
+                  ExpressWay: this.getList.ExpressWay,
+                  FreightNameID: this.getList.FreightFormworkID,
                   Image: banner,
                   ProdPoster: this.getList.ProdPoster,
                   Detail: encodeURIComponent(content),
@@ -983,15 +1015,15 @@
                   Ntegrate: this.getList.Ntegrate,
                   NumOfMem: this.getList.NumOfMem,
                   SignTimes: this.getList.SignTimes,
-                  startTime:startTime,
-                  endTime:endTime,
-                  IsRecommended:this.getList.IsRecommended,
-                  signpoint:this.getList.signpoint,
-                  signfivepoint:this.getList.signfivepoint,
-                  Stock:this.getList.Stock,
-                  BarCode:this.getList.BarCode,
-                  ProdCode:this.getList.prodNumber,
-                  Appoint:this.getList.Appoint
+                  startTime: startTime,
+                  endTime: endTime,
+                  IsRecommended: this.getList.IsRecommended,
+                  signpoint: this.getList.signpoint,
+                  signfivepoint: this.getList.signfivepoint,
+                  Stock: this.getList.Stock,
+                  BarCode: this.getList.BarCode,
+                  ProdCode: this.getList.prodNumber,
+                  Appoint: this.getList.Appoint
                 })
               )
               .then(
@@ -1006,7 +1038,7 @@
                     });
                     setTimeout(() => {
                       this.$router.push({
-                        path: "/WeekList?page="+window.location.href.split("&page=")[1]
+                        path: "/WeekList?page=" + window.location.href.split("&page=")[1]
                       });
                     }, 1500);
                   } else if (status === 40001) {
@@ -1088,7 +1120,8 @@
   .tabletitle {
     margin: 20px 0;
   }
-  .editbtn{
+
+  .editbtn {
     position: fixed;
     right: 5%;
     top: 15%
