@@ -68,6 +68,7 @@
             商品编号：{{item.CommodityNumber}}&nbsp;&nbsp;&nbsp;
             商品条形码：{{item.barCode}}&nbsp;&nbsp;&nbsp;
             <el-button size="mini" type="warning" @click="handleAdd(index)" style="float:right">新增二级规格</el-button>
+            <el-button size="mini" type="danger" plain icon="el-icon-edit" @click="EditOne(index)">修改</el-button>
             <el-button size="mini" type="danger" plain icon="el-icon-delete" @click="DelOne(index)">删除</el-button>
           </p>
           <el-table style="width: 100%" :border='true' :data="item.specSecond">
@@ -213,7 +214,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button @click="dialogFormVisible1 = false">取 消</el-button>
         <el-button type="primary" @click="submitOneForm('AddForm')">确 定</el-button>
       </div>
     </el-dialog>
@@ -249,6 +250,40 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="submitForm('editForm')">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 模态框 -->
+    <el-dialog title="修改一级分类名称" :visible.sync="dialogFormVisible2" width="50%">
+      <el-form :model="editoneForm" :rules="editoneFormrules" ref="editoneForm" label-width="150px" class="demo-editForm"
+        label-position="left">
+        <el-form-item label="一级规格图片">
+          <el-upload v-model="editoneForm.FirstImage" class="avatar-uploader" :action="action" :show-file-list="false"
+            :on-success="handleFirstSuccess" :before-upload="beforeAvatarUpload">
+            <img v-if="FirstImage" :src="FirstImage" class="avatar" width="200">
+            <div v-else class="el-upload el-upload--picture-card">
+              <i class="el-icon-plus"></i>
+            </div>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="一级规格名称" prop="SpecName">
+          <el-input v-model="editoneForm.SpecName"></el-input>
+        </el-form-item>
+        <el-form-item label="库存" prop="Stock">
+          <el-input v-model="editoneForm.Stock"></el-input>
+        </el-form-item>
+        <el-form-item label="价格" prop="Price">
+          <el-input v-model="editoneForm.Price"></el-input>
+        </el-form-item>
+        <el-form-item label="商品编号" prop="CommodityNumber">
+          <el-input v-model="editoneForm.CommodityNumber"></el-input>
+        </el-form-item>
+        <el-form-item label="商品条形码">
+          <el-input v-model="editoneForm.barCode"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible2 = false">取 消</el-button>
+        <el-button type="primary" @click="submiteditForm('editoneForm')">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -293,6 +328,13 @@
           callback();
         }
       };
+      var checkeditFirstImage = (rule, value, callback) => {
+        if (this.FirstImage == '') {
+          callback(new Error("请上传一级规格图片"));
+        } else {
+          callback();
+        }
+      };
       var checkSecondImage = (rule, value, callback) => {
         if (this.SecondImage == '') {
           callback(new Error("请上传二级规格图片"));
@@ -317,6 +359,8 @@
         defaultMsg: "",
         dialogFormVisible: false,
         dialogFormVisible1: false,
+        dialogFormVisible2: false,
+        editindex:0,
         dialogVisible: false,
         //轮播图点击放大
         dialogImageUrl: '',
@@ -369,6 +413,15 @@
           Stock: '',
           specSecond: []
         },
+        editoneForm: {
+          SpecName: '',
+          Price: '',
+          FirstImage: '',
+          BarCode: '',
+          CommodityNumber: '',
+          Stock: '',
+          specSecond: []
+        },
         addrules: {
           SpecName: [{
             required: true,
@@ -378,6 +431,32 @@
           FirstImage: [{
             required: true,
             validator: checkFirstImage
+          }],
+          Price: [{
+            required: true,
+            message: '请输入一级规格价格',
+            trigger: 'blur'
+          }],
+          CommodityNumber: [{
+            required: true,
+            message: '请输入商品编号',
+            trigger: 'blur'
+          }],
+          Stock: [{
+            required: true,
+            message: '请输入库存',
+            trigger: 'blur'
+          }],
+        },
+        editoneFormrules: {
+          SpecName: [{
+            required: true,
+            message: '请输入一级规格名称',
+            trigger: 'blur'
+          }],
+          FirstImage: [{
+            required: true,
+            validator: checkeditFirstImage
           }],
           Price: [{
             required: true,
@@ -623,7 +702,6 @@
                 this.yunfei = response.data.Result.ExpressWay == 0 ? false : true
                 this.spce = response.data.Result.specification;
                 this.defaultMsg = response.data.Result.Detail;
-                console.log(this.defaultMsg + '111')
               } else if (status === 40001) {
                 this.$message({
                   showClose: true,
@@ -844,6 +922,7 @@
       handleFirstSuccess(res, file) {
         this.FirstImage = URL.createObjectURL(file.raw);
         this.AddForm.FirstImage = res.Result[0];
+        this.editoneForm.FirstImage = res.Result[0];
       },
       handleSecondSuccess(res, file) {
         this.SecondImage = URL.createObjectURL(file.raw);
@@ -925,6 +1004,31 @@
           });
         });
 
+      },
+      EditOne(index) {
+        this.editindex = index
+        this.editoneForm = this.spce[index]
+        this.editoneForm.BarCode = this.spce[index].barCode
+        this.FirstImage = mainurl + this.spce[index].FirstImage
+        this.dialogFormVisible2 = true
+      },
+      submiteditForm(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            console.log(this.editoneForm)
+            this.spce[this.editindex] = this.editoneForm
+            // this.spce[this.editindex].barCode = this.AddForm.BarCode
+            // this.spce[this.editindex].FirstImage = this.AddForm.FirstImage 
+            this.dialogFormVisible2 = false
+          } else {
+            this.$message({
+              showClose: true,
+              type: "warning",
+              message: '请完善信息'
+            });
+            return false;
+          }
+        });
       },
       Del(pindex, index) {
         this.spce[pindex].specSecond.splice(index, 1)
