@@ -81,6 +81,9 @@ var OrdinaryUserLook = resolve => require(['../components/User/OrdinaryUserLook.
 var CobberLook = resolve => require(['../components/User/CobberLook.vue'], resolve)
 var GovList = resolve => require(['../components/User/GovList.vue'], resolve)
 var GovLook = resolve => require(['../components/User/GovLook.vue'], resolve)
+//审查管理
+var ExamineList = resolve => require(['../components/Examine/ExamineList.vue'], resolve)
+
 
 // 懒加载方式，当路由被访问的时候才加载对应组件
 Vue.use(Router)
@@ -175,7 +178,8 @@ export default new Router({
         { path: '/CobberLook/:id', component: CobberLook, name: '城市合伙人详情' }, 
         { path: '/GovLook/:id', component: GovLook, name: '官方合伙人详情' }, 
         { path: '/GovList', component: GovList, name: '官方合伙人列表' }, 
-        
+        //审查管理
+        { path: '/ExamineList', component: ExamineList, name: '审查列表' }, 
       ]
     },
   ]
