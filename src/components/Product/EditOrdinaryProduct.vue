@@ -116,6 +116,12 @@
             <el-form-item label="商品编码">
               <el-input v-model="getList.prodNumber"></el-input>
             </el-form-item>
+            <el-form-item label="上下架" prop="UppAndLow">
+              <el-radio-group v-model="getList.UppAndLow">
+                <el-radio :label="1">下架</el-radio>
+                <el-radio :label="2">上架</el-radio>
+              </el-radio-group>
+            </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="商品销量">
@@ -138,6 +144,9 @@
             </el-form-item>
             <el-form-item label="赠送优惠券商品">
               <el-switch v-model="getList.Appoint"></el-switch>
+            </el-form-item>
+             <el-form-item label="供应商编号" prop="SupplierNumber">
+               <el-input v-model="getList.SupplierNumber"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -525,6 +534,16 @@
             required: true,
             message: '请输入商品佣金',
             trigger: 'blur'
+          }, ],
+          SupplierNumber: [{
+            required: true,
+            message: '请输入供应商编号',
+            trigger: 'blur'
+          }, ],
+          UppAndLow: [{
+            required: true,
+            message: '请选择上下架',
+            trigger: 'change'
           }, ],
           Salesvolume: [{
             required: true,
@@ -1042,7 +1061,9 @@
                   Stock: this.getList.Stock,
                   BarCode: this.getList.BarCode,
                   ProdCode: this.getList.prodNumber,
-                  Appoint: this.getList.Appoint
+                  Appoint: this.getList.Appoint,
+                  SupplierNumber:this.getList.SupplierNumber,
+                  UppAndLow:this.getList.UppAndLow,
                 })
               )
               .then(

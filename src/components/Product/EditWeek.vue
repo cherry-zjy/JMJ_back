@@ -97,7 +97,7 @@
         <p class="title">商品详细信息</p>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="商品简介" prop="Introduce">
+            <el-form-item label="商品简介">
               <el-input type="textarea" v-model="getList.Introduce"></el-input>
             </el-form-item>
             <el-form-item label="快递运费" prop="ExpressWay">
@@ -120,6 +120,9 @@
             </el-form-item>
             <el-form-item label="免单所需签到次数" prop="SignTimes">
               <el-input v-model="getList.SignTimes" type="number"></el-input>
+            </el-form-item>
+            <el-form-item label="供应商编号" prop="SupplierNumber">
+               <el-input v-model="getList.SupplierNumber"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -146,6 +149,12 @@
             </el-form-item>
             <el-form-item label="免单所需积分">
               <el-input v-model="getList.Ntegrate" disabled="disabled" type="number"></el-input>
+            </el-form-item>
+            <el-form-item label="上下架" prop="UppAndLow">
+              <el-radio-group v-model="getList.UppAndLow">
+                <el-radio :label="1">下架</el-radio>
+                <el-radio :label="2">上架</el-radio>
+              </el-radio-group>
             </el-form-item>
           </el-col>
         </el-row>
@@ -563,10 +572,15 @@
             message: '请输入商品销量',
             trigger: 'blur'
           }, ],
-          Introduce: [{
+          SupplierNumber: [{
             required: true,
-            message: '请输入商品简介',
+            message: '请输入供应商编号',
             trigger: 'blur'
+          }, ],
+          UppAndLow: [{
+            required: true,
+            message: '请选择上下架',
+            trigger: 'change'
           }, ],
           bannerimg: [{
             required: true,
@@ -1127,7 +1141,9 @@
                   Stock: this.getList.Stock,
                   BarCode: this.getList.BarCode,
                   ProdCode: this.getList.prodNumber,
-                  Appoint: this.getList.Appoint
+                  Appoint: this.getList.Appoint,
+                  SupplierNumber:this.getList.SupplierNumber,
+                  UppAndLow:this.getList.UppAndLow,
                 })
               )
               .then(
