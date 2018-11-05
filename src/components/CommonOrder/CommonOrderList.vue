@@ -2,7 +2,7 @@
   <div>
     <el-breadcrumb separator="|" class="crumb">
       <el-breadcrumb-item :to="{ path: '/' }">后台管理</el-breadcrumb-item>
-      <el-breadcrumb-item>普通商品列表</el-breadcrumb-item>
+      <el-breadcrumb-item>普通商品订单列表</el-breadcrumb-item>
     </el-breadcrumb>
 
     <!--检索条-->

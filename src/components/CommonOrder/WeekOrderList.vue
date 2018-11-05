@@ -66,6 +66,7 @@
   </div>
 </template>
 <script>
+import expresss from "../../../static/js/express.js";
   export default {
     data() {
       var checkLogo = (rule, value, callback) => {
@@ -76,6 +77,9 @@
         }
       };
       return {
+        restaurants: [],
+        CompanyName: "",
+        timeout: null,
         list: [],
         options4:[],//快递公司,带value
         citylist:[],//快递公司,不带value
@@ -166,9 +170,13 @@
       }
     },
     mounted() {
-      this.mainurl = mainurl
+      this.restaurants = expresss;
+      this.mainurl = mainurl;
       this.getInfo();
-      this.action = this.mainurl + "/api/Back_OrderManage/ExpressToExcel?token=" + getCookie("token");
+      this.action =
+        this.mainurl +
+        "/api/Back_OrderManage/ExpressToExcel?token=" +
+        getCookie("token");
     },
     methods: {
       forBreak() {
