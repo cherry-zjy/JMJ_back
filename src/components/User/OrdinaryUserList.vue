@@ -34,7 +34,7 @@
         <template slot-scope="scope">
           <el-button size="mini" type="primary" @click="handleMsg(scope.row.ID)">下线信息</el-button>
           <el-button size="mini" type="warning" @click="handleLook(scope.row.ID)">查看</el-button>
-          <el-button size="mini" type="info" @click="handleNotice(scope.row.ID)">冻结</el-button>
+          <!-- <el-button size="mini" type="info" @click="handleNotice(scope.row.ID)">冻结</el-button> -->
           <el-button size="mini" type="success" @click="handleEdit(scope.row.ID)">通知</el-button>
         </template>
       </el-table-column>

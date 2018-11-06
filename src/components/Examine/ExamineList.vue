@@ -91,7 +91,7 @@
             params: {
               pageIndex: this.pageIndex,
               pageSize: this.pageSize,
-              // Token: getCookie("token"),
+              Token: getCookie("token"),
             }
           })
           .then(
@@ -157,6 +157,7 @@
               params: {
                 Token: getCookie("token"),
                 prodid: row.ID,
+                supplier:row.business,
                 type: state,
               }
             })
