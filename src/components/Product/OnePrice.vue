@@ -79,7 +79,7 @@
       }
       this.getInfo()
       this.mainurl = mainurl
-      this.pageCount = 10;
+      this.pageCount = 999;
     },
     filters: {
       time: function (value) {

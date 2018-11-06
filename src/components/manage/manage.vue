@@ -76,6 +76,9 @@
         <el-form-item label="密码" prop="Password">
           <el-input type="password" v-model="addForm.Password" :maxlength="20" :clearable='true'></el-input>
         </el-form-item>
+        <el-form-item label="供应商编号" prop="SupplierNumber">
+          <el-input v-model="addForm.SupplierNumber" auto-complete="off"></el-input>
+        </el-form-item>
         <!-- <el-form-item label="锁定">
           <el-radio-group v-model="addForm.IsLock">
             <el-radio class="radio" :label="true">是</el-radio>
@@ -152,7 +155,12 @@
             required: true,
             message: "请选择角色",
             trigger: "change"
-          }]
+          }],
+          SupplierNumber: [{
+            required: true,
+            message: "请选择供应商编号",
+            trigger: "blur"
+          }],
         },
         //新增界面数据
         addForm: {

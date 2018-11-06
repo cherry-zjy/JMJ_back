@@ -121,7 +121,7 @@
             <el-form-item label="免单所需签到次数" prop="SignTimes">
               <el-input v-model="getList.SignTimes" type="number"></el-input>
             </el-form-item>
-            <el-form-item label="供应商编号" prop="SupplierNumber">
+            <el-form-item label="供应商编号">
                <el-input v-model="getList.SupplierNumber"></el-input>
             </el-form-item>
           </el-col>

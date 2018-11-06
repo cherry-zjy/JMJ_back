@@ -84,10 +84,11 @@
     mounted() {
       if (window.location.href.split("page=")[1]) {
         this.pageIndex = Number(window.location.href.split("page=")[1])
+        console.log(this.pageIndex)
       }
       this.mainurl = mainurl
       this.getType();
-      this.pageCount = 10;
+      this.pageCount = 999;
     },
     methods: {
       getType() {

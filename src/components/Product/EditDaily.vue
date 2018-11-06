@@ -151,7 +151,7 @@
             <el-form-item label="商品编码">
               <el-input v-model="getList.prodNumber"></el-input>
             </el-form-item>
-            <el-form-item label="供应商编号" prop="SupplierNumber">
+            <el-form-item label="供应商编号">
                <el-input v-model="getList.SupplierNumber"></el-input>
             </el-form-item>
           </el-col>

@@ -92,7 +92,7 @@
       }
       this.mainurl = mainurl
       this.getInfo();
-      this.pageCount = 10;
+      this.pageCount = 999;
     },
     methods: {
       getInfo() {
