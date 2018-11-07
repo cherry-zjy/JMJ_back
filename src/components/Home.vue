@@ -13,7 +13,7 @@
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item>
                 <div @click="jumpTo('/manage')">
-                  <span style="color: #fff;font-size: 14px;">个人信息</span>
+                  <span>个人信息</span>
                 </div>
               </el-dropdown-item>
               <el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>

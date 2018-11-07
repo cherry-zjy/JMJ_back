@@ -157,7 +157,7 @@
                 :file-list="bannerimg" :limit="6" list-type="picture-card" :on-success="bannerhandleAvatarSuccess"
                 :before-upload="beforeAvatarUpload" multiple>
                 <i class="el-icon-plus"></i>
-                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2MB,最多可上传6张</div>
+                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过1MB,最多可上传6张</div>
               </el-upload>
               <el-dialog :visible.sync="dialogVisible">
                 <img width="100%" :src="dialogImageUrl" alt="">
@@ -875,9 +875,9 @@
         }
       },
       beforeAvatarUpload(file) {
-        const isLt2M = file.size / 1024 / 1024 < 2;
+        const isLt2M = file.size / 1024 / 1024 < 1;
         if (!isLt2M) {
-          this.$message.error("上传头像图片大小不能超过 2MB!");
+          this.$message.error("上传图片大小不能超过 1MB!");
         }
         return isLt2M;
       },
@@ -1063,7 +1063,7 @@
                   BarCode:this.getList.BarCode !== '' ? this.getList.BarCode : -1,
                   ProdCode:this.getList.prodNumber !== '' ? this.getList.prodNumber : -1,
                   Appoint:this.getList.Appoint,
-                  SupplierNumber:this.getList.SupplierNumber == '' ? this.getList.SupplierNumber : -1,
+                  SupplierNumber:this.getList.SupplierNumber !== '' ? this.getList.SupplierNumber : -1,
                   UppAndLow:this.getList.UppAndLow,
                 })
               )

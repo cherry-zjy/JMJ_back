@@ -71,7 +71,7 @@
         } else if (Position == 2) {
           return Position = "首页超值热卖Banner"
         } else if (Position == 3) {
-          return Position = "每日家居Banner"
+          return Position = "家居日用Banner"
         } else if (Position == 4) {
           return Position = "美妆洗护Banner"
         } else if (Position == 5) {

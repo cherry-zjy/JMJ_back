@@ -25,7 +25,7 @@
           <el-radio-group v-model="getList.Position">
             <el-radio label="1">首页</el-radio>
             <el-radio label="2">首页超值热卖Banner</el-radio>
-            <el-radio label="3">每日家居Banner</el-radio>
+            <el-radio label="3">家居日用Banner</el-radio>
             <el-radio label="4">美妆洗护Banner</el-radio>
             <div style="padding:20px">
               <el-radio label="5">母婴健康Banner</el-radio>
