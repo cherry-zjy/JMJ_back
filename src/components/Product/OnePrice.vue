@@ -31,7 +31,7 @@
       </el-table-column>
       <el-table-column label="活动时间" prop="Name">
         <template slot-scope="scope" v-if="scope.row.startTime&&scope.row.endTime">
-          {{scope.row.startTime}}--{{scope.row.endTime}}
+          {{scope.row.startTime | time}}--{{scope.row.endTime | time}}
         </template>
       </el-table-column>
       <el-table-column label="商品评价" prop="Name">

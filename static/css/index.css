@@ -7,6 +7,13 @@
   min-width: 400px!important;
 }
 
+.edui-editor.edui-default div:first-child{
+  height: auto!important;
+}
+.edui-default .edui-editor-toolbarbox{
+  position: relative!important;
+}
+
 /* .el-transfer-panel__body {
   min-height: 500px!important;
 }
