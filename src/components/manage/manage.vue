@@ -76,7 +76,7 @@
         <el-form-item label="密码" prop="Password">
           <el-input type="password" v-model="addForm.Password" :maxlength="20" :clearable='true'></el-input>
         </el-form-item>
-        <el-form-item label="供应商编号" prop="SupplierNumber">
+        <el-form-item label="供应商编号">
           <el-input v-model="addForm.SupplierNumber" auto-complete="off"></el-input>
         </el-form-item>
         <!-- <el-form-item label="锁定">

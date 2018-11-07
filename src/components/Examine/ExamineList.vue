@@ -157,7 +157,7 @@
               params: {
                 Token: getCookie("token"),
                 prodid: row.ID,
-                supplier:row.business,
+                adminName:row.business,
                 type: state,
               }
             })

@@ -658,7 +658,7 @@
               if (status === 1) {
                 this.getList = response.data.Result;
                 this.changeclassification()
-                if(response.data.Result.ProdPoster == ''){
+                if(response.data.Result.ProdPoster == '' || response.data.Result.ProdPoster == null){
                   this.imageUrl = ""
                 }else{
                   this.imageUrl = mainurl + response.data.Result.ProdPoster;
@@ -1084,16 +1084,16 @@
                   Classification: this.getList.classificationID,
                   ClassificationSecond: this.getList.classificationSecondID,
                   specs: this.spce,
-                  SpecTypeName: this.getList.SpecTypeName ? this.getList.SpecTypeName : -1,
-                  SpecTypeSecondName: this.getList.SpecTypeSecondName ? this.getList.SpecTypeSecondName : -1,
-                  Introduce: this.getList.Introduce,
+                  SpecTypeName: this.getList.SpecTypeName !== '' ? this.getList.SpecTypeName : -1,
+                  SpecTypeSecondName: this.getList.SpecTypeSecondName !== '' ? this.getList.SpecTypeSecondName : -1,
+                  Introduce: this.getList.Introduce !== '' ? this.getList.Introduce : -1,
                   IsOutSourcing: this.getList.IsOutSourcing,
                   Salesvolume: this.getList.Salesvolume,
                   Commission: this.getList.Commission,
                   ExpressWay: this.getList.ExpressWay,
                   FreightNameID: this.getList.FreightFormworkID,
                   Image: banner,
-                  ProdPoster: this.getList.ProdPoster,
+                  ProdPoster: this.getList.ProdPoster !== '' ? this.getList.ProdPoster : -1,
                   Detail: encodeURIComponent(content),
                   OutDiscount: -1,
                   Ntegrate: -1,
@@ -1102,11 +1102,11 @@
                   startTime:startTime,
                   endTime:endTime,
                   IsRecommended:this.getList.IsRecommended,
-                  Stock:this.getList.Stock,
-                  BarCode:this.getList.BarCode,
-                  ProdCode:this.getList.prodNumber,
+                  Stock:this.getList.Stock !== '' ? this.getList.Stock : -1,
+                  BarCode:this.getList.BarCode !== '' ? this.getList.BarCode : -1,
+                  ProdCode:this.getList.prodNumber !== '' ? this.getList.prodNumber : -1,
                   Appoint:this.getList.Appoint,
-                  SupplierNumber:this.getList.SupplierNumber,
+                  SupplierNumber:this.getList.SupplierNumber == '' ? this.getList.SupplierNumber : -1,
                   UppAndLow:this.getList.UppAndLow,
                 })
               )
