@@ -136,9 +136,9 @@
             <el-form-item label="商品佣金" prop="Commission">
               <el-input v-model="getList.Commission" type="number"></el-input>
             </el-form-item>
-            <el-form-item label="商品库存">
+            <!-- <el-form-item label="商品库存">
               <el-input v-model="getList.Stock"></el-input>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="商品条形码">
               <el-input v-model="getList.BarCode"></el-input>
             </el-form-item>
@@ -988,6 +988,7 @@
         this.dialogFormVisible1 = true
       },
       submitFormwork(formName) {
+        console.log(this.getList.BarCode)
         this.$refs[formName].validate((valid) => {
           if (valid) {
             this.demospce = []
@@ -1058,7 +1059,7 @@
                   startTime:null,
                   endTime:null,
                   IsRecommended:this.getList.IsRecommended,
-                  Stock:this.getList.Stock !== '' ? this.getList.Stock : -1,
+                  // Stock:this.getList.Stock !== '' ? this.getList.Stock : -1,
                   BarCode:this.getList.BarCode !== '' ? this.getList.BarCode : -1,
                   ProdCode:this.getList.prodNumber !== '' ? this.getList.prodNumber : -1,
                   Appoint:this.getList.Appoint,

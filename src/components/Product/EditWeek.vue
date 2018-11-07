@@ -109,9 +109,9 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="商品库存">
+            <!-- <el-form-item label="商品库存">
               <el-input v-model="getList.Stock"></el-input>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="开团成功人数" prop="NumOfMem">
               <el-input v-model="getList.NumOfMem" type="number"></el-input>
             </el-form-item>
@@ -1138,7 +1138,7 @@
                   IsRecommended: this.getList.IsRecommended,
                   signpoint: this.getList.signpoint,
                   signfivepoint: this.getList.signfivepoint,
-                  Stock:this.getList.Stock !== '' ? this.getList.Stock : -1,
+                  // Stock:this.getList.Stock !== '' ? this.getList.Stock : -1,
                   BarCode:this.getList.BarCode !== '' ? this.getList.BarCode : -1,
                   ProdCode:this.getList.prodNumber !== '' ? this.getList.prodNumber : -1,
                   Appoint:this.getList.Appoint,

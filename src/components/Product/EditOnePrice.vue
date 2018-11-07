@@ -109,9 +109,9 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="商品库存">
+            <!-- <el-form-item label="商品库存">
               <el-input v-model="getList.Stock"></el-input>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="商品编码">
               <el-input v-model="getList.prodNumber"></el-input>
             </el-form-item>
@@ -1102,7 +1102,7 @@
                   startTime:startTime,
                   endTime:endTime,
                   IsRecommended:this.getList.IsRecommended,
-                  Stock:this.getList.Stock !== '' ? this.getList.Stock : -1,
+                  // Stock:this.getList.Stock !== '' ? this.getList.Stock : -1,
                   BarCode:this.getList.BarCode !== '' ? this.getList.BarCode : -1,
                   ProdCode:this.getList.prodNumber !== '' ? this.getList.prodNumber : -1,
                   Appoint:this.getList.Appoint,

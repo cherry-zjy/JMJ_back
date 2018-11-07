@@ -110,9 +110,9 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="商品库存">
+            <!-- <el-form-item label="商品库存">
               <el-input v-model="getList.Stock"></el-input>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="上下架" prop="UppAndLow">
               <el-radio-group v-model="getList.UppAndLow">
                 <el-radio :label="1">下架</el-radio>
@@ -849,24 +849,24 @@
                   // Number: this.getList.Number,
                   ClassificationSecondID: this.getList.ClassificationSecondID,
                   specs: this.spce,
-                  SpecTypeName: this.getList.SpecTypeName ? this.getList.SpecTypeName : -1,
-                  SpecTypeSecondName: this.getList.SpecTypeSecondName ? this.getList.SpecTypeSecondName : -1,
-                  Introduce: this.getList.Introduce ? this.getList.Introduce : -1,
+                  SpecTypeName: this.getList.SpecTypeName!=='' ? this.getList.SpecTypeName : -1,
+                  SpecTypeSecondName: this.getList.SpecTypeSecondName!=='' ? this.getList.SpecTypeSecondName : -1,
+                  Introduce: this.getList.Introduce!=='' ? this.getList.Introduce : -1,
                   IsOutSourcing: this.getList.IsOutSourcing,
-                  Salesvolume: this.getList.Salesvolume ? this.getList.Salesvolume : 0,
+                  Salesvolume: this.getList.Salesvolume!=='' ? this.getList.Salesvolume : 0,
                   Commission: this.getList.Commission,
                   ExpressWay: this.getList.ExpressWay,
                   FreightNameID: this.getList.FreightNameID,
                   Image: banner,
-                  ProdPoster: this.getList.ProdPoster ? this.getList.ProdPoster : -1,
+                  ProdPoster: this.getList.ProdPoster!=='' ? this.getList.ProdPoster : -1,
                   Detail: encodeURIComponent(content),
                   price: this.getList.Price,
                   IsRecommended: false,
-                  Stock: this.getList.Stock,
-                  BarCode: this.getList.BarCode,
-                  ProdCode: this.getList.prodNumber,
+                  // Stock: this.getList.Stock,
+                  BarCode: this.getList.BarCode!=='' ? this.getList.BarCode : -1,
+                  ProdCode: this.getList.prodNumber!=='' ? this.getList.prodNumber : -1,
                   Appoint:this.getList.Appoint,
-                  SupplierNumber:this.getList.SupplierNumber,
+                  SupplierNumber:this.getList.SupplierNumber!=='' ? this.getList.SupplierNumber : -1,
                   UppAndLow:this.getList.UppAndLow,
                 })
               )
