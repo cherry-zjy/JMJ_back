@@ -43,12 +43,15 @@
     </div>
     <!--编辑界面-->
     <el-dialog title="编辑" :visible.sync="editFormVisible">
-      <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
+      <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
         <el-form-item label="账号" prop="Name">
           <el-input v-model="editForm.Name" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="Password">
           <el-input type="password" v-model="editForm.Password" :maxlength="20" :clearable='true'></el-input>
+        </el-form-item>
+        <el-form-item label="供应商编号">
+          <el-input v-model="editForm.SupplierNumber" disabled="disabled"></el-input>
         </el-form-item>
         <el-form-item label="锁定">
           <el-radio-group v-model="editForm.IsLock">
@@ -69,7 +72,7 @@
     </el-dialog>
     <!-- 新增界面 -->
     <el-dialog title="新增" :visible.sync="addFormVisible">
-      <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
+      <el-form :model="addForm" label-width="100px" :rules="addFormRules" ref="addForm">
         <el-form-item label="账号" prop="Name">
           <el-input v-model="addForm.Name" auto-complete="off"></el-input>
         </el-form-item>

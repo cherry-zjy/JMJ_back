@@ -12,6 +12,10 @@
         <el-option v-for="item in classificationList" :key="item.ID" :label="item.Name" :value="item.ID">
         </el-option>
       </el-select>
+      <el-select v-model="type" placeholder="状态">
+        <el-option v-for="item in TypeList" :key="item.ID" :label="item.Name" :value="item.ID">
+        </el-option>
+      </el-select>
       <el-button type="primary" @click="pageIndex = 1;getInfo()">查询</el-button>
       <el-form :inline="true" style="float:right">
         <el-form-item>
@@ -71,6 +75,17 @@
         classificationList: [{
           ID: "-1",
           Name: "全部"
+        }],
+        type:'-1',
+        TypeList: [{
+          ID: "-1",
+          Name: "全部"
+        },{
+          ID: "1",
+          Name: "下架"
+        },{
+          ID: "2",
+          Name: "上架"
         }],
         classificationID: '-1',
         mainurl: '',
@@ -162,6 +177,7 @@
               sear: this.sear == '' ? '' - 1 : this.sear,
               pageIndex: this.pageIndex,
               pageSize: this.pageSize,
+              Type:this.type,
               Token: getCookie("token"),
             }
           })
@@ -254,7 +270,7 @@
                     message: response.data.Result
                   });
                   setTimeout(() => {
-                    tt.$router.push({
+                    this.$router.push({
                       path: "/login"
                     });
                   }, 1500);

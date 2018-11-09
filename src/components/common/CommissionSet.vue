@@ -166,7 +166,7 @@ export default {
                 message: response.data.Result
               });
               setTimeout(() => {
-                tt.$router.push({
+                this.$router.push({
                   path: "/login"
                 });
               }, 1500);
