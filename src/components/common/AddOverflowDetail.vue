@@ -47,6 +47,7 @@
             params: {
               classificationID: -1,
               sear: -1,
+              Type:-1,
               pageIndex: 1,
               pageSize: 999,
               Token: getCookie("token"),

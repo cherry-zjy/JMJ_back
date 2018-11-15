@@ -54,6 +54,7 @@
               sear: -1,
               pageIndex: 1,
               pageSize: 999,
+              Type: -1,
               Token: getCookie("token"),
             }
           })
@@ -64,7 +65,7 @@
               if (status === 1) {
                 this.data = [];
                 this.list = response.data.Result.datalist
-                for (let i = 0; i <= response.data.Result.datalist.length; i++) {
+                for (let i = 0; i < this.list.length; i++) {
                   this.data.push({
                     key: this.list[i].ID,
                     label: this.list[i].prodName,
@@ -97,10 +98,10 @@
             function (error) {
               console.log(error)
               loading.close();
-              // this.$notify.error({
-              //   title: "错误",
-              //   message: "错误：请检查网络"
-              // });
+              this.$notify.error({
+                title: "错误",
+                message: "错误：请检查网络"
+              });
             }.bind(this)
           );
       },

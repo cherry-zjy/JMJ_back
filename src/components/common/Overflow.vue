@@ -28,7 +28,8 @@
 
     <!-- 分页 -->
     <div class="block">
-      <el-pagination @current-change="handleCurrentChange" layout="prev, pager, next,jumper" :page-count="pageCount">
+      <el-pagination @current-change="handleCurrentChange" :current-page.sync="pageIndex"
+        layout="prev, pager, next, jumper" :page-count="pageCount">
       </el-pagination>
     </div>
   </div>
@@ -79,6 +80,7 @@
               var status = response.data.Status;
               if (status === 1) {
                 this.list = response.data.Result.datalist;
+                this.pageCount = response.data.Result.page;
               } else if (status === 40001) {
                 this.$message({
                   showClose: true,
