@@ -13,7 +13,7 @@
         </el-date-picker>
       </div>
       <div class="btn">
-        <el-transfer filterable style="text-align: left; display: inline-block" v-model="value1" :data="data" :titles="['未添加的商品', '已添加的商品']"></el-transfer>
+        <Transfer :page-count="pageCount" :current-page="pageIndex" @handleCurrentChange="handleCurrentChange" @getInfo1="getInfo" filterable style="text-align: left; display: inline-block" v-model="value1" :data="data" :titles="['未添加的商品', '已添加的商品']"></Transfer>
       </div>
       <div class="btn">
         <el-button type="primary" @click="submitForm()">确 定</el-button>
@@ -22,6 +22,7 @@
   </div>
 </template>
 <script>
+  import Transfer from "../../../static/transfer/src/main";
   import qs from "qs";
   export default {
     data() {
@@ -29,32 +30,43 @@
         data: [],
         value1: [],
         list: [],
-        time: ''
+        time: '',
+        sear:'',
+        pageIndex:1,
+        pageSize:15
         // renderFunc(h, option) {
         //   return <span><img src={ option.Image }/>  { option.label }</span>;
         // }
       };
     },
+    components: {
+       Transfer
+    },
     mounted() {
       this.mainurl = mainurl
-      this.getInfo();
+      this.getInfo(-1);
     },
     methods: {
-      getInfo() {
+      getInfo(query) {
+        console.log(query)
+        this.sear = query
         const loading = this.$loading({
           lock: true,
           text: "Loading",
           spinner: "el-icon-loading",
           background: "rgba(0, 0, 0, 0.7)"
         });
+        if(query == ''){
+          query = '-1'
+        }
         this.$http
           .get("api/Back_ProductManage/OrdinaryProduct", {
             params: {
               classificationID: -1,
-              sear: -1,
-              pageIndex: 1,
+              sear: query,
+              pageIndex: this.pageIndex,
               Type: -1,
-              pageSize: 999,
+              pageSize: this.pageSize,
               Token: getCookie("token"),
             }
           })
@@ -65,6 +77,7 @@
               if (status === 1) {
                 this.data = [];
                 this.list = response.data.Result.datalist
+                this.pageCount = response.data.Result.page;
                 for (let i = 0; i < this.list.length; i++) {
                   this.data.push({
                     key: this.list[i].ID,
@@ -108,6 +121,10 @@
       getSTime(val) {
         console.log(val)
         this.time = val;
+      },
+      handleCurrentChange(val) {
+        this.pageIndex = val;
+        this.getInfo(this.sear);
       },
       submitForm() {
         if (this.time == '') {

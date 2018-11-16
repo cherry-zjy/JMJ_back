@@ -14,11 +14,11 @@
   position: relative!important;
 }
 
-/* .el-transfer-panel__body {
-  min-height: 500px!important;
+.el-transfer-panel__body {
+  min-height: 540px!important;
 }
 
 .el-transfer-panel__list.is-filterable {
   min-height: 500px!important;
-} */
+}
 
