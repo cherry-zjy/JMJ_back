@@ -7,13 +7,13 @@
     </el-breadcrumb>
 
     <el-main>
-      <div style="text-align: center">
+      <!-- <div style="text-align: center">
         <el-date-picker v-model="time" value-format="yyyy-MM-dd" @change="getSTime" format="yyyy-MM-dd" type="daterange"
           start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']">
         </el-date-picker>
-      </div>
+      </div> -->
       <div class="btn">
-        <Transfer :page-count="pageCount" :current-page="pageIndex" @handleCurrentChange="handleCurrentChange" @getInfo1="getInfo" filterable style="text-align: left; display: inline-block" v-model="value1" :data="data" :titles="['未添加的商品', '已添加的商品']"></Transfer>
+        <Transfer :page-count="pageCount" :current-page="currentPage" @handleCurrentChange="handleCurrentChange1" @getInfo1="getInfo" filterable style="text-align: left; display: inline-block" v-model="value1" :data="data" :titles="['未添加的商品', '已添加的商品']"></Transfer>
       </div>
       <div class="btn">
         <el-button type="primary" @click="submitForm()">确 定</el-button>
@@ -33,7 +33,8 @@
         time: '',
         sear:'',
         pageIndex:1,
-        pageSize:15
+        pageSize:15,
+        // currentPage:1
         // renderFunc(h, option) {
         //   return <span><img src={ option.Image }/>  { option.label }</span>;
         // }
@@ -42,13 +43,18 @@
     components: {
        Transfer
     },
+    computed:{
+      currentPage: function () {
+        return this.pageIndex
+      }
+    },
     mounted() {
       this.mainurl = mainurl
       this.getInfo(-1);
     },
     methods: {
       getInfo(query) {
-        console.log(query)
+        // console.log(query)
         this.sear = query
         const loading = this.$loading({
           lock: true,
@@ -122,7 +128,8 @@
         console.log(val)
         this.time = val;
       },
-      handleCurrentChange(val) {
+      handleCurrentChange1(val) {
+        console.log(val)
         this.pageIndex = val;
         this.getInfo(this.sear);
       },

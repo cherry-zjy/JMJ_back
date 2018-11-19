@@ -7,13 +7,13 @@
     </el-breadcrumb>
 
     <el-main>
-      <div style="text-align: center">
+      <!-- <div style="text-align: center">
         <el-date-picker v-model="time" value-format="yyyy-MM-dd" @change="getSTime" format="yyyy-MM-dd" type="daterange"
           start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']">
         </el-date-picker>
-      </div>
-      <div class="btn">
-        <el-transfer filterable style="text-align: left; display: inline-block" v-model="value1" :data="data" :titles="['未添加的商品', '已添加的商品']"></el-transfer>
+      </div> -->
+     <div class="btn">
+        <Transfer :page-count="pageCount" :current-page="currentPage" @handleCurrentChange="handleCurrentChange1" @getInfo1="getInfo" filterable style="text-align: left; display: inline-block" v-model="value1" :data="data" :titles="['未添加的商品', '已添加的商品']"></Transfer>
       </div>
       <div class="btn">
         <el-button type="primary" @click="submitForm()">确 定</el-button>
@@ -22,6 +22,7 @@
   </div>
 </template>
 <script>
+  import Transfer from "../../../static/transfer/src/main";
   import qs from "qs";
   export default {
     data() {
@@ -29,7 +30,11 @@
         data: [],
         value1: [],
         list: [],
-        time: ''
+        time: '',
+        sear:'',
+        pageIndex:1,
+        pageSize:15,
+        // currentPage:1
         // renderFunc(h, option) {
         //   return <span><img src={ option.Image }/>  { option.label }</span>;
         // }
@@ -37,24 +42,36 @@
     },
     mounted() {
       this.mainurl = mainurl
-      this.getInfo();
+      this.getInfo(-1);
+    },
+    components: {
+       Transfer
+    },
+    computed:{
+      currentPage: function () {
+        return this.pageIndex
+      }
     },
     methods: {
-      getInfo() {
+      getInfo(query) {
+        this.sear = query
         const loading = this.$loading({
           lock: true,
           text: "Loading",
           spinner: "el-icon-loading",
           background: "rgba(0, 0, 0, 0.7)"
         });
+        if(query == ''){
+          query = '-1'
+        }
         this.$http
           .get("api/Back_ProductManage/OrdinaryProduct", {
             params: {
               classificationID: -1,
-              sear: -1,
-              pageIndex: 1,
-              pageSize: 999,
+              sear: query,
+              pageIndex: this.pageIndex,
               Type: -1,
+              pageSize: this.pageSize,
               Token: getCookie("token"),
             }
           })
@@ -66,11 +83,16 @@
                 this.data = [];
                 this.list = response.data.Result.datalist
                 for (let i = 0; i < this.list.length; i++) {
+                  this.data = [];
+                this.list = response.data.Result.datalist
+                this.pageCount = response.data.Result.page;
+                for (let i = 0; i < this.list.length; i++) {
                   this.data.push({
                     key: this.list[i].ID,
                     label: this.list[i].prodName,
                     Image: mainurl + this.list[i].logo,
                   });
+                }
                 }
               } else if (status === 40001) {
                 this.$message({
@@ -108,6 +130,11 @@
       getSTime(val) {
         console.log(val)
         this.time = val;
+      },
+      handleCurrentChange1(val) {
+        console.log(val)
+        this.pageIndex = val;
+        this.getInfo(this.sear);
       },
       submitForm() {
         if (this.time == '') {

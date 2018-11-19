@@ -11,7 +11,7 @@
       @checked-change="onSourceCheckedChange">
       <slot name="left-footer"></slot>
       <div class="block">
-      <el-pagination @current-change="handleCurrentChange" :current-page.sync="pageIndex"
+      <el-pagination @current-change="handleCurrentChange" :current-page.sync="currentPage"
         layout="prev, pager, next" :page-count="pageCount">
       </el-pagination>
     </div>
@@ -35,6 +35,7 @@
       </el-button>
     </div>
     <transfer-panel
+    :filterable="false"
       v-bind="$props"
       ref="rightPanel"
       :data="targetData"
@@ -131,7 +132,8 @@
       },
       // handleCurrentChange:Function,
       pageCount:Number,
-      pageIndex:Number
+      pageIndex:Number,
+      currentPage:Number,
     },
 
     data() {
