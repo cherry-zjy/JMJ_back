@@ -5,6 +5,14 @@
       <el-breadcrumb-item>资金提现</el-breadcrumb-item>
     </el-breadcrumb>
 
+    <el-col class="toolbar" style="padding: 15px 0;">
+      <el-select v-model="classificationID" placeholder="类型">
+        <el-option v-for="item in classificationList" :key="item.ID" :label="item.Name" :value="item.ID">
+        </el-option>
+      </el-select>
+      <el-button type="primary" @click="pageIndex = 1;getInfo()">查询</el-button>
+    </el-col>
+
     <!-- table 内容 -->
     <el-table :data="list" style="width: 100%" :border='true'>
       <el-table-column label="提现用户" prop="userName">
@@ -12,6 +20,8 @@
       <el-table-column label="提现金额" prop="Price">
       </el-table-column>
       <el-table-column label="提现方式" prop="Type" :formatter="Paytype">
+      </el-table-column>
+      <el-table-column label="提现时间" prop="CreateTime" :formatter="CreateTime">
       </el-table-column>
       <el-table-column label="账号" prop="AccountNumber">
       </el-table-column>
@@ -42,7 +52,18 @@
         pageIndex: 1,
         pageSize: 12,
         pageCount: 1,
-        mainurl: ''
+        mainurl: '',
+        classificationID:-1,
+        classificationList:[{
+          ID:-1,
+          Name:'全部'
+        },{
+          ID:1,
+          Name:'已发放'
+        },{
+          ID:2,
+          Name:'未发放'
+        }]
       };
     },
     mounted() {
@@ -60,6 +81,12 @@
           Type = "微信"
         }
         return Type
+      },
+      CreateTime(row, CreateTime) {
+        var CreateTime = row[CreateTime.property];
+        if (CreateTime) {
+          return CreateTime.replace("T", " ").split(".")[0];          
+        }
       },
       Status(row, Status) {
         var Status = row[Status.property];
@@ -80,6 +107,7 @@
         this.$http
           .get("api/Back_FinancementManage/FinancementCash", {
             params: {
+              type:this.classificationID,
               pageIndex: this.pageIndex,
               pageSize: this.pageSize,
               Token: getCookie("token"),

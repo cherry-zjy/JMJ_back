@@ -2,7 +2,7 @@
   <div>
     <el-breadcrumb separator="|" class="crumb">
       <el-breadcrumb-item :to="{ path: '/' }">后台管理</el-breadcrumb-item>
-      <el-breadcrumb-item>团购商品订单列表</el-breadcrumb-item>
+      <el-breadcrumb-item>退货商品订单列表</el-breadcrumb-item>
     </el-breadcrumb>
 
     <!--检索条-->
@@ -20,26 +20,22 @@
     <el-table :data="list" style="width: 100%" :border='true'>
       <el-table-column label="订单编号" prop="OrderNo">
       </el-table-column>
-      <el-table-column label="订单完成时间" prop="FinishTime" :formatter="CreateTime">
+      <el-table-column label="商品名称" prop="Name">
       </el-table-column>
-      <el-table-column label="商品名称" prop="prdName">
+      <el-table-column label="快递单号" prop="Express">
       </el-table-column>
-      <el-table-column label="用户名" prop="userName">
+      <el-table-column label="快递公司" prop="Company">
       </el-table-column>
-      <el-table-column label="收货号码" prop="Phone">
+      <el-table-column label="退款金额" prop="price">
       </el-table-column>
-      <el-table-column label="收货地址" prop="Adress">
+      <el-table-column label="退款信息" prop="Message">
       </el-table-column>
-      <el-table-column label="付款金额" prop="Price">
-      </el-table-column>
-      <el-table-column label="订单状态" prop="type" :formatter="Type">
+      <el-table-column label="订单状态" prop="Status" :formatter="Type">
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" type="primary" @click="handleEdit(scope.row.ID)">查看</el-button>
-          <el-button size="mini" type="warning" v-if="scope.row.type==1" @click="fahuo(scope.row.ID)">发货</el-button>
-          <el-button size="mini" type="warning" disabled v-if="scope.row.type!==1">发货</el-button>
-          <el-button size="mini" type="warning" v-if="scope.row.type==3" @click="tuihuo(scope.row.ID)">退款</el-button>
+          <el-button size="mini" type="primary" @click="handleEdit(scope.row.orderProd,2,'同意')">同意</el-button>
+          <el-button size="mini" type="primary" @click="handleEdit(scope.row.orderProd,3,'拒绝')">拒绝</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -67,7 +63,7 @@
   </div>
 </template>
 <script>
-import expresss from "../../../static/js/express.js";
+  import expresss from "../../../static/js/express.js";
   export default {
     data() {
       var checkLogo = (rule, value, callback) => {
@@ -95,10 +91,10 @@ import expresss from "../../../static/js/express.js";
           ExpressNumber: '',
           Company: ''
         },
+        FormVisible: false,
+        addLoading: false,
         action: '',
         loading: false,
-        addLoading: false,
-        FormVisible: false,
         addFormRules: {
           ExpressNumber: [{
             required: true,
@@ -111,6 +107,9 @@ import expresss from "../../../static/js/express.js";
             trigger: "blur"
           }],
         },
+        addLoading: false,
+        FormVisible: false,
+        FormVisible: false,
         pageIndex: 1,
         pageSize: 8,
         pageCount: 1,
@@ -177,6 +176,15 @@ import expresss from "../../../static/js/express.js";
         getCookie("token");
     },
     methods: {
+      forBreak() {
+        // 加入快递公司是手动输入的，需要多加一层判断该公司是否存在于数据源中。若不存在则不能发货
+        for (let index = 0; index < expresss.length; index++) {
+          const element = expresss[index];
+          if (this.addForm.Company == element.value) {
+            return true;
+          }
+        }
+      },
       querySearchAsync(queryString, cb) {
         var restaurants = this.restaurants;
         var results = queryString ?
@@ -208,15 +216,6 @@ import expresss from "../../../static/js/express.js";
           console.log(this.options4)
         } else {
           this.options4 = [];
-        }
-      },
-      forBreak() {
-        // 加入快递公司是手动输入的，需要多加一层判断该公司是否存在于数据源中。若不存在则不能发货
-        for (let index = 0; index < expresss.length; index++) {
-          const element = expresss[index];
-          if (this.addForm.Company == element.value) {
-            return true;
-          }
         }
       },
       handleAvatarSuccess(res, file) {
@@ -261,9 +260,9 @@ import expresss from "../../../static/js/express.js";
           background: "rgba(0, 0, 0, 0.7)"
         });
         this.$http
-          .get("api/Back_OrderManage/DailyOrderList", {
+          .get("api/Back_OrderManage/DrawBackList", {
             params: {
-              orderNo: this.orderNo == '' ? '' - 1 : this.orderNo,
+              expressNo: this.orderNo == '' ? '' - 1 : this.orderNo,
               name: this.name == '' ? '' - 1 : this.name,
               type: this.type,
               pageIndex: this.pageIndex,
@@ -275,7 +274,7 @@ import expresss from "../../../static/js/express.js";
             function (response) {
               loading.close();
               var status = response.data.Status;
-              if (status === 1) {
+              if (status === -1) {
                 this.list = response.data.Result.datalist;
                 this.pageCount = response.data.Result.page;
               } else if (status === 40001) {
@@ -314,65 +313,65 @@ import expresss from "../../../static/js/express.js";
         this.pageIndex = val;
         this.getInfo();
       },
-      handleEdit(id) {
-        this.$router.push("/DailyorderDetail/id=" + id);
-      },
-      tuihuo(id){
-        const loading = this.$loading({
-          lock: true,
-          text: "Loading",
-          spinner: "el-icon-loading",
-          background: "rgba(0, 0, 0, 0.7)"
-        });
-        this.$http
-          .get("api/Back_OrderManage/DrawBack", {
-            params: {
-              id: id,
-              Token: getCookie("token")
-            }
-          })
-          .then(
-            function (response) {
-              loading.close();
-              var status = response.data.Status;
-              if (status === 1) {
-                this.$message({
-                  showClose: true,
-                  type: "success",
-                  message: response.data.Result
-                });
-                this.getInfo()
-              } else if (status === 40001) {
-                this.$message({
-                  showClose: true,
-                  type: "warning",
-                  message: response.data.Result
-                });
-                setTimeout(() => {
-                  this.$router.push({
-                    path: "/login"
-                  });
-                }, 1500);
-              } else {
-                loading.close();
-                this.$message({
-                  showClose: true,
-                  type: "warning",
-                  message: response.data.Result
-                });
+      handleEdit(id, status,msg) {
+        this.$confirm("确认"+msg+'该订单?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$http
+            .get("api/Back_OrderManage/DrawBackCheck", {
+              params: {
+                Token: getCookie("token"),
+                orderProdID: id,
+                type: status,
               }
-            }.bind(this)
-          )
-          // 请求error
-          .catch(
-            function (error) {
-              loading.close();
-              this.$notify.error({
-                title: "错误",
-                message: "错误：请检查网络"
-              });
-            }.bind(this)
-          );
+            })
+            .then(
+              function (response) {
+                var status = response.data.Status;
+                if (status === 1) {
+                  this.$message({
+                    showClose: true,
+                    type: "success",
+                    message: response.data.Result
+                  });
+                  this.getInfo();
+                } else if (status === 40001) {
+                  this.$message({
+                    showClose: true,
+                    type: "warning",
+                    message: response.data.Result
+                  });
+                  setTimeout(() => {
+                    this.$router.push({
+                      path: "/login"
+                    });
+                  }, 1500);
+                } else {
+                  this.$message({
+                    showClose: true,
+                    type: "warning",
+                    message: response.data.Result
+                  });
+                }
+              }.bind(this)
+            )
+            // 请求error
+            .catch(
+              function (error) {
+                this.$notify.error({
+                  title: "错误",
+                  message: "错误：请检查网络"
+                });
+              }.bind(this)
+            );
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });
+        });
       },
       addSubmit() {
         this.$refs.addForm.validate(valid => {

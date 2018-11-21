@@ -72,6 +72,7 @@ var WeekOrderDetail = resolve => require(['../components/CommonOrder/WeekOrderDe
 var DailyorderDetail = resolve => require(['../components/CommonOrder/DailyorderDetail.vue'], resolve)
 var OnePriceorderDetail = resolve => require(['../components/CommonOrder/OnePriceorderDetail.vue'], resolve)
 var RedemptionOrder = resolve => require(['../components/CommonOrder/RedemptionOrder.vue'], resolve)
+var DrawBackList = resolve => require(['../components/CommonOrder/DrawBackList.vue'], resolve)
 
 //用户管理
 var OrdinaryUserList = resolve => require(['../components/User/OrdinaryUserList.vue'], resolve)
@@ -169,7 +170,8 @@ export default new Router({
         { path: '/WeekOrderDetail/:id', component: WeekOrderDetail, name: '免单商品订单详情' }, 
         { path: '/DailyorderDetail/:id', component: DailyorderDetail, name: '团购商品订单详情' }, 
         { path: '/OnePriceorderDetail/:id', component: OnePriceorderDetail, name: '一口价商品订单详情' }, 
-        { path: '/RedemptionOrder', component: RedemptionOrder, name: '积分兑换订单详情' }, 
+        { path: '/RedemptionOrder', component: RedemptionOrder, name: '积分兑换订单详情' },
+        { path: '/DrawBackList', component: DrawBackList, name: '退货商品订单' },
         //用户管理
         { path: '/OrdinaryUserList', component: OrdinaryUserList, name: '普通用户' }, 
         { path: '/CobberList', component: CobberList, name: '城市合伙人列表' }, 

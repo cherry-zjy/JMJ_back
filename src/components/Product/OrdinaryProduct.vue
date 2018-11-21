@@ -6,7 +6,7 @@
     </el-breadcrumb>
 
     <!--检索条-->
-    <el-col class="toolbar" style="padding-top: 15px;">
+    <el-col class="toolbar" style="padding: 15px 0">
       <el-input v-model="sear" placeholder="关键字" prefix-icon="el-icon-search" style="width:200px"></el-input>
       <el-select v-model="classificationID" placeholder="类型">
         <el-option v-for="item in classificationList" :key="item.ID" :label="item.Name" :value="item.ID">
