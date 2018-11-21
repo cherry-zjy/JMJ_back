@@ -16,7 +16,19 @@
               {{editForm.userName}}
             </el-form-item>
             <el-form-item label="购买信息">
-              {{editForm.BuyMessage}}
+              <el-table :data="editForm.BuyMessage" style="width: 100%" :border='true'>
+              <el-table-column label="商品名称" prop="ProductName">
+              </el-table-column>
+              <el-table-column label="规格" prop="SpecName">
+              </el-table-column>
+              <el-table-column label="数量" prop="ProdCount">
+              </el-table-column>
+              <el-table-column label="操作">
+                <template slot-scope="scope">
+                  <el-button size="mini" type="primary" @click="tuikuan(scope.row.OrderProduct)">退款</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
             </el-form-item>
             <el-form-item label="商品金额">
               {{editForm.prodPrice}}
@@ -130,6 +142,74 @@
           type = "已取消"
         }
         return type
+      },
+      tuikuan(id) {
+        this.$confirm("确认退款该商品？", '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          const loading = this.$loading({
+            lock: true,
+            text: "Loading",
+            spinner: "el-icon-loading",
+            background: "rgba(0, 0, 0, 0.7)"
+          });
+          this.$http
+            .get("api/Back_OrderManage/DrawBack", {
+              params: {
+                id: id,
+                Token: getCookie("token")
+              }
+            })
+            .then(
+              function (response) {
+                loading.close();
+                var status = response.data.Status;
+                if (status === 1) {
+                  this.$message({
+                    showClose: true,
+                    type: "success",
+                    message: response.data.Result
+                  });
+                  this.getInfo()
+                } else if (status === 40001) {
+                  this.$message({
+                    showClose: true,
+                    type: "warning",
+                    message: response.data.Result
+                  });
+                  setTimeout(() => {
+                    this.$router.push({
+                      path: "/login"
+                    });
+                  }, 1500);
+                } else {
+                  loading.close();
+                  this.$message({
+                    showClose: true,
+                    type: "warning",
+                    message: response.data.Result
+                  });
+                }
+              }.bind(this)
+            )
+            // 请求error
+            .catch(
+              function (error) {
+                loading.close();
+                this.$notify.error({
+                  title: "错误",
+                  message: "错误：请检查网络"
+                });
+              }.bind(this)
+            );
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });
+        });
       },
       getInfo() {
         const loading = this.$loading({

@@ -37,9 +37,9 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" type="primary" @click="handleEdit(scope.row.ID)">查看</el-button>
-          <el-button size="mini" type="warning" v-if="scope.row.type==1" @click="fahuo(scope.row.ID)">发货</el-button>
+          <el-button size="mini" type="warning" v-if="scope.row.type==1" @click="fahuo(scope.row.Company,scope.row.ExpressNo,scope.row.ID)">发货</el-button>
           <el-button size="mini" type="warning" disabled v-if="scope.row.type!==1">发货</el-button>
-          <el-button size="mini" type="warning" v-if="scope.row.type==3" @click="tuihuo(scope.row.ID)">退款</el-button>
+          <!-- <el-button size="mini" type="warning" v-if="scope.row.type==3" @click="tuihuo(scope.row.ID)">退款</el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -60,14 +60,14 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click.native="addFormVisible = false">取消</el-button>
+        <el-button @click.native="FormVisible = false">取消</el-button>
         <el-button type="primary" @click.native="addSubmit" :loading="addLoading">提交</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 <script>
-import expresss from "../../../static/js/express.js";
+  import expresss from "../../../static/js/express.js";
   export default {
     data() {
       var checkLogo = (rule, value, callback) => {
@@ -82,8 +82,8 @@ import expresss from "../../../static/js/express.js";
         CompanyName: "",
         timeout: null,
         list: [],
-        options4:[],//快递公司,带value
-        citylist:[],//快递公司,不带value
+        options4: [], //快递公司,带value
+        citylist: [], //快递公司,不带value
         imageUrl: false,
         mainurl: '',
         type: -1,
@@ -97,8 +97,8 @@ import expresss from "../../../static/js/express.js";
         },
         FormVisible: false,
         addLoading: false,
-        action:'',
-        loading:false,
+        action: '',
+        loading: false,
         addFormRules: {
           ExpressNumber: [{
             required: true,
@@ -236,10 +236,10 @@ import expresss from "../../../static/js/express.js";
       CreateTime(row, time) {
         var date = row[time.property];
         if (date) {
-          return date.replace("T", " ").split(".")[0];          
+          return date.replace("T", " ").split(".")[0];
         }
       },
-      tuihuo(id){
+      tuihuo(id) {
         const loading = this.$loading({
           lock: true,
           text: "Loading",
@@ -380,68 +380,88 @@ import expresss from "../../../static/js/express.js";
       addSubmit() {
         this.$refs.addForm.validate(valid => {
           if (valid) {
-            //判断是否填写完整  --true
-              this.addLoading = true;
-              // 将token传入参数中
-              // 发保存请求
-              this.$http
-                .get("api/Back_OrderManage/Consignment", {
-                  params: {
-                    Token:getCookie("token"),
-                    ID:this.fahuoid,
-                    Company:this.addForm.Company,
-                    ExpressNumber:this.addForm.ExpressNumber
-                  }
-                })
-                .then(
-                  function (response) {
-                    this.addLoading = false;
-                    var status = response.data.Status;
-                    if (status === 1) {
-                      // 表单重置
-                      this.$refs["addForm"].resetFields();
-                      this.FormVisible = false;
-                      this.$message({
-                        showClose: true,
-                        type: "success",
-                        message: response.data.Result
-                      });
-                      this.getInfo();
-                    } else if (status === 40001) {
-                      this.$message({
-                        showClose: true,
-                        type: "warning",
-                        message: response.data.Result
-                      });
-                      setTimeout(() => {
-                        this.$router.push({
-                          path: "/login"
-                        });
-                      }, 1500);
-                    } else {
-                      this.$message({
-                        showClose: true,
-                        type: "warning",
-                        message: response.data.Result
-                      });
+            if (this.forBreak()) {
+              this.$confirm("确认发货？", '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
+                //判断是否填写完整  --true
+                this.addLoading = true;
+                // 将token传入参数中
+                // 发保存请求
+                this.$http
+                  .get("api/Back_OrderManage/Consignment", {
+                    params: {
+                      Token: getCookie("token"),
+                      ID: this.fahuoid,
+                      Company: this.addForm.Company,
+                      ExpressNumber: this.addForm.ExpressNumber
                     }
-                  }.bind(this)
-                )
-                // 请求error
-                .catch(
-                  function (error) {
-                    this.$notify.error({
-                      title: "错误",
-                      message: "错误：请检查网络"
-                    });
-                  }.bind(this)
-                );
+                  })
+                  .then(
+                    function (response) {
+                      this.addLoading = false;
+                      var status = response.data.Status;
+                      if (status === 1) {
+                        // 表单重置
+                        this.$refs["addForm"].resetFields();
+                        this.FormVisible = false;
+                        this.$message({
+                          showClose: true,
+                          type: "success",
+                          message: response.data.Result
+                        });
+                        this.getInfo();
+                      } else if (status === 40001) {
+                        this.$message({
+                          showClose: true,
+                          type: "warning",
+                          message: response.data.Result
+                        });
+                        setTimeout(() => {
+                          this.$router.push({
+                            path: "/login"
+                          });
+                        }, 1500);
+                      } else {
+                        this.$message({
+                          showClose: true,
+                          type: "warning",
+                          message: response.data.Result
+                        });
+                      }
+                    }.bind(this)
+                  )
+                  // 请求error
+                  .catch(
+                    function (error) {
+                      this.$notify.error({
+                        title: "错误",
+                        message: "错误：请检查网络"
+                      });
+                    }.bind(this)
+                  );
+              }).catch(() => {
+                this.$message({
+                  type: 'info',
+                  message: '已取消'
+                });
+              });
+            } else {
+              this.$notify.error({
+                title: "错误",
+                message: "错误：请匹配正确的快递公司"
+              });
+            }
           }
         });
       },
-      fahuo(id){
-        this.FormVisible = true
+      fahuo(no, company, id) {
+        this.FormVisible = true;
         this.fahuoid = id;
+        this.addForm.ExpressNumber = no
+        this.addForm.Company = company
       }
     },
 
@@ -464,6 +484,7 @@ import expresss from "../../../static/js/express.js";
   .el-row {
     padding: 20px 0px;
   }
+
   .title {
     font-size: 22px;
     padding-bottom: 15px;
@@ -477,8 +498,9 @@ import expresss from "../../../static/js/express.js";
   .el-dialog {
     width: 80%;
   }
+
   .el-form-item {
     margin-bottom: 0;
-}
+  }
 
 </style>

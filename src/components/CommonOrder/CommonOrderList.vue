@@ -37,9 +37,9 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" type="primary" @click="handleEdit(scope.row.ID)">查看</el-button>
-          <el-button size="mini" type="warning" v-if="scope.row.type==1" @click="fahuo(scope.row.ID)">发货</el-button>
+          <el-button size="mini" type="warning" v-if="scope.row.type==1" @click="fahuo(scope.row.Company,scope.row.ExpressNo,scope.row.ID)">发货</el-button>
           <el-button size="mini" type="warning" disabled v-if="scope.row.type!==1">发货</el-button>
-          <el-button size="mini" type="warning" v-if="scope.row.type==3" @click="tuihuo(scope.row.ID)">退款</el-button>
+          <!-- <el-button size="mini" type="warning" v-if="scope.row.type==3" @click="tuihuo(scope.row.ID)">退款</el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -70,7 +70,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click.native="addFormVisible = false">取消</el-button>
+        <el-button @click.native="FormVisible = false">取消</el-button>
         <el-button type="primary" @click.native="addSubmit" :loading="addLoading">提交</el-button>
       </div>
     </el-dialog>
@@ -319,63 +319,6 @@
       handleEdit(id) {
         this.$router.push("/CommonOrderDetail/id=" + id);
       },
-      tuihuo(id){
-        const loading = this.$loading({
-          lock: true,
-          text: "Loading",
-          spinner: "el-icon-loading",
-          background: "rgba(0, 0, 0, 0.7)"
-        });
-        this.$http
-          .get("api/Back_OrderManage/DrawBack", {
-            params: {
-              id: id,
-              Token: getCookie("token")
-            }
-          })
-          .then(
-            function (response) {
-              loading.close();
-              var status = response.data.Status;
-              if (status === 1) {
-                this.$message({
-                  showClose: true,
-                  type: "success",
-                  message: response.data.Result
-                });
-                this.getInfo()
-              } else if (status === 40001) {
-                this.$message({
-                  showClose: true,
-                  type: "warning",
-                  message: response.data.Result
-                });
-                setTimeout(() => {
-                  this.$router.push({
-                    path: "/login"
-                  });
-                }, 1500);
-              } else {
-                loading.close();
-                this.$message({
-                  showClose: true,
-                  type: "warning",
-                  message: response.data.Result
-                });
-              }
-            }.bind(this)
-          )
-          // 请求error
-          .catch(
-            function (error) {
-              loading.close();
-              this.$notify.error({
-                title: "错误",
-                message: "错误：请检查网络"
-              });
-            }.bind(this)
-          );
-      },
       forBreak() {
         // 加入快递公司是手动输入的，需要多加一层判断该公司是否存在于数据源中。若不存在则不能发货
         for (let index = 0; index < expresss.length; index++) {
@@ -390,62 +333,73 @@
           if (valid) {
             //判断是否填写正确  --true
             if (this.forBreak()) {
-              this.addLoading = true;
-              // 将token传入参数中
-              // 发保存请求
-              this.$http
-                .get("api/Back_OrderManage/Consignment", {
-                  params: {
-                    token: getCookie("token"),
-                    id: this.fahuoid,
-                    ExpressNumber: this.addForm.ExpressNumber,
-                    ExpressCode: this.addForm.Company
-                  }
-                })
-                .then(
-                  function (response) {
-                    this.addLoading = false;
-                    var status = response.data.Status;
-                    if (status === 1) {
-                      // 表单重置
-                      this.$refs["addForm"].resetFields();
-                      this.FormVisible = false;
-                      this.$message({
-                        showClose: true,
-                        type: "success",
-                        message: response.data.Result
-                      });
-                      this.getInfo();
-                    } else if (status === 40001) {
-                      this.$message({
-                        showClose: true,
-                        type: "warning",
-                        message: response.data.Result
-                      });
-                      setTimeout(() => {
-                        this.$router.push({
-                          path: "/login"
-                        });
-                      }, 1500);
-                    } else {
-                      this.$message({
-                        showClose: true,
-                        type: "warning",
-                        message: response.data.Result
-                      });
+              this.$confirm("确认发货？", '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
+                this.addLoading = true;
+                // 将token传入参数中
+                // 发保存请求
+                this.$http
+                  .get("api/Back_OrderManage/Consignment", {
+                    params: {
+                      token: getCookie("token"),
+                      id: this.fahuoid,
+                      ExpressNumber: this.addForm.ExpressNumber,
+                      ExpressCode: this.addForm.Company
                     }
-                  }.bind(this)
-                )
-                // 请求error
-                .catch(
-                  function (error) {
-                    this.addLoading = false;
-                    this.$notify.error({
-                      title: "错误",
-                      message: "错误：请检查网络"
-                    });
-                  }.bind(this)
-                );
+                  })
+                  .then(
+                    function (response) {
+                      this.addLoading = false;
+                      var status = response.data.Status;
+                      if (status === 1) {
+                        // 表单重置
+                        this.$refs["addForm"].resetFields();
+                        this.FormVisible = false;
+                        this.$message({
+                          showClose: true,
+                          type: "success",
+                          message: response.data.Result
+                        });
+                        this.getInfo();
+                      } else if (status === 40001) {
+                        this.$message({
+                          showClose: true,
+                          type: "warning",
+                          message: response.data.Result
+                        });
+                        setTimeout(() => {
+                          this.$router.push({
+                            path: "/login"
+                          });
+                        }, 1500);
+                      } else {
+                        this.$message({
+                          showClose: true,
+                          type: "warning",
+                          message: response.data.Result
+                        });
+                      }
+                    }.bind(this)
+                  )
+                  // 请求error
+                  .catch(
+                    function (error) {
+                      this.addLoading = false;
+                      this.$notify.error({
+                        title: "错误",
+                        message: "错误：请检查网络"
+                      });
+                    }.bind(this)
+                  );
+              }).catch(() => {
+                this.$message({
+                  type: 'info',
+                  message: '已取消'
+                });
+              });
             } else {
               this.$notify.error({
                 title: "错误",
@@ -455,9 +409,11 @@
           }
         });
       },
-      fahuo(id) {
+      fahuo(no, company, id) {
         this.FormVisible = true;
         this.fahuoid = id;
+        this.addForm.ExpressNumber = no
+        this.addForm.Company = company
       }
     }
   };

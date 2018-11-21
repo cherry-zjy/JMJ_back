@@ -37,9 +37,9 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" type="primary" @click="handleEdit(scope.row.ID)">查看</el-button>
-          <el-button size="mini" type="warning" v-if="scope.row.type==1" @click="fahuo(scope.row.ID)">发货</el-button>
+          <el-button size="mini" type="warning" v-if="scope.row.type==1" @click="fahuo(scope.row.Company,scope.row.ExpressNo,scope.row.ID)">发货</el-button>
           <el-button size="mini" type="warning" disabled v-if="scope.row.type!==1">发货</el-button>
-          <el-button size="mini" type="warning" v-if="scope.row.type==3" @click="tuihuo(scope.row.ID)">退款</el-button>
+          <!-- <el-button size="mini" type="warning" v-if="scope.row.type==3" @click="tuihuo(scope.row.ID)">退款</el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -60,7 +60,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click.native="addFormVisible = false">取消</el-button>
+        <el-button @click.native="FormVisible = false">取消</el-button>
         <el-button type="primary" @click.native="addSubmit" :loading="addLoading">提交</el-button>
       </div>
     </el-dialog>
@@ -377,6 +377,12 @@ import expresss from "../../../static/js/express.js";
       addSubmit() {
         this.$refs.addForm.validate(valid => {
           if (valid) {
+            if (this.forBreak()) {
+              this.$confirm("确认发货？", '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
             //判断是否填写完整  --true
             this.addLoading = true;
             // 将token传入参数中
@@ -433,12 +439,26 @@ import expresss from "../../../static/js/express.js";
                   });
                 }.bind(this)
               );
+              }).catch(() => {
+                this.$message({
+                  type: 'info',
+                  message: '已取消'
+                });
+              });
+            } else {
+              this.$notify.error({
+                title: "错误",
+                message: "错误：请匹配正确的快递公司"
+              });
+            }
           }
         });
       },
-      fahuo(id) {
-        this.FormVisible = true
+      fahuo(no, company, id) {
+        this.FormVisible = true;
         this.fahuoid = id;
+        this.addForm.ExpressNumber = no
+        this.addForm.Company = company
       }
     },
 
