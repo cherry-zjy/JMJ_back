@@ -11,10 +11,14 @@
         </el-option>
       </el-select>
       <el-button type="primary" @click="pageIndex = 1;getInfo()">查询</el-button>
+      <div style="float:right">
+        <el-button type="primary" @click="method1('ta')">导出excel</el-button>
+        <!-- <input id="file" type="file" /> -->
+      </div>
     </el-col>
 
     <!-- table 内容 -->
-    <el-table :data="list" style="width: 100%" :border='true'>
+    <el-table :data="list" style="width: 100%" :border='true' id="ta">
       <el-table-column label="提现用户" prop="userName">
       </el-table-column>
       <el-table-column label="提现金额" prop="Price">
@@ -53,16 +57,16 @@
         pageSize: 12,
         pageCount: 1,
         mainurl: '',
-        classificationID:-1,
-        classificationList:[{
-          ID:-1,
-          Name:'全部'
-        },{
-          ID:1,
-          Name:'已发放'
-        },{
-          ID:2,
-          Name:'未发放'
+        classificationID: -1,
+        classificationList: [{
+          ID: -1,
+          Name: '全部'
+        }, {
+          ID: 1,
+          Name: '已发放'
+        }, {
+          ID: 2,
+          Name: '未发放'
         }]
       };
     },
@@ -85,14 +89,14 @@
       CreateTime(row, CreateTime) {
         var CreateTime = row[CreateTime.property];
         if (CreateTime) {
-          return CreateTime.replace("T", " ").split(".")[0];          
+          return CreateTime.replace("T", " ").split(".")[0];
         }
       },
       Status(row, Status) {
         var Status = row[Status.property];
         if (Status) {
           Status = "已提现"
-        } else  {
+        } else {
           Status = "未提现"
         }
         return Status
@@ -107,7 +111,7 @@
         this.$http
           .get("api/Back_FinancementManage/FinancementCash", {
             params: {
-              type:this.classificationID,
+              type: this.classificationID,
               pageIndex: this.pageIndex,
               pageSize: this.pageSize,
               Token: getCookie("token"),
@@ -119,6 +123,7 @@
               var status = response.data.Status;
               if (status === 1) {
                 this.list = response.data.Result.datalist;
+                this.pageCount = response.data.Result.page;
               } else if (status === 40001) {
                 this.$message({
                   showClose: true,
@@ -150,6 +155,64 @@
               });
             }.bind(this)
           );
+      },
+      method1(){
+        const loading = this.$loading({
+          lock: true,
+          text: "Loading",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.7)"
+        });
+        this.$http
+          .get("api/Back_FinancementManage/CashToExcel", {
+            params: {
+              Token: getCookie("token"),
+            }
+          })
+          .then(
+            function (response) {
+              loading.close();
+              var status = response.data.Status;
+              if (status === 1) {
+                this.list = response.data.Result;
+                this.pageCount = 1
+                this.pageIndex = 1
+                setTimeout(() => {
+                  method1('ta')
+                }, 1500);
+                
+              } else if (status === 40001) {
+                this.$message({
+                  showClose: true,
+                  type: "warning",
+                  message: response.data.Result
+                });
+                setTimeout(() => {
+                  this.$router.push({
+                    path: "/login"
+                  });
+                }, 1500);
+              } else {
+                loading.close();
+                this.$message({
+                  showClose: true,
+                  type: "warning",
+                  message: response.data.Result
+                });
+              }
+            }.bind(this)
+          )
+          // 请求error
+          .catch(
+            function (error) {
+              loading.close();
+              this.$notify.error({
+                title: "错误",
+                message: "错误：请检查网络"
+              });
+            }.bind(this)
+          );
+        
       },
       handleEdit(id) {
         this.$confirm('确认发放?', '提示', {
@@ -253,6 +316,13 @@
 
   .el-input {
     width: 50%;
+  }
+  #file{
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
   }
 
 </style>

@@ -25,7 +25,8 @@
               </el-table-column>
               <el-table-column label="操作">
                 <template slot-scope="scope">
-                  <el-button size="mini" type="primary" @click="tuikuan(scope.row.OrderProduct)">退款</el-button>
+                  <el-button size="mini" type="primary" @click="tuikuan(scope.row.OrderProduct)" v-if="scope.row.show">退款</el-button>
+                  <el-button size="mini" type="primary" disabled="disabled" v-if="!scope.row.show">退款</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -33,9 +34,12 @@
             <el-form-item label="商品金额">
               {{editForm.prodPrice}}
             </el-form-item>
-            <el-form-item label="红包">
-              {{editForm.hongBao}}
-            </el-form-item>
+          <el-form-item label="红包">
+            <!-- {{editForm.hongBao}} -->
+            <p v-for="(item,index) in editForm.hongBao" :key="index">
+              {{item}}
+            </p>
+          </el-form-item>
             <el-form-item label="实付金额">
               {{editForm.onlinePrice}}
             </el-form-item>
