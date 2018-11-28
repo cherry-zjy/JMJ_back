@@ -22,20 +22,17 @@
       </el-table-column>
       <el-table-column label="商品名称" prop="Name">
       </el-table-column>
-      <el-table-column label="快递单号" prop="Express">
-      </el-table-column>
-      <el-table-column label="快递公司" prop="Company">
-      </el-table-column>
       <el-table-column label="退款金额" prop="price">
       </el-table-column>
-      <el-table-column label="退款信息" prop="Message">
-      </el-table-column>
+      <!-- <el-table-column label="退款信息" prop="Message">
+      </el-table-column> -->
       <el-table-column label="订单状态" prop="Status" :formatter="Type">
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" type="primary" @click="handleEdit(scope.row.orderProd,2,'同意')">同意</el-button>
+          <!-- <el-button size="mini" type="primary" @click="handleEdit(scope.row.orderProd,2,'同意')">同意</el-button> -->
           <el-button size="mini" type="primary" @click="handleEdit(scope.row.orderProd,3,'拒绝')">拒绝</el-button>
+          <el-button size="mini" v-if="scope.row.Status == 1" type="primary" @click="handleEdit(scope.row.orderProd,2,'修改')">修改状态</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -121,19 +118,11 @@
           },
           {
             ID: 1,
-            Name: '待付款'
+            Name: '未退款'
           },
           {
             ID: 2,
-            Name: '待收货'
-          },
-          {
-            ID: 3,
-            Name: '待发货'
-          },
-          {
-            ID: 4,
-            Name: '待评价'
+            Name: '已退款'
           },
         ]
       };
@@ -143,15 +132,9 @@
         if (value == 0) {
           value = "未支付"
         } else if (value == 1) {
-          value = "待发货"
+          value = "未退款"
         } else if (value == 2) {
-          value = "待收货"
-        } else if (value == 3) {
-          value = "待评价"
-        } else if (value == 4) {
-          value = "已评价"
-        } else if (value == 9) {
-          value = "已取消"
+          value = "已退款"
         }
         return value
       },
@@ -240,15 +223,9 @@
         if (type == 0) {
           type = "未支付"
         } else if (type == 1) {
-          type = "待发货"
+          type = "未退款"
         } else if (type == 2) {
-          type = "待收货"
-        } else if (type == 3) {
-          type = "待评价"
-        } else if (type == 4) {
-          type = "已评价"
-        } else if (type == 9) {
-          type = "已取消"
+          type = "已退款"
         }
         return type
       },
@@ -330,7 +307,7 @@
             .then(
               function (response) {
                 var status = response.data.Status;
-                if (status === 1) {
+                if (status === -1) {
                   this.$message({
                     showClose: true,
                     type: "success",

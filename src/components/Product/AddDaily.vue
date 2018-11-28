@@ -7,11 +7,11 @@
     </el-breadcrumb>
 
     <el-main>
-      <!-- <div style="text-align: center">
+      <div style="text-align: center">
         <el-date-picker v-model="time" value-format="yyyy-MM-dd" @change="getSTime" format="yyyy-MM-dd" type="daterange"
           start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']">
         </el-date-picker>
-      </div> -->
+      </div>
      <div class="btn">
         <Transfer :page-count="pageCount" :current-page="currentPage" @handleCurrentChange="handleCurrentChange1" @getInfo1="getInfo" filterable style="text-align: left; display: inline-block" v-model="value1" :data="data" :titles="['未添加的商品', '已添加的商品']"></Transfer>
       </div>
