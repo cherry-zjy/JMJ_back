@@ -395,7 +395,7 @@
                     params: {
                       Token: getCookie("token"),
                       ID: this.fahuoid,
-                      Company: this.addForm.Company,
+                      ExpressCode: this.addForm.Company,
                       ExpressNumber: this.addForm.ExpressNumber
                     }
                   })

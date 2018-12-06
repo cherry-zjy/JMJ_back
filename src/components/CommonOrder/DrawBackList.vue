@@ -251,7 +251,7 @@
             function (response) {
               loading.close();
               var status = response.data.Status;
-              if (status === -1) {
+              if (status === 1) {
                 this.list = response.data.Result.datalist;
                 this.pageCount = response.data.Result.page;
               } else if (status === 40001) {
@@ -307,7 +307,7 @@
             .then(
               function (response) {
                 var status = response.data.Status;
-                if (status === -1) {
+                if (status === 1) {
                   this.$message({
                     showClose: true,
                     type: "success",
@@ -362,7 +362,7 @@
                 params: {
                   Token: getCookie("token"),
                   ID: this.fahuoid,
-                  Company: this.addForm.Company,
+                  ExpressCode: this.addForm.Company,
                   ExpressNumber: this.addForm.ExpressNumber
                 }
               })

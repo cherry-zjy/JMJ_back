@@ -79,6 +79,7 @@
                 this.ZongPay = response.data.Result.ZongPay
                 this.Zongli = response.data.Result.Zongli
                 this.list = response.data.Result.dataList;
+                this.pageCount = response.data.Result.page
               } else if (status === 40001) {
                 this.$message({
                   showClose: true,
