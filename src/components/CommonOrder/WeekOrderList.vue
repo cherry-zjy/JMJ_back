@@ -32,6 +32,8 @@
       </el-table-column>
       <el-table-column label="付款金额" prop="Price">
       </el-table-column>
+      <el-table-column label="是否已成团" prop="IsConglobation" :formatter="Conglobation">
+      </el-table-column>
       <el-table-column label="订单状态" prop="type" :formatter="Type">
       </el-table-column>
       <el-table-column label="操作">
@@ -67,7 +69,7 @@
   </div>
 </template>
 <script>
-  import expresss from "../../../static/js/express.js";
+  // import expresss from "../../../static/js/express.js";
   export default {
     data() {
       var checkLogo = (rule, value, callback) => {
@@ -139,6 +141,10 @@
             ID: 4,
             Name: '待评价'
           },
+          {
+            ID: 5,
+            Name: '已成团'
+          },
         ]
       };
     },
@@ -171,7 +177,7 @@
       }
     },
     mounted() {
-      this.restaurants = expresss;
+      // this.restaurants = expresss;
       this.mainurl = mainurl;
       this.getInfo();
       this.action =
@@ -237,6 +243,14 @@
         var date = row[time.property];
         if (date) {
           return date.replace("T", " ").split(".")[0];
+        }
+      },
+      Conglobation(row, IsConglobation) {
+        var IsConglobation = row[IsConglobation.property];
+        if (IsConglobation) {
+          return '是';
+        }else{
+          return '否';
         }
       },
       tuihuo(id) {
@@ -457,7 +471,61 @@
           }
         });
       },
+      getCompany() {
+        this.$http
+          .get("api/Back_OrderManage/ExpressToExcel", {
+            params: {
+              token: getCookie("token"),
+            }
+          })
+          .then(
+            function (response) {
+              this.addLoading = false;
+              var status = response.data.Status;
+              if (status === 1) {
+                var express = []
+                for (let i = 0; i < response.data.Result.length; i++) {
+                  var arr = {
+                    value:response.data.Result[i].ExpressName
+                  }
+                  express.push(arr)
+                }
+                this.restaurants = express
+              } else if (status === 40001) {
+                this.$message({
+                  showClose: true,
+                  type: "warning",
+                  message: response.data.Result
+                });
+                setTimeout(() => {
+                  this.$router.push({
+                    path: "/login"
+                  });
+                }, 1500);
+              } else {
+                this.$message({
+                  showClose: true,
+                  type: "warning",
+                  message: response.data.Result
+                });
+              }
+            }.bind(this)
+          )
+          // 请求error
+          .catch(
+            function (error) {
+              this.addLoading = false;
+              this.$notify.error({
+                title: "错误",
+                message: "错误：请检查网络"
+              });
+            }.bind(this)
+          );
+      },
       fahuo(no, company, id) {
+        if (this.restaurants.length == 0) {
+          this.getCompany()
+        }
         this.FormVisible = true;
         this.fahuoid = id;
         this.addForm.ExpressNumber = no

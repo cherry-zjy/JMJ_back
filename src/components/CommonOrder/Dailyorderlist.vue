@@ -67,7 +67,7 @@
   </div>
 </template>
 <script>
-  import expresss from "../../../static/js/express.js";
+  // import expresss from "../../../static/js/express.js";
   export default {
     data() {
       var checkLogo = (rule, value, callback) => {
@@ -168,7 +168,7 @@
       }
     },
     mounted() {
-      this.restaurants = expresss;
+      // this.restaurants = expresss;
       this.mainurl = mainurl;
       this.getInfo();
       this.action =
@@ -454,7 +454,61 @@
           }
         });
       },
+      getCompany() {
+        this.$http
+          .get("api/Back_OrderManage/ExpressToExcel", {
+            params: {
+              token: getCookie("token"),
+            }
+          })
+          .then(
+            function (response) {
+              this.addLoading = false;
+              var status = response.data.Status;
+              if (status === 1) {
+                var express = []
+                for (let i = 0; i < response.data.Result.length; i++) {
+                  var arr = {
+                    value:response.data.Result[i].ExpressName
+                  }
+                  express.push(arr)
+                }
+                this.restaurants = express
+              } else if (status === 40001) {
+                this.$message({
+                  showClose: true,
+                  type: "warning",
+                  message: response.data.Result
+                });
+                setTimeout(() => {
+                  this.$router.push({
+                    path: "/login"
+                  });
+                }, 1500);
+              } else {
+                this.$message({
+                  showClose: true,
+                  type: "warning",
+                  message: response.data.Result
+                });
+              }
+            }.bind(this)
+          )
+          // 请求error
+          .catch(
+            function (error) {
+              this.addLoading = false;
+              this.$notify.error({
+                title: "错误",
+                message: "错误：请检查网络"
+              });
+            }.bind(this)
+          );
+      },
       fahuo(no, company, id) {
+        if (this.restaurants.length == 0) {
+          this.getCompany()
+        }
         this.FormVisible = true;
         this.fahuoid = id;
         this.addForm.ExpressNumber = no

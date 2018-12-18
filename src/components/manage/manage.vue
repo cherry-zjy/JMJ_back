@@ -425,7 +425,6 @@
               // 将token传入参数中
               para.Token = getCookie("token");
               console.log(para)
-              return;
               // 发保存请求
               this.$http
                 .get("api/Admin/Add", {
