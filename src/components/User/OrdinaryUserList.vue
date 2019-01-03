@@ -15,7 +15,7 @@
     <el-table :data="list" style="width: 100%" :border='true'>
       <el-table-column label="用户头像" prop="logo">
         <template slot-scope="scope">
-          <img :src="scope.row.Image" width="100" v-if="scope.row.Image!==''&&scope.row.Image.indexOf('http')>=0"/>
+          <img :src="scope.row.Image" width="100" v-if="scope.row.Image!==null&&scope.row.Image.indexOf('http')>=0"/>
           <img :src="mainurl+scope.row.Image" width="100" v-else/>
         </template>
       </el-table-column>

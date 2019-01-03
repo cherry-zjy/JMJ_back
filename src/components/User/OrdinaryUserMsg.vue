@@ -21,6 +21,8 @@
       </el-table-column>
       <el-table-column label="用户名" prop="name">
       </el-table-column>
+      <el-table-column label="手机号" prop="Phone">
+      </el-table-column>
       <el-table-column label="身份" prop="identity">
       </el-table-column>
       <el-table-column label="佣金" prop="Commission">

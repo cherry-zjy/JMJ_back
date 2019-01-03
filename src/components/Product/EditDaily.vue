@@ -25,7 +25,7 @@
             <el-form-item label="商品形式">
               <el-input disabled="disabled" value="每日团购"></el-input>
             </el-form-item>
-            <el-form-item label="活动时间">
+            <el-form-item label="活动时间" prop="time">
               <el-date-picker v-model="time" value-format="yyyy-MM-dd" @change="getSTime" format="yyyy-MM-dd" type="daterange"
                 start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']">
               </el-date-picker>
@@ -103,15 +103,12 @@
             <el-form-item label="商品简介">
               <el-input type="textarea" v-model="getList.Introduce"></el-input>
             </el-form-item>
-            <!-- <el-form-item label="预售商品">
-              <el-switch v-model="getList.Isyushou"></el-switch>
-            </el-form-item> -->
+            <el-form-item label="身份验证">
+              <el-switch v-model="getList.IsOutSourcing"></el-switch>
+            </el-form-item>
             <!-- <el-form-item label="折扣力度" prop="Salesvolume">
               <el-input v-model="getList.Salesvolume" disabled="disabled" v-if="!getList.Isyushou"></el-input>
               <el-input v-model="getList.Salesvolume" v-if="getList.Isyushou"></el-input>
-            </el-form-item> -->
-            <!-- <el-form-item label="身份验证">
-              <el-switch v-model="getList.IsOutSourcing"></el-switch>
             </el-form-item> -->
             <el-form-item label="快递运费" prop="ExpressWay">
               <el-input v-model="getList.ExpressWay" style="width:120px" type="number"></el-input>元

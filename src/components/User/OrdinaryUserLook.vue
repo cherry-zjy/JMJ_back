@@ -14,7 +14,9 @@
               {{editForm.nickName}}
             </el-form-item>
             <el-form-item label="用户头像">
-              <img :src="mainurl+editForm.Image" style="width:100px;height:100px;border-radius: 50%;"/>
+              <img :src="editForm.Image" style="width:100px;height:100px;border-radius: 50%;" v-if="editForm.Image!==null&&editForm.Image.indexOf('http')>=0"/>
+              <img :src="mainurl+editForm.Image"  style="width:100px;height:100px;border-radius: 50%;" v-else/>
+              <!-- <img :src="mainurl+editForm.Image" style="width:100px;height:100px;border-radius: 50%;"/> -->
             </el-form-item>
             <el-form-item label="用户等级">
               {{editForm.Level}}

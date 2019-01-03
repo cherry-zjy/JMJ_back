@@ -100,6 +100,9 @@
             <el-form-item label="商品简介">
               <el-input type="textarea" v-model="getList.Introduce"></el-input>
             </el-form-item>
+            <el-form-item label="身份验证">
+              <el-switch v-model="getList.IsOutSourcing"></el-switch>
+            </el-form-item>
             <el-form-item label="快递运费" prop="ExpressWay">
               <el-input v-model="getList.ExpressWay" style="width:120px" type="number"></el-input>元
             </el-form-item>

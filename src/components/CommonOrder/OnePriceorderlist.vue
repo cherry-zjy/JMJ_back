@@ -179,8 +179,8 @@
     methods: {
       forBreak() {
         // 加入快递公司是手动输入的，需要多加一层判断该公司是否存在于数据源中。若不存在则不能发货
-        for (let index = 0; index < expresss.length; index++) {
-          const element = expresss[index];
+        for (let index = 0; index < this.restaurants.length; index++) {
+          const element = this.restaurants[index];
           if (this.addForm.Company == element.value) {
             return true;
           }
