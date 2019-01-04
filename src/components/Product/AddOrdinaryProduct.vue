@@ -133,7 +133,7 @@
             <el-form-item label="商品条形码">
               <el-input v-model="getList.BarCode"></el-input>
             </el-form-item>
-            <el-form-item label="商品编码" prop="prodNumber">
+            <el-form-item label="款式编码" prop="prodNumber">
               <el-input v-model="getList.prodNumber"></el-input>
             </el-form-item>
             <el-form-item label="供应商编号">
@@ -415,7 +415,7 @@
           }],
           prodNumber: [{
             required: true,
-            message: '请输入商品编码',
+            message: '请输入款式编码',
             trigger: 'blur'
           }, ],
           Name: [{

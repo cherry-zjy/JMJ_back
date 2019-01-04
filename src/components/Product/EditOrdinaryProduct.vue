@@ -113,7 +113,7 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="商品编码" prop="prodNumber">
+            <el-form-item label="款式编码" prop="prodNumber">
               <el-input v-model="getList.prodNumber"></el-input>
             </el-form-item>
             <el-form-item label="上下架" prop="UppAndLow">
@@ -580,7 +580,7 @@
           }, ],
           prodNumber: [{
             required: true,
-            message: '请输入商品编码',
+            message: '请输入款式编码',
             trigger: 'blur'
           }, ],
         },
