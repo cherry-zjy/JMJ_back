@@ -18,7 +18,8 @@
     <el-table :data="list" style="width: 100%" :border='true'>
       <el-table-column label="用户头像" prop="image">
         <template slot-scope="scope">
-          <img :src="mainurl+scope.row.image" width="100" />
+          <img :src="scope.row.image" width="100" v-if="scope.row.image!==null&&scope.row.image.indexOf('http')>=0"/>
+          <img :src="mainurl+scope.row.image" width="100" v-else/>
         </template>
       </el-table-column>
       <el-table-column label="昵称" prop="nickName">

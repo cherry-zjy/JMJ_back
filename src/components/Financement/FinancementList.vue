@@ -6,7 +6,7 @@
     </el-breadcrumb>
     <div class="box">
     <p>总营业额：{{ZongPay}}</p>
-    <p>总收益：{{Zongli}}</p>
+    <!-- <p>总收益：{{Zongli}}</p> -->
     </div>
 
     <!-- table 内容 -->
@@ -21,8 +21,8 @@
       </el-table-column>
       <el-table-column label="总佣金" prop="TotalCommission">
       </el-table-column>
-      <el-table-column label="利润" prop="lirun">
-      </el-table-column>
+      <!-- <el-table-column label="利润" prop="lirun">
+      </el-table-column> -->
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" type="primary" plain @click="handleEdit(scope.row.ID)">查看</el-button>

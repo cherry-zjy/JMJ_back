@@ -32,6 +32,22 @@
         layout="prev, pager, next, jumper" :page-count="pageCount">
       </el-pagination>
     </div>
+
+    <el-dialog title="新增" :visible.sync="dialogFormVisible" width="50%">
+      <el-form :model="addForm" :rules="listrules" ref="addForm" label-width="150px" class="demo-editForm"
+        label-position="left">
+        <el-form-item label="新增" prop="resource">
+          <el-radio-group v-model="addForm.resource">
+            <el-radio :label="0">自主添加商品</el-radio>
+            <el-radio :label="1">选择二级分类</el-radio>
+          </el-radio-group>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitForm('addForm')">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -42,7 +58,16 @@
         pageIndex: 1,
         pageSize: 12,
         pageCount: 1,
-        mainurl: ''
+        mainurl: '',
+        dialogFormVisible:false,
+        addForm:{
+          resource:''
+        },
+        listrules: {
+          resource: [
+            { required: true, message: '请选择新增类型', trigger: 'change' }
+          ],
+        }
       };
     },
     mounted() {
@@ -113,7 +138,7 @@
             }.bind(this)
           );
       },
-      handleAdd() {
+      AddPro() {
         const loading = this.$loading({
           lock: true,
           text: "Loading",
@@ -168,6 +193,24 @@
               });
             }.bind(this)
           );
+      },
+      handleAdd(){
+        this.dialogFormVisible = true
+      },
+      submitForm(formName){
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            console.log(this.addForm.resource)
+            if (this.addForm.resource == 0) {
+              this.AddPro()
+            }else{
+
+            }
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
       },
       handleEdit(id) {
         this.$router.push("/OverflowDetail/id=" + id);

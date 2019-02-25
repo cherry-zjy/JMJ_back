@@ -68,8 +68,6 @@
         var Position = row[Position.property];
         if (Position == 1) {
           return Position = "首页"
-        } else if (Position == 2) {
-          return Position = "首页超值热卖Banner"
         } else if (Position == 3) {
           return Position = "家居日用Banner"
         } else if (Position == 4) {

@@ -24,7 +24,7 @@
         <el-form-item label="适用范围" prop="Position">
           <el-radio-group v-model="getList.Position">
             <el-radio label="1">首页</el-radio>
-            <el-radio label="2">首页超值热卖Banner</el-radio>
+            <!-- <el-radio label="2">首页超值热卖Banner</el-radio> -->
             <el-radio label="3">家居日用Banner</el-radio>
             <el-radio label="4">美妆洗护Banner</el-radio>
             <div style="padding:20px">

@@ -266,6 +266,9 @@
             </div>
           </el-upload>
         </el-form-item>
+        <el-form-item label="一级规格ID" v-if="false">
+          <el-input v-model="editoneForm.firstID"></el-input>
+        </el-form-item>
         <el-form-item label="一级规格名称" prop="SpecName">
           <el-input v-model="editoneForm.SpecName"></el-input>
         </el-form-item>
